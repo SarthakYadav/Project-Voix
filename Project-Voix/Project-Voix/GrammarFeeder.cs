@@ -6,9 +6,12 @@
     date created: 28/09/15
 
     log:-
-       Update1: 2/10/2015       Author: Sarthak 
-       latest update: 2/10/2015      Author: Sarthak
+       Update 1: 2/10/2015          Author: Sarthak 
+       Update 2: 9/10/2015          Author: Sarthak         Description: Added Grammar CloseProgramGrammar, Added Asynchronous Support
 
+
+       latest update: 9/10/2015     Update 2            Author: Sarthak
+    
     Listed Methods:
     1. public method GrammarLoader() takes reference of S.R.E. and loads all the required grammars into the engine
     2. method ResponseBoxSelection() returns grammar for the responseboxes
@@ -16,6 +19,7 @@
     4. method UIGrammar() returns a grammar for the Recognition of available commands when in the program GUI
     5. method NonOperative() returns a grammar for Non-operation oriented functionality of the program
     6. method BasicGrammar() returns the most basic set of available command choices that are available and active all the time
+    7. method CloseProgramGrammar() returns a grammar that enables closing the currently running Executables by matching their resp commandName
 */
 
 using System;
@@ -34,9 +38,12 @@ namespace Project_Voix
 {
     static class GrammarFeeder
     {
+        #region Fields
         static GrammarBuilder optionalComponent = new GrammarBuilder(new GrammarBuilder("Tars"), 0, 1);
         static Choices programChoices = null;
         static string[] programCommands = null;
+        #endregion
+
         #region Public Methods
 
         public static void GrammarLoader(ref SpeechRecognitionEngine speechEngine)            //only method publically available
@@ -280,6 +287,8 @@ namespace Project_Voix
             return new Grammar(gb);
         }
 
+        #endregion
+
         #region Grammar Event Handlers
         private static void BasicGrammar_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
         {
@@ -323,6 +332,5 @@ namespace Project_Voix
 
         #endregion
 
-        #endregion
     }
 }

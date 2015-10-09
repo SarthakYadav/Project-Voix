@@ -32,8 +32,6 @@ namespace Project_Voix
             GrammarFeeder.GrammarLoader(ref speechEngine);      //call to the public method of GrammarFeeder class 
             
             List<Grammar> grammarList=new List<Grammar>(speechEngine.Grammars);
-            
-
             GrammarManipulator.RegisterWithManipulator(ref speechEngine);
             GrammarManipulator.LoadNonOperativeCommands(ref speechEngine);
            
@@ -46,10 +44,7 @@ namespace Project_Voix
 
             waitHandle.WaitOne();
 
-            ProgramManager.SendOpenCommand("Notepad++");
             speechEngine.SetInputToDefaultAudioDevice();
-
-            ProgramManager.SendCloseCommand("Notepad++");
             speechEngine.RecognizeAsync(RecognizeMode.Multiple);
            
             //speechEngine.SpeechRecognized += SrEngine_SpeechRecognizedHandler;

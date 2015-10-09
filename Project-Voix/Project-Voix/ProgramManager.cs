@@ -7,9 +7,16 @@
     date created: -03/10/15
 
     log:-
-    *No Updates Done*
+           update 1: 09/10/2015         Author: Sarthak             Description:Added asynchronous support for InitiliazeManager()
+
+    latest update :   update 1          Author: Sarthak
 
     Listed Public Methods:
+        1. InitializeManager(): initial public method which is directly called in the program for Initializing Executable logs and data fields (asynchronous)
+        2. ShowRunningExecutables(): displays a list of the Executables currently running
+        3. SendOpenCommand(string command): takes a string value for the command and starts the process of executing the underlying Program
+        4. SendCloseCommand(string command): Counterpart of SendOpenCommand() and is used to close a currently running Executable according to the supplied command
+
            
 */
 
@@ -36,6 +43,9 @@ namespace Project_Voix
 
         static int GetIndexOfCommand(string command,ref List<Executable> list)
         {
+            /*
+                Results the index of the underlying Executable type in either of the executable list types
+            */
             int i = 0;
             if(list!=null & command!="")
             {
@@ -47,6 +57,9 @@ namespace Project_Voix
         }
         static void InitProcess(Executable ex)
         {
+            /*
+                InitProcess is final step in initialization of a process pertaining to a given Executable field
+            */
             string prevfileName = ex.PInfo.FileName;
             try
             {
@@ -82,6 +95,10 @@ namespace Project_Voix
 
         static void StartProcess(int i)
         {
+            /*
+                intermediate step in executing a program
+                Fills in the details of the Executable to be executed and calls final InitProcess() function
+            */
             Executable ex = executablesList[i] as Executable;
             string targetAddress = executablesList[i].TargetAddress;
             string commandName = executablesList[i].CommandName;
@@ -91,6 +108,9 @@ namespace Project_Voix
 
         private static void CloseProcess(int i)
         {
+            /*
+                closes the process at the index i in the runningExecutables list
+            */
             if (i < 0)
                 throw new Exception("Invalid index of requested close command. Recheck the command and make sure it corresponds to a running Executable");
                 Executable ex = runningExecutables[i] as Executable;

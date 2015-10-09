@@ -9,7 +9,8 @@
     *No Updates Done*
 
     Listed Public Methods:
-           s
+           1. override string ToString(): ovverides the System.Object.ToString()
+           2. CompareTo(Executable other): Implementation of the IComparable<Executable> interface
 */
 
 using System;
