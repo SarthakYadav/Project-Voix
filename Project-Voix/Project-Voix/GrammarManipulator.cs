@@ -40,6 +40,7 @@ namespace Project_Voix
         static int indexOfResponseBox;
         static int indexOfNonOperative;
         static int indexOfOpenType;
+        static int indexOfcloseProgramGrammar;
         #endregion
 
         #region DefaultPriorities
@@ -49,6 +50,7 @@ namespace Project_Voix
         static private int DefaultResponseBoxPriority { get; set; }
         static private int DefaultNonOperativePriority { get; set; }
         static private int DefaultOpenTypePriority { get;  set; }
+        static public int DefaultCloseProgramGrammarPriority { get; set; }
         #endregion
 
         #region Private Methods
@@ -79,7 +81,7 @@ namespace Project_Voix
                         break;
                     case "open_typeGrammar":
                         indexOfOpenType = listOfGrammars.IndexOf(g);
-                        g.Enabled = false;
+                        g.Enabled = true;
                         DefaultOpenTypePriority = g.Priority;
                         break;
                     case "responseBoxGrammar":
@@ -96,6 +98,11 @@ namespace Project_Voix
                         indexOfUi = listOfGrammars.IndexOf(g);
                         g.Enabled = false;
                         DefaultUiPriority = g.Priority;
+                        break;
+                    case "closeProgramGrammar":
+                        indexOfcloseProgramGrammar = listOfGrammars.IndexOf(g);
+                        g.Enabled = false;
+                        DefaultCloseProgramGrammarPriority = g.Priority;
                         break;
 
                     default:
@@ -132,6 +139,7 @@ namespace Project_Voix
             {
                 listOfGrammars[indexOfOpenType].Enabled = true;
                 listOfGrammars[indexOfOpenType].Priority = highPriority;
+                listOfGrammars[indexOfcloseProgramGrammar].Enabled = true;
             }
             //similarly for search type
             DeloadNonOperativeCommands(ref sre);

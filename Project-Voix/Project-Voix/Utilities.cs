@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -65,7 +66,6 @@ namespace Project_Voix
             /*
                 returns list of shortcut files present in the Start Menu
             */
-
             string startMenuLoc = Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu);         //gets the location of the Start menu on current machine
             string[] filesList = Directory.GetFiles(startMenuLoc, "*.lnk", SearchOption.AllDirectories);        //a string array consisting of shortcut files(*.lnk) in the start menu directory
             return filesList;
@@ -79,10 +79,15 @@ namespace Project_Voix
             */
             string[] filesList = StartMenuFilesList();
             string[] programCommands = new string[filesList.Length];
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
             for (int i = 0; i < filesList.Length; ++i)
             {
                 programCommands[i] = CommandName(filesList[i]);            //gets the command name for the given program in the filesList to be used for recognition
             }
+            watch.Stop();
+            Console.WriteLine("In command list generation , milliseconds taken : {0}",watch.ElapsedTicks);
             return programCommands;
         }
         public static string CommandName(string str)
