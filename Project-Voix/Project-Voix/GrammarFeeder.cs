@@ -8,9 +8,9 @@
     log:-
        Update 1: 2/10/2015          Author: Sarthak 
        Update 2: 9/10/2015          Author: Sarthak         Description: Added Grammar CloseProgramGrammar, Added Asynchronous Support
+       Update 3: 11/10/2015         Author: Sarthak         Description: Added EventHandlers for the resp Grammar types
 
-
-       latest update: 9/10/2015     Update 2            Author: Sarthak
+       latest update: 11/10/2015     Update 3            Author: Sarthak
     
     Listed Methods:
     1. public method GrammarLoader() takes reference of S.R.E. and loads all the required grammars into the engine
@@ -44,8 +44,14 @@ namespace Project_Voix
         static string[] programCommands = null;
         #endregion
 
-        #region Public Methods
+        static public event GenerateResponse BasicResponse;
+        static public event GenerateResponse Open_SearchTypeResponse;
+        static public event GenerateResponse ResponseBoxResponse;
+        static public event GenerateResponse CloseProgramResponse;
+        static public event GenerateResponse NonOperativeResponse;
+        static public event GenerateResponse UIResponse;
 
+        #region Public Methods
         public static void GrammarLoader(ref SpeechRecognitionEngine speechEngine)            //only method publically available
         {
             // main method that loads the S.R.E with all the grammars
@@ -53,36 +59,38 @@ namespace Project_Voix
             basicGrammar.Name = "basicGrammar";
             basicGrammar.Priority = 10;
             basicGrammar.SpeechRecognized += BasicGrammar_SpeechRecognized;
-
+            BasicResponse += ResponseGenerator.BasicGrammar_ResponseHandler;
 
             Grammar open_typeGrammar = Task.Factory.StartNew<Grammar>(new Func<Grammar>(OpenCommandGrammar)).Result;
-            //Grammar open_typeGrammar = OpenCommandGrammar();
             open_typeGrammar.Name = "open_typeGrammar";
             open_typeGrammar.Priority = 8;
             open_typeGrammar.SpeechRecognized += Open_typeGrammar_SpeechRecognized;
+            Open_SearchTypeResponse += ResponseGenerator.Open_SearchType_ResponseHandler;
 
             Grammar responseBoxGrammar = Task.Factory.StartNew<Grammar>(new Func<Grammar>(ResponseBoxSelection)).Result;
-            //Grammar responseBoxGrammar = ResponseBoxSelection();
             responseBoxGrammar.Name = "responseBoxGrammar";
             responseBoxGrammar.Priority = 5;
             responseBoxGrammar.SpeechRecognized += ResponseBoxGrammar_SpeechRecognized;
+            ResponseBoxResponse += ResponseGenerator.ResponseBox_ResponseHandler;
 
             Grammar nonOperative = Task.Factory.StartNew<Grammar>(new Func<Grammar>(NonOperative)).Result;
-            //Grammar nonOperative = NonOperative();
             nonOperative.Name = "NonOperativeCommands";
             nonOperative.Priority = 4;
             nonOperative.SpeechRecognized += NonOperative_SpeechRecognized;
+            NonOperativeResponse += ResponseGenerator.NonOperational_ResponseHandler;
 
             Grammar uiGrammar = Task.Run<Grammar>(new Func<Grammar>(UIGrammar)).Result;
-            //Grammar uiGrammar = UIGrammar();
             uiGrammar.Name = "UIGrammar";
             uiGrammar.Priority = 3;
             uiGrammar.SpeechRecognized += UiGrammar_SpeechRecognized;
+            UIResponse += ResponseGenerator.UI_ResponseHandler;
+
 
             Grammar closeProgramGrammar = Task.Factory.StartNew<Grammar>(new Func<Grammar>(CloseProgramGrammar)).Result;
             closeProgramGrammar.Name = "closeProgramGrammar";
             closeProgramGrammar.Priority = 6;
             closeProgramGrammar.SpeechRecognized += CloseProgramGrammar_SpeechRecognized;
+            CloseProgramResponse += ResponseGenerator.CloseProgram_ResponseHandler;
 
             //loading all the grammars into the S.R.E
             speechEngine.LoadGrammarAsync(basicGrammar);
@@ -212,13 +220,13 @@ namespace Project_Voix
             question2.Append(new Choices(new GrammarBuilder[] { "what is", "tell me" }));
             question2.Append("the time");
 
-            Choices choice = new Choices(question1, question2);
+            Choices choice = new Choices(greeting,question1, question2);
             GrammarBuilder gb = new GrammarBuilder(choice);
             //to save the grammar as an SrgsDocument
-            //SrgsDocument basicGrammar = new SrgsDocument(gb);
-            //System.Xml.XmlWriter writer = System.Xml.XmlWriter.Create(@"H:\voix\NonOperativeCommands.xml");
-            //basicGrammar.WriteSrgs(writer);
-            //writer.Close();
+            SrgsDocument basicGrammar = new SrgsDocument(gb);
+            System.Xml.XmlWriter writer = System.Xml.XmlWriter.Create(@"H:\voix\NonOperativeCommands.xml");
+            basicGrammar.WriteSrgs(writer);
+            writer.Close();
 
             return new Grammar(gb);
         }
@@ -293,9 +301,17 @@ namespace Project_Voix
         private static void BasicGrammar_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
         {
             if (e.Result != null)
+            {
                 Console.WriteLine(e.Result.Text);
+                if (e.Result.Text.Contains("Open") | e.Result.Text.Contains("Execute") | e.Result.Text.Contains("Run") | e.Result.Text.Contains("Intialize") | e.Result.Text.Contains("Start"))
+                    BasicResponse(new Response(CommandType.Open, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
 
-            //throw new NotImplementedException();
+                else if (e.Result.Text.Contains("Find") | e.Result.Text.Contains("Search") | e.Result.Text.Contains("Look for"))
+                    BasicResponse(new Response(CommandType.Search, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
+
+                else
+                    BasicResponse(new Response(CommandType.Basic, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
+            }
         }
 
         private static void Open_typeGrammar_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
@@ -304,33 +320,47 @@ namespace Project_Voix
             {
                 Console.WriteLine(e.Result.Text);
                 ProgramManager.SendOpenCommand(e.Result.Text);
+                Open_SearchTypeResponse(new Response(CommandType.Open, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
             }
         }
 
         private static void NonOperative_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
         {
             if (e.Result != null)
+            {
                 Console.WriteLine(e.Result.Text);
+                NonOperativeResponse(new Response(CommandType.NonOperational,DateTime.Now.TimeOfDay.Hours,e.Result.Text));
+            }
         }
 
         private static void CloseProgramGrammar_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
         {
-            if(e.Result!=null)
+            if (e.Result != null)
+            {
                 ProgramManager.SendCloseCommand(e.Result.Text);
+                CloseProgramResponse(new Response(CommandType.CloseProgram, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
+            }
             //throw new NotImplementedException();
         }
 
         private static void UiGrammar_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
         {
-            throw new NotImplementedException();
+            if(e.Result!=null)
+            {
+                //do UI refreshing here
+                UIResponse(new Response(CommandType.UI, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
+            }
         }
 
         private static void ResponseBoxGrammar_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
         {
-            throw new NotImplementedException();
+            if(e.Result!=null)
+            {
+                //code for reanalyses, ok and cancel selection here
+                ResponseBoxResponse(new Response(CommandType.ResponseBox, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
+            }
         }
 
         #endregion
-
     }
 }

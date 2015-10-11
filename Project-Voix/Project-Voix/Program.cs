@@ -29,6 +29,10 @@ namespace Project_Voix
             Stopwatch watch = new Stopwatch();
 
             watch.Start();
+
+            //Action<object> act = new Action<object>(loadGrammar);
+            //Task.Factory.StartNew(act,speechEngine as object);
+
             GrammarFeeder.GrammarLoader(ref speechEngine);      //call to the public method of GrammarFeeder class 
             
             List<Grammar> grammarList=new List<Grammar>(speechEngine.Grammars);
@@ -41,9 +45,14 @@ namespace Project_Voix
             Console.WriteLine("total ticks {0}", watch.ElapsedMilliseconds);
 
 
-
             waitHandle.WaitOne();
 
+            //ResponseGenerator.NonOperational_ResponseHandler(new Response(CommandType.NonOperational,DateTime.Now.TimeOfDay.Hours,"hello Tars"));
+            ProgramManager.SendOpenCommand("Notepad++");
+            ResponseGenerator.CloseProgram_ResponseHandler(new Response(CommandType.CloseProgram, DateTime.Now.TimeOfDay.Hours, "Close Notepad++"));
+            ProgramManager.SendCloseCommand("Tars Close Notepad++");
+
+            //ResponseGenerator.NonOperational_ResponseHandler("tell me the time");
             speechEngine.SetInputToDefaultAudioDevice();
             speechEngine.RecognizeAsync(RecognizeMode.Multiple);
            
@@ -52,7 +61,6 @@ namespace Project_Voix
             Console.ReadLine();         //keeps the console open during debugging
         }
 
-        
 
         //event handler for SpeechRecognized event
         //public static void BasicGrammar_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)

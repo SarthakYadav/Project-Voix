@@ -17,6 +17,8 @@
         3. SendOpenCommand(string command): takes a string value for the command and starts the process of executing the underlying Program
         4. SendCloseCommand(string command): Counterpart of SendOpenCommand() and is used to close a currently running Executable according to the supplied command
 
+    Known issues:
+        1. To determine a better Executable closing process
            
 */
 
@@ -113,17 +115,18 @@ namespace Project_Voix
             */
             if (i < 0)
                 throw new Exception("Invalid index of requested close command. Recheck the command and make sure it corresponds to a running Executable");
-                Executable ex = runningExecutables[i] as Executable;
-                string name = ex.PInfo.FileName;
-                name = name.Substring(name.LastIndexOf('\\') + 1);                      //derives substring from last occurence of '/' to the end
-                name = name.Remove(name.LastIndexOf('.'));                              //deletes from last occurence of '.'
-                name = char.ToLowerInvariant(name[0]) + name.Substring(1);              //to convert the first letter of name to lowercase
-                Console.WriteLine(name);
-                if (runningExecutables[i].ExecutableProcess.ProcessName.CompareTo(name)==0)
-                {
-                    runningExecutables[i].ExecutableProcess.Kill();
-                    runningExecutables.RemoveAt(i);
-                }
+
+            Executable ex = runningExecutables[i] as Executable;
+            string name = ex.PInfo.FileName;
+            name = name.Substring(name.LastIndexOf('\\') + 1);                      //derives substring from last occurence of '/' to the end
+            name = name.Remove(name.LastIndexOf('.'));                              //deletes from last occurence of '.'
+            name = char.ToLowerInvariant(name[0]) + name.Substring(1);              //to convert the first letter of name to lowercase
+            Console.WriteLine(name);
+            if (runningExecutables[i].ExecutableProcess.ProcessName.CompareTo(name)==0)
+            {
+                runningExecutables[i].ExecutableProcess.Kill();
+                runningExecutables.RemoveAt(i);
+            }
         }
         #endregion
 
@@ -189,10 +192,12 @@ namespace Project_Voix
 
         static public void SendCloseCommand(string command)
         {
+
             if (command.Contains("Tars Close"))
             {
                 command = command.Remove(0,11);
             }
+            
             int i = GetIndexOfCommand(command,ref runningExecutables);
             CloseProcess(i);
         }

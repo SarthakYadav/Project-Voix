@@ -104,7 +104,6 @@ namespace Project_Voix
                         g.Enabled = false;
                         DefaultCloseProgramGrammarPriority = g.Priority;
                         break;
-
                     default:
                         Console.WriteLine("Grammar doesnt exits");
                         break;
@@ -187,7 +186,7 @@ namespace Project_Voix
         #endregion
 
 
-        #region Manipulation on Non Operative Commands
+        #region Manipulation of Non Operative Commands
         static public void LoadNonOperativeCommands(ref SpeechRecognitionEngine sre)
         {
             /*
