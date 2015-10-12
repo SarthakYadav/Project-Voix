@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Speech;
 using System.Speech.Recognition;
+using System.Speech.Synthesis;
 using System.Speech.Recognition.SrgsGrammar;
 using System.Text;
 using System.Threading;
@@ -27,6 +28,8 @@ namespace Project_Voix
         {
             SpeechRecognitionEngine speechEngine = new SpeechRecognitionEngine();
             Stopwatch watch = new Stopwatch();
+            UserSettings uSettings = new UserSettings("Sarthak Yadav",UserGender.Male);
+            UserSettings.WriteSettingsToBinaryFile(@"H:\voix\userSettings.userFile", uSettings, append: false);
 
             watch.Start();
 

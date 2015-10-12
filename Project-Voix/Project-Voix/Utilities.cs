@@ -29,6 +29,7 @@ namespace Project_Voix
 {
     static class Utilities
     {
+        #region Private Methods
         private static string ShortCutTargetFinder(string path)
         {
             /* finds target path of a .lnk shortcut file
@@ -46,6 +47,9 @@ namespace Project_Voix
                 throw new FileNotFoundException();
             }
         }
+        #endregion
+
+        #region Public Methods
         public static string[] ShortcutTargetList()             
         {
             /*
@@ -95,5 +99,6 @@ namespace Project_Voix
             //returns a substring from given string from last '/' character to the end of the string and replaces the ".lnk" with a blankspace
             return str.Substring(str.LastIndexOf('\\') + 1).Replace(".lnk", "");
         }
+        #endregion
     }
 }

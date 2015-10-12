@@ -25,11 +25,13 @@ namespace Project_Voix
 {
     class Executable:IComparable<Executable>
     {
-
+        #region Fields
         string executableLoc;                       //effective address of the Executable
         string executableCommand;                   //resp command name for the executable which is recognized by the SRE
         ProcessStartInfo processInfo;                            //associated process with the given commands
         Process process;
+        #endregion
+
         #region Properties
 
         public Process ExecutableProcess

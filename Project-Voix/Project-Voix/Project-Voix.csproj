@@ -58,6 +58,7 @@
     </ApplicationDefinition>
     <Compile Include="Response.cs" />
     <Compile Include="ResponseGenerator.cs" />
+    <Compile Include="UserSettings.cs" />
     <Compile Include="Utilities.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -68,7 +69,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Executable.cs" />
-    <Compile Include="GeneralSettings.cs" />
     <Compile Include="GrammarFeeder.cs" />
     <Compile Include="GrammarManipulator.cs" />
     <Compile Include="MainWindow.xaml.cs">
