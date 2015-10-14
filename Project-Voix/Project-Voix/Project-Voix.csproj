@@ -58,6 +58,7 @@
     </ApplicationDefinition>
     <Compile Include="Response.cs" />
     <Compile Include="ResponseGenerator.cs" />
+    <Compile Include="Speaker.cs" />
     <Compile Include="UserSettings.cs" />
     <Compile Include="Utilities.cs" />
     <Page Include="MainWindow.xaml">

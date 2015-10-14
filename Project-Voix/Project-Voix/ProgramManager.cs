@@ -200,6 +200,8 @@ namespace Project_Voix
             
             int i = GetIndexOfCommand(command,ref runningExecutables);
             CloseProcess(i);
+            if (runningExecutables.Count == 0)
+                GrammarManipulator.DisableCloseGrammar();
         }
         #endregion
     }

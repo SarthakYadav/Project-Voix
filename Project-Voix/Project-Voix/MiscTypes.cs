@@ -37,4 +37,6 @@ namespace Project_Voix
     }
 
     delegate void GenerateResponse(Response response);              // delegate for signatures of Response events
+
+    
 }

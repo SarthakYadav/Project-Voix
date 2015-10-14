@@ -15,15 +15,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Speech.Synthesis;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace Project_Voix
 {
     static class ResponseGenerator
     {
-        static SpeechSynthesizer synth = new SpeechSynthesizer();
+        
 
+        static SpeechSynthesizer synth = new SpeechSynthesizer();
         #region Private Methods
         static int RandomizeResponse(List<string> list)
         {
@@ -42,12 +45,12 @@ namespace Project_Voix
             return i;
         }
 
-        static void SendForSynthesis(string command)
+        static async void SendForSynthesis(Response resp)
         {
             /*
                 Imitation of a method that would send Synthesis commands over to the Synthesizer thread
             */
-            synth.Speak(command);
+            await Task.Factory.StartNew(new Action<object>(Speaker.Synthesizer),resp.SynthesisOutput);
         }
 
         #endregion
@@ -66,18 +69,23 @@ namespace Project_Voix
             if (resp.CommandType == CommandType.Basic)
             {
                 if (resp.RecognizedPhrase.Contains("wake up"))
-                    SendForSynthesis("Tars Awake");
-                if (resp.RecognizedPhrase.Contains("sleep"))
-                    SendForSynthesis("Tars Asleep");
-                if (resp.RecognizedPhrase.Contains("System Shutdown"))
-                    SendForSynthesis("System shutdown requested");
-                if (resp.RecognizedPhrase.Contains("System Restart"))
-                    SendForSynthesis("System restart requested");
+                    resp.SynthesisOutput = "Tars Awake";
+                else if (resp.RecognizedPhrase.Contains("sleep"))
+                    resp.SynthesisOutput = "Tars Asleep";
+                else if (resp.RecognizedPhrase.Contains("system shutdown"))
+                    resp.SynthesisOutput = "System shutdown requested";
+                else if (resp.RecognizedPhrase.Contains("system restart"))
+                    resp.SynthesisOutput = "System restart requested";
+                else
+                    throw new InvalidOperationException("Unknown Operation.");
+
+                SendForSynthesis(resp);
             }
             else if (resp.CommandType == CommandType.Open | resp.CommandType == CommandType.Search)     //"Open", "Execute", "Run", "Intialize", "Start"
             {
                 int responseIndex = RandomizeResponse(resp.OpenSearchResponses);
                 resp.SynthesisOutput = resp.OpenSearchResponses[responseIndex];
+                SendForSynthesis(resp);
             }
             else
                 throw new InvalidOperationException("Wrong CommandType of the respective Response object");
@@ -101,11 +109,11 @@ namespace Project_Voix
                 }
                 if (resp.RecognizedPhrase.Contains("what is the day"))
                 {
-                    resp.SynthesisOutput = "It is" + DateTime.Now.DayOfWeek.ToString() + " " + resp.AcknowledgementGender;
+                    resp.SynthesisOutput = "It is " + DateTime.Now.DayOfWeek.ToString() + " " + resp.AcknowledgementGender;
                 }
                 if (resp.RecognizedPhrase.Contains("what is the date"))
                 {
-                    resp.SynthesisOutput = "It is" + DateTime.Now.ToLongDateString() + " " + resp.AcknowledgementGender;
+                    resp.SynthesisOutput = "It is " + DateTime.Now.ToLongDateString() + " " + resp.AcknowledgementGender;
                 }
 
                 if (resp.RecognizedPhrase.Contains("hello"))
@@ -114,8 +122,7 @@ namespace Project_Voix
                     Console.WriteLine("Randomized index is : {0}", greetingIndex);
                     resp.SynthesisOutput = resp.Greetings[greetingIndex];
                 }
-
-                SendForSynthesis(resp.SynthesisOutput);
+                SendForSynthesis(resp);
             }
         }
 
@@ -127,7 +134,7 @@ namespace Project_Voix
             if (resp.RecognizedPhrase.ToLower().Contains("reanalyze"))
                 resp.SynthesisOutput = "Rephrase the command again";
 
-            SendForSynthesis(resp.SynthesisOutput);
+            SendForSynthesis(resp);
         }
 
         public static void CloseProgram_ResponseHandler(Response resp)
@@ -140,8 +147,8 @@ namespace Project_Voix
             else
             {
                 resp.RecognizedPhrase = resp.RecognizedPhrase.ToLower();
-                resp.SynthesisOutput = "Closing program" + resp.RecognizedPhrase.Replace("close", "");
-                SendForSynthesis(resp.SynthesisOutput);
+                resp.SynthesisOutput = "Closing program" + resp.RecognizedPhrase.Replace("tars close", "");
+                SendForSynthesis(resp);
             }
         }
 
@@ -158,7 +165,7 @@ namespace Project_Voix
                 if (resp.RecognizedPhrase.Contains("quit"))
                     resp.SynthesisOutput = "Closing main Program";
 
-                SendForSynthesis(resp.SynthesisOutput);
+                SendForSynthesis(resp);
             }
             else
                 throw new InvalidOperationException("Wrong CommandType of the respective Response argument"); 
@@ -170,12 +177,17 @@ namespace Project_Voix
             /*
                 Event handler for Responses corresponding to Open_Search type commands
             */
-            if (resp.CommandType!=CommandType.Open| resp.CommandType != CommandType.Search)
-                throw new InvalidOperationException("Wrong CommandType of the respective Response argument");
-            else
+           // if (resp.CommandType!=CommandType.Open|| resp.CommandType != CommandType.Search)
+             //   throw new InvalidOperationException("Wrong CommandType of the respective Response argument");
+            //else
             {
-                resp.SynthesisOutput = resp.CommandType.ToString()+"ing" + resp.RecognizedPhrase;
-                SendForSynthesis(resp.SynthesisOutput);
+                if (resp.RecognizedPhrase.Contains("Tars"))
+                    resp.RecognizedPhrase.Remove(0, 5);
+                else
+                {
+                    resp.SynthesisOutput = resp.CommandType.ToString() + "ing" + resp.RecognizedPhrase;
+                    SendForSynthesis(resp);
+                }
             }
         }
         #endregion

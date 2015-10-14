@@ -54,11 +54,11 @@ namespace Project_Voix
         #endregion
 
         #region Private Methods
-        static private void IsRegistered(ref SpeechRecognitionEngine sre)
+        static private void IsRegistered()
         {
-            if (registeredEngine != sre)
+            if (registeredEngine == null)
             {
-                throw new Exception(string.Format("The given SpeechRecognitionEngine object {0} is not registered.", sre));
+                throw new Exception(string.Format("The given SpeechRecognitionEngine object is not registered."));
             }
         }
 
@@ -81,7 +81,7 @@ namespace Project_Voix
                         break;
                     case "open_typeGrammar":
                         indexOfOpenType = listOfGrammars.IndexOf(g);
-                        g.Enabled = true;
+                        g.Enabled = false;
                         DefaultOpenTypePriority = g.Priority;
                         break;
                     case "responseBoxGrammar":
@@ -119,95 +119,195 @@ namespace Project_Voix
             /*
                 used by the S.R.E to allow manipulation of it's Grammars with the GrammarManipulator class
             */
+            
             registeredEngine = speechEngine;
             listOfGrammars = GetGrammarList(ref registeredEngine);
-            SetDefaultGrammarStates();
+            Task.Run(() =>
+            {
+                SetDefaultGrammarStates();
+            });
         }
+
+        #region Manipulation of Open_typeGramma
+        static public void EnableOpenGrammar()
+        {
+            IsRegistered();
+            registeredEngine.RequestRecognizerUpdate();
+
+            registeredEngine.RecognizerUpdateReached += (sender, e) =>
+            {
+                listOfGrammars[indexOfOpenType].Enabled = true;
+                listOfGrammars[indexOfOpenType].Priority = highPriority;
+                
+            };
+        }
+
+        static public void DisableOpenGrammar()
+        {
+            IsRegistered();
+            registeredEngine.RequestRecognizerUpdate();
+
+            registeredEngine.RecognizerUpdateReached += (sender, e) =>
+            {
+                listOfGrammars[indexOfOpenType].Enabled = false;
+                listOfGrammars[indexOfOpenType].Priority = DefaultOpenTypePriority;
+            };
+        }
+        #endregion
+
+
         #region Manipulation on ResponseBoxes
-        static public void ResponseBoxLoaded(ref SpeechRecognitionEngine sre)
+
+        static public void ResponseBoxLoaded()
         {
             /*
                 the actions that are to be executed when the Response Box is loaded
             */
-            IsRegistered(ref sre);           
-            
-            listOfGrammars[indexOfResponseBox].Enabled = true;
-            listOfGrammars[indexOfResponseBox].Priority = highPriority;
+            IsRegistered();
+            registeredEngine.RequestRecognizerUpdate();
 
-            if (/*ResponseBoxType==Open_Type*/true)
+            registeredEngine.RecognizerUpdateReached+=(sender,e)=>
             {
-                listOfGrammars[indexOfOpenType].Enabled = true;
-                listOfGrammars[indexOfOpenType].Priority = highPriority;
-                listOfGrammars[indexOfcloseProgramGrammar].Enabled = true;
-            }
-            //similarly for search type
-            DeloadNonOperativeCommands(ref sre);
+                listOfGrammars[indexOfResponseBox].Enabled = true;
+                listOfGrammars[indexOfResponseBox].Priority = highPriority;
+
+                if (/*ResponseBoxType==Open_Type*/true)
+                {
+                    EnableOpenGrammar();
+                    if (listOfGrammars[indexOfcloseProgramGrammar].Enabled == true)
+                        DisableCloseGrammar();
+                    if (listOfGrammars[indexOfNonOperative].Enabled == true)
+                        DisableNonOperativeCommands();
+                }
+                //similarly for search type
+                DisableNonOperativeCommands();
+            };
         }
 
-        static public void ResponseBoxDeloaded(ref SpeechRecognitionEngine sre)
+        static public void ResponseBoxDeloaded()
         {
             /*
                 Actions to be executed when the Response Box is unloaded
             */
-            IsRegistered(ref sre);
-            listOfGrammars[indexOfResponseBox].Enabled = false;
-            listOfGrammars[indexOfResponseBox].Priority = DefaultResponseBoxPriority;
-            if (/*ResponseBoxType==Open_Type*/true)
+            IsRegistered();
+            registeredEngine.RequestRecognizerUpdate();
+            registeredEngine.RecognizerUpdateReached += (sender, e) =>
             {
-                listOfGrammars[indexOfOpenType].Enabled = false;
-                listOfGrammars[indexOfOpenType].Priority = DefaultOpenTypePriority;
-            }
-            //similarly for Search type
-            LoadNonOperativeCommands(ref sre);
+                listOfGrammars[indexOfResponseBox].Enabled = false;
+                listOfGrammars[indexOfResponseBox].Priority = DefaultResponseBoxPriority;
+                if (/*ResponseBoxType==Open_Type*/true)
+                {
+                    DisableOpenGrammar();
+                    EnableCloseGrammar();
+                    if(listOfGrammars[indexOfNonOperative].Enabled==true)
+                        EnableNonOperativeCommands();
+                }
+                //similarly for Search type
+            };
+        }
+        #endregion
+
+        #region Manipulation on CloseGrammar
+        static public void EnableCloseGrammar()
+        {
+            //IsRegistered();
+            registeredEngine.RequestRecognizerUpdate();
+            registeredEngine.RecognizerUpdateReached += (sender, e) =>
+            {
+                listOfGrammars[indexOfcloseProgramGrammar].Enabled = true;
+                listOfGrammars[indexOfcloseProgramGrammar].Priority = highPriority;
+            };
+        }
+        public static void DisableCloseGrammar()
+        {
+            IsRegistered();
+            registeredEngine.RequestRecognizerUpdate();
+            registeredEngine.RecognizerUpdateReached += (sender, e) =>
+            {
+                listOfGrammars[indexOfcloseProgramGrammar].Enabled = false;
+                listOfGrammars[indexOfcloseProgramGrammar].Priority = DefaultCloseProgramGrammarPriority;
+            };
+            
+
         }
         #endregion
 
         #region Manipulation on UI loading
-        static public void UILoaded(ref SpeechRecognitionEngine sre)
+        static public void UILoaded()
         {
             /*
                 Actions to be executed when the UI is loaded
             */
-            IsRegistered(ref sre);
-            listOfGrammars[indexOfUi].Enabled = true;
-            listOfGrammars[indexOfUi].Priority = highPriority;
-            DeloadNonOperativeCommands(ref sre);
+            
+            IsRegistered();
+            registeredEngine.RequestRecognizerUpdate();
+            registeredEngine.RecognizerUpdateReached += (sender, e) =>
+            {
+                listOfGrammars[indexOfUi].Enabled = true;
+                listOfGrammars[indexOfUi].Priority = highPriority;
+
+                if (listOfGrammars[indexOfNonOperative].Enabled==true)
+                    DisableNonOperativeCommands();
+                
+            };
+            
         }
-        static public void UIDeloaded(ref SpeechRecognitionEngine sre)
+        static public void UIDeloaded()
         {
             /*
                 Actions to be executed when the UI is deloaded
             */
-            IsRegistered(ref sre);
-            listOfGrammars[indexOfUi].Enabled = false;
-            listOfGrammars[indexOfUi].Priority = DefaultUiPriority;
-            LoadNonOperativeCommands(ref sre);
+            IsRegistered();
+            registeredEngine.RequestRecognizerUpdate();
+            registeredEngine.RecognizerUpdateReached += (sender, e) =>
+            {
+                listOfGrammars[indexOfUi].Enabled = false;
+                listOfGrammars[indexOfUi].Priority = DefaultUiPriority;
+
+                if (listOfGrammars[indexOfNonOperative].Enabled == true)
+                    EnableNonOperativeCommands();
+            };
+            
         }
         #endregion
 
 
         #region Manipulation of Non Operative Commands
-        static public void LoadNonOperativeCommands(ref SpeechRecognitionEngine sre)
+        static public void EnableNonOperativeCommands()
         {
             /*
                 By default the NonOperative commands are enabled.
                 This is to execute when any of the Deloaded functions are to be executed of Grammar Manipulation 
                 It's priority remains fixed for most of the cases
             */
-            IsRegistered(ref sre);
-            listOfGrammars[indexOfNonOperative].Enabled = true;
+            IsRegistered();
+            registeredEngine.RequestRecognizerUpdate();
+            registeredEngine.RecognizerUpdateReached += (sender, e) =>
+            {
+                listOfGrammars[indexOfNonOperative].Enabled = true;
+                
+                if(listOfGrammars[indexOfcloseProgramGrammar].Enabled==true)
+                    DisableCloseGrammar();
+            };
         }
 
-        static public void DeloadNonOperativeCommands(ref SpeechRecognitionEngine sre)
+        static public void DisableNonOperativeCommands()
         {
             /*
                 By default the NonOperative commands are enabled.
                 This is to execute in all other instances apart from the default instance Nonoperative Commands are to be deloaded
                 It's priority remains fixed for most of the cases
             */
-            IsRegistered(ref sre);
-            listOfGrammars[indexOfNonOperative].Enabled = false;
+            
+            IsRegistered();
+            registeredEngine.RequestRecognizerUpdate();
+            registeredEngine.RecognizerUpdateReached += (sender, e) =>
+            {
+                listOfGrammars[indexOfNonOperative].Enabled = false;
+            };
+            
         }
+        
         #endregion
         #endregion
     }

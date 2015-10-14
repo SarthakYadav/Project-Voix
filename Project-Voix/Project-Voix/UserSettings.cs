@@ -17,7 +17,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Speech.Synthesis;
 using System.IO;
-
+using System.Threading;
 namespace Project_Voix
 { 
     [Serializable]
@@ -119,7 +119,7 @@ namespace Project_Voix
         /// <param name="filePath">The file path to write the object instance to.</param>
         /// <param name="objectToWrite">The object instance to write to the XML file.</param>
         /// <param name="append">If false the file will be overwritten if it already exists. If true the contents will be appended to the file.</param>
-        public static void WriteSettingsToBinaryFile<T>(string filePath, T objectToWrite, bool append = false)
+        static void WriteSettingsToBinaryFile<T>(string filePath, T objectToWrite, bool append = false)
         {
             using (Stream stream = File.Open(filePath, append ? FileMode.Append : FileMode.Create))
             {
@@ -135,15 +135,32 @@ namespace Project_Voix
         /// <typeparam name="T">The type of object to read from the XML.</typeparam>
         /// <param name="filePath">The file path to read the object instance from.</param>
         /// <returns>Returns a new instance of the object read from the binary file.</returns>
-        public static T ReadFromBinaryFile<T>(string filePath)
+        static T ReadFromBinaryFile<T>(string filePath)
         {
             using (Stream stream = File.Open(filePath, FileMode.Open))
             {
                 var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                return (T)binaryFormatter.Deserialize(stream);
+                return   (T)binaryFormatter.Deserialize(stream);
             }
         }
+        #endregion
 
+        #region Public Methods
+
+        public async void WriteSettings(string location=".")
+        {
+            Console.WriteLine("In write settings, Thread {0}",Thread.CurrentThread.ManagedThreadId);
+            await Task.Run(() =>
+            {
+                Console.WriteLine("On thread : {0}",Thread.CurrentThread.ManagedThreadId);
+                WriteSettingsToBinaryFile<UserSettings>(location + this.Username+".file", this, false);
+            });
+        }
+
+        public static UserSettings GetSettings(string path=".")
+        {
+             return ReadFromBinaryFile<UserSettings>(path);
+        }
         #endregion
     }
 }

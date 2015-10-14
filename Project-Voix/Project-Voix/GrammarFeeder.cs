@@ -24,6 +24,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Speech.Recognition;
@@ -31,7 +32,6 @@ using System.Speech.Recognition.SrgsGrammar;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Diagnostics;
 using System.Xml;
 
 namespace Project_Voix
@@ -141,13 +141,7 @@ namespace Project_Voix
             //Console.WriteLine("OpenCommandGrammar is on thread {0}",Thread.CurrentThread.ManagedThreadId);
             programCommands = Utilities.CommandList();
 
-            //StreamWriter strWriter = new StreamWriter(@"H:\voix\txtFromOpenCommandGrammar.txt");
-
-            //foreach (var item in programCommands)
-            //{
-            //    strWriter.WriteLine(item);
-            //}
-            //strWriter.Close();
+            
             programChoices = new Choices(programCommands);
             GrammarBuilder programGrammar = new GrammarBuilder();
             programGrammar.Append(optionalComponent);
@@ -304,8 +298,11 @@ namespace Project_Voix
             {
                 Console.WriteLine(e.Result.Text);
                 if (e.Result.Text.Contains("Open") | e.Result.Text.Contains("Execute") | e.Result.Text.Contains("Run") | e.Result.Text.Contains("Intialize") | e.Result.Text.Contains("Start"))
+                {
+                    GrammarManipulator.EnableOpenGrammar();
                     BasicResponse(new Response(CommandType.Open, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
 
+                }
                 else if (e.Result.Text.Contains("Find") | e.Result.Text.Contains("Search") | e.Result.Text.Contains("Look for"))
                     BasicResponse(new Response(CommandType.Search, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
 
@@ -319,8 +316,10 @@ namespace Project_Voix
             if (e.Result != null)
             {
                 Console.WriteLine(e.Result.Text);
+                GrammarManipulator.EnableCloseGrammar();
                 ProgramManager.SendOpenCommand(e.Result.Text);
                 Open_SearchTypeResponse(new Response(CommandType.Open, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
+                GrammarManipulator.DisableOpenGrammar();
             }
         }
 

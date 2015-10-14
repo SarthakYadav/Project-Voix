@@ -12,8 +12,8 @@ using System.IO;
 using System.Linq;
 using System.Speech;
 using System.Speech.Recognition;
-using System.Speech.Synthesis;
 using System.Speech.Recognition.SrgsGrammar;
+using System.Speech.Synthesis;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,12 +24,13 @@ namespace Project_Voix
     class Program
     {
         public static AutoResetEvent waitHandle = new AutoResetEvent(false);
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             SpeechRecognitionEngine speechEngine = new SpeechRecognitionEngine();
             Stopwatch watch = new Stopwatch();
             UserSettings uSettings = new UserSettings("Sarthak Yadav",UserGender.Male);
-            UserSettings.WriteSettingsToBinaryFile(@"H:\voix\userSettings.userFile", uSettings, append: false);
+            uSettings.WriteSettings(@"H:\voix");
+
 
             watch.Start();
 
@@ -40,7 +41,7 @@ namespace Project_Voix
             
             List<Grammar> grammarList=new List<Grammar>(speechEngine.Grammars);
             GrammarManipulator.RegisterWithManipulator(ref speechEngine);
-            GrammarManipulator.LoadNonOperativeCommands(ref speechEngine);
+            //GrammarManipulator.LoadNonOperativeCommands(ref speechEngine);
            
             ProgramManager.InitializeManager();
             watch.Stop();
@@ -51,10 +52,12 @@ namespace Project_Voix
             waitHandle.WaitOne();
 
             //ResponseGenerator.NonOperational_ResponseHandler(new Response(CommandType.NonOperational,DateTime.Now.TimeOfDay.Hours,"hello Tars"));
-            ProgramManager.SendOpenCommand("Notepad++");
-            ResponseGenerator.CloseProgram_ResponseHandler(new Response(CommandType.CloseProgram, DateTime.Now.TimeOfDay.Hours, "Close Notepad++"));
-            ProgramManager.SendCloseCommand("Tars Close Notepad++");
+            //ProgramManager.SendOpenCommand("Notepad++");
+            //ResponseGenerator.CloseProgram_ResponseHandler(new Response(CommandType.CloseProgram, DateTime.Now.TimeOfDay.Hours, "Close Notepad++"));
+            //ProgramManager.SendCloseCommand("Close Notepad++");
 
+
+            //Console.WriteLine("Doin it now5");
             //ResponseGenerator.NonOperational_ResponseHandler("tell me the time");
             speechEngine.SetInputToDefaultAudioDevice();
             speechEngine.RecognizeAsync(RecognizeMode.Multiple);
