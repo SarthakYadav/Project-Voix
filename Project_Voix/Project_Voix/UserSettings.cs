@@ -12,17 +12,18 @@
 */
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Speech.Synthesis;
 using System.Text;
 using System.Threading.Tasks;
-using System.Speech.Synthesis;
-using System.IO;
-using System.Threading;
+
 namespace Project_Voix
-{ 
+{
     [Serializable]
-    public class UserSettings
+    class UserSettings
     {
+
         #region Fields
         string programPetname = "Tars";                             //default is Tars
         UserGender userGender;                        //default is Male
@@ -41,14 +42,14 @@ namespace Project_Voix
             {
                 if (value != "")
                     userName = value;
-                else 
+                else
                     throw new NotSupportedException("The username field cannot be empty");
             }
         }
 
         public UserGender Gender
         {
-            get {return userGender; }
+            get { return userGender; }
             set { userGender = value; }
         }
 
@@ -61,7 +62,7 @@ namespace Project_Voix
         public VoiceAge SynthesizerVoiceAge
         {
             get { return synthAge; }
-            set {synthAge=value; }
+            set { synthAge = value; }
         }
 
         public int SynthesizerVolume
@@ -102,10 +103,16 @@ namespace Project_Voix
         #endregion
 
         #region Constructor
-        public UserSettings(string username,UserGender usergender)
+        public UserSettings(string username, UserGender usergender, string assistantName = "Tars", VoiceGender voiceGender = VoiceGender.Male, VoiceAge voiceAge = VoiceAge.NotSet, int synthVol = 100, int synthRate = 0)
         {
-            Username = userName;
-            Gender = userGender;
+            Username = username;
+            Gender = usergender;
+            AssistantName = assistantName;
+            SynthesizerVoice = voiceGender;
+            SynthesizerVoiceAge = voiceAge;
+            SynthesizerVolume = synthVol;
+            SynthesizerRate = synthRate;
+
         }
         #endregion
 
@@ -121,6 +128,7 @@ namespace Project_Voix
         /// <param name="append">If false the file will be overwritten if it already exists. If true the contents will be appended to the file.</param>
         static void WriteSettingsToBinaryFile<T>(string filePath, T objectToWrite, bool append = false)
         {
+            //Directory.CreateDirectory(filePath);
             using (Stream stream = File.Open(filePath, append ? FileMode.Append : FileMode.Create))
             {
                 var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
@@ -137,29 +145,39 @@ namespace Project_Voix
         /// <returns>Returns a new instance of the object read from the binary file.</returns>
         static T ReadFromBinaryFile<T>(string filePath)
         {
+
             using (Stream stream = File.Open(filePath, FileMode.Open))
             {
                 var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                return   (T)binaryFormatter.Deserialize(stream);
+                return (T)binaryFormatter.Deserialize(stream);
             }
         }
         #endregion
 
         #region Public Methods
 
-        public async void WriteSettings(string location=".")
+        public async void WriteSettings(string location = @"C:\Users\HEWLETT PACKARD\Documents\Project Voix")
         {
-            Console.WriteLine("In write settings, Thread {0}",Thread.CurrentThread.ManagedThreadId);
+            Directory.CreateDirectory(location);
             await Task.Run(() =>
             {
-                Console.WriteLine("On thread : {0}",Thread.CurrentThread.ManagedThreadId);
-                WriteSettingsToBinaryFile<UserSettings>(location + this.Username+".file", this, false);
+                WriteSettingsToBinaryFile<UserSettings>(location + this.Username.ToLower() + ".file", this, false);
             });
         }
 
-        public static UserSettings GetSettings(string path=".")
+        public static UserSettings GetSettings(string filePath, string userName = "")
         {
-             return ReadFromBinaryFile<UserSettings>(path);
+            if (userName != "")
+            {
+                filePath = @"C:\Users\HEWLETT PACKARD\Documents\Project Voix" + @"\" + userName.ToLower() + ".file";
+                Console.WriteLine(filePath);
+            }
+            return ReadFromBinaryFile<UserSettings>(filePath);
+        }
+
+        public override string ToString()
+        {
+            return string.Format("Username : {0}\t Gender : {1}", this.Username, this.Gender);
         }
         #endregion
     }

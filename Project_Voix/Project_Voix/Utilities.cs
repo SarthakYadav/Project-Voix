@@ -17,10 +17,11 @@
                                      uses the ShortCutTargetFinder(string path) method.
           
 */
+
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -50,7 +51,7 @@ namespace Project_Voix
         #endregion
 
         #region Public Methods
-        public static string[] ShortcutTargetList()             
+        public static string[] ShortcutTargetList()
         {
             /*
                 Returns the complete list of target files to all the shortcut files that are present in the Start Menu
@@ -58,7 +59,7 @@ namespace Project_Voix
             string[] filesList = StartMenuFilesList();
             string[] targetList = new string[filesList.Length];
 
-            for(int i=0;i<filesList.Length;++i)
+            for (int i = 0; i < filesList.Length; ++i)
             {
                 targetList[i] = ShortCutTargetFinder(filesList[i]);
             }
@@ -66,7 +67,7 @@ namespace Project_Voix
         }
 
         public static string[] StartMenuFilesList()
-        {   
+        {
             /*
                 returns list of shortcut files present in the Start Menu
             */
@@ -91,7 +92,7 @@ namespace Project_Voix
                 programCommands[i] = CommandName(filesList[i]);            //gets the command name for the given program in the filesList to be used for recognition
             }
             watch.Stop();
-            Console.WriteLine("In command list generation , milliseconds taken : {0}",watch.ElapsedTicks);
+            Console.WriteLine("In command list generation , milliseconds taken : {0}", watch.ElapsedTicks);
             return programCommands;
         }
         public static string CommandName(string str)

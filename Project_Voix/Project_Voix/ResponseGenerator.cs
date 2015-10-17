@@ -11,21 +11,17 @@
     Listed Public Methods:
            1. Event Handlers for all Response events
 */
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Speech.Synthesis;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Project_Voix
 {
     static class ResponseGenerator
     {
-        
-
         static SpeechSynthesizer synth = new SpeechSynthesizer();
         #region Private Methods
         static int RandomizeResponse(List<string> list)
@@ -33,13 +29,13 @@ namespace Project_Voix
             /*
                 For randomizing the response provided for the Greetings style and Open/Search type commands
             */
-            int i=0;
+            int i = 0;
             if (list != null)
             {
                 Random rand = new Random();
                 i = rand.Next(0, list.Count);
             }
-            
+
             else
                 throw new ArgumentException("Null reference. Check your arguments");
             return i;
@@ -50,7 +46,7 @@ namespace Project_Voix
             /*
                 Imitation of a method that would send Synthesis commands over to the Synthesizer thread
             */
-            await Task.Factory.StartNew(new Action<object>(Speaker.Synthesizer),resp.SynthesisOutput);
+            await Task.Factory.StartNew(new Action<object>(Speaker.Synthesizer), resp.SynthesisOutput);
         }
 
         #endregion
@@ -168,7 +164,7 @@ namespace Project_Voix
                 SendForSynthesis(resp);
             }
             else
-                throw new InvalidOperationException("Wrong CommandType of the respective Response argument"); 
+                throw new InvalidOperationException("Wrong CommandType of the respective Response argument");
 
         }
 
@@ -177,8 +173,8 @@ namespace Project_Voix
             /*
                 Event handler for Responses corresponding to Open_Search type commands
             */
-           // if (resp.CommandType!=CommandType.Open|| resp.CommandType != CommandType.Search)
-             //   throw new InvalidOperationException("Wrong CommandType of the respective Response argument");
+            // if (resp.CommandType!=CommandType.Open|| resp.CommandType != CommandType.Search)
+            //   throw new InvalidOperationException("Wrong CommandType of the respective Response argument");
             //else
             {
                 if (resp.RecognizedPhrase.Contains("Tars"))

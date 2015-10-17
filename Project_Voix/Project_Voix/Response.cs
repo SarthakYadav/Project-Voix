@@ -21,6 +21,7 @@ namespace Project_Voix
 {
     class Response
     {
+
         #region Fields
 
         static string acknowledgementGender;                       //to store the underlying acknowledgement based on the gender of the user
@@ -101,12 +102,12 @@ namespace Project_Voix
         #region Constructors
         static Response()
         {
-            acknowledgementGender = "Sir";     //or getting settings from the GeneralSettings
+            acknowledgementGender = DataStore.GetUserAcknowledgement();    //or getting settings from the GeneralSettings
         }
 
-        public Response() {}
+        public Response() { }
 
-        public Response(CommandType commandTypeSpecifier,int hourOfDay,string recognisedPhrase)
+        public Response(CommandType commandTypeSpecifier, int hourOfDay, string recognisedPhrase)
         {
             CommandType = commandTypeSpecifier;
             HourOfDay = hourOfDay;

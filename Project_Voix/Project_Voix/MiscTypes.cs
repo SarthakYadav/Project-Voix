@@ -12,11 +12,8 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using System.IO;
+using System.Speech;
 namespace Project_Voix
 {
     public enum UserGender                  //enum that sets the gender of the user, and correspondingly sets how Tars acknowledges you. i.e Sir or Ma'am
@@ -25,6 +22,11 @@ namespace Project_Voix
         Female
     }
 
+    public enum ResponseType
+    {
+        Open,
+        Search
+    }
     public enum CommandType                 //enum that specifies the command type that has been given
     {
         Open,
@@ -38,5 +40,4 @@ namespace Project_Voix
 
     delegate void GenerateResponse(Response response);              // delegate for signatures of Response events
 
-    
 }

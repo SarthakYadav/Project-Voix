@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project-Voix", "Project-Voix\Project-Voix.csproj", "{B74AE8E3-5FEC-4E99-B1AC-5499DFEFA43E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project_Voix", "Project_Voix\Project_Voix.csproj", "{ED4CA8A1-17E6-491D-BD16-318284F8192B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B74AE8E3-5FEC-4E99-B1AC-5499DFEFA43E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B74AE8E3-5FEC-4E99-B1AC-5499DFEFA43E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B74AE8E3-5FEC-4E99-B1AC-5499DFEFA43E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B74AE8E3-5FEC-4E99-B1AC-5499DFEFA43E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED4CA8A1-17E6-491D-BD16-318284F8192B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED4CA8A1-17E6-491D-BD16-318284F8192B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED4CA8A1-17E6-491D-BD16-318284F8192B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED4CA8A1-17E6-491D-BD16-318284F8192B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

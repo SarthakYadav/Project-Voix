@@ -27,15 +27,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Project_Voix
 {
-    class ProgramManager
+    static class ProgramManager
     {
+
         #region Fields
         static List<Executable> executablesList = new List<Executable>();
         static List<Executable> runningExecutables = new List<Executable>();
@@ -43,19 +42,19 @@ namespace Project_Voix
 
         #region Private Methods
 
-        static int GetIndexOfCommand(string command,ref List<Executable> list)
+        static int GetIndexOfCommand(string command, ref List<Executable> list)
         {
             /*
                 Results the index of the underlying Executable type in either of the executable list types
             */
             int i = 0;
-            if(list!=null & command!="")
+            if (list != null & command != "")
             {
-                i = list.BinarySearch(new Executable("",command));
+                i = list.BinarySearch(new Executable("", command));
                 return i;
             }
             else
-               throw new InvalidDataException("The argument passed is invalid");
+                throw new InvalidDataException("The argument passed is invalid");
         }
         static void InitProcess(Executable ex)
         {
@@ -71,7 +70,7 @@ namespace Project_Voix
             {
                 if (e.Message == "The system cannot find the path specified")
                 {
-                    
+
                     try
                     {
                         ex.PInfo.FileName = ex.PInfo.FileName.Substring(ex.PInfo.FileName.LastIndexOf('\\') + 1);
@@ -79,7 +78,7 @@ namespace Project_Voix
                     }
                     catch (Exception exp)
                     {
-                        
+
                         if (ex.PInfo.FileName.Contains("System32"))
                         {
                             ex.PInfo.FileName = prevfileName;
@@ -104,7 +103,7 @@ namespace Project_Voix
             Executable ex = executablesList[i] as Executable;
             string targetAddress = executablesList[i].TargetAddress;
             string commandName = executablesList[i].CommandName;
-            ex.PInfo.FileName=targetAddress;
+            ex.PInfo.FileName = targetAddress;
             InitProcess(ex);
         }
 
@@ -121,17 +120,27 @@ namespace Project_Voix
             name = name.Substring(name.LastIndexOf('\\') + 1);                      //derives substring from last occurence of '/' to the end
             name = name.Remove(name.LastIndexOf('.'));                              //deletes from last occurence of '.'
             name = char.ToLowerInvariant(name[0]) + name.Substring(1);              //to convert the first letter of name to lowercase
-            Console.WriteLine(name);
-            if (runningExecutables[i].ExecutableProcess.ProcessName.CompareTo(name)==0)
+
+            Process[] processes = Process.GetProcessesByName(name);                 // here we did the trick. To get the name of the Process,we did use the runningExecutables list                                                                                                
+            foreach (var item in processes)                                         //but instead searched for all executing processes of the same name and closed them
             {
-                runningExecutables[i].ExecutableProcess.Kill();
-                runningExecutables.RemoveAt(i);
+                item.Kill();
+                item.WaitForExit();
             }
+
+            //if (runningExecutables[i].ExecutableProcess.ProcessName.CompareTo(name) == 0)
+            //{
+            //    runningExecutables[i].ExecutableProcess.Kill();
+            //    runningExecutables[i].ExecutableProcess.WaitForExit();
+            //    runningExecutables.RemoveAt(i);
+            //}
+            //throw;
+
         }
         #endregion
 
         #region Public Methods
-       
+
         static async public void InitializeManager()
         {
             await Task.Run(() =>
@@ -142,32 +151,20 @@ namespace Project_Voix
                 string[] commandList = Utilities.CommandList();
                 string[] locationList = Utilities.ShortcutTargetList();
 
-            {
-                executablesList.Capacity = commandList.Length;
-                for (int i = 0; i < commandList.Length; i++)
                 {
-                    executablesList.Add(new Executable(locationList[i], commandList[i]));
-                    executablesList[i].PInfo.FileName = locationList[i];
-                }
-                executablesList.Sort();
+                    executablesList.Capacity = commandList.Length;
+                    for (int i = 0; i < commandList.Length; i++)
+                    {
+                        executablesList.Add(new Executable(locationList[i], commandList[i]));
+                        executablesList[i].PInfo.FileName = locationList[i];
+                    }
+                    executablesList.Sort();
 
-                Console.WriteLine("InitializeManager() successful");
-                Program.waitHandle.Set();
-            }
+                    Console.WriteLine("InitializeManager() successful");
+                    Init.waitHandle.Set();
+                }
             });
 
-
-            //await Task.Run(() =>
-            //{
-            //    StreamWriter strWriter = new StreamWriter(@"H:\voix\txtFromInitManager.txt");
-
-            //    foreach (var item in executablesList)
-            //    {
-            //        strWriter.WriteLine(item);
-            //    }
-            //    strWriter.Close();
-                
-            //});
         }
 
         static public void ShowRunningExecutables()
@@ -186,7 +183,7 @@ namespace Project_Voix
             {
                 command = command.Remove(0, 5);
             }
-            int i = GetIndexOfCommand(command,ref executablesList);
+            int i = GetIndexOfCommand(command, ref executablesList);
             StartProcess(i);
         }
 
@@ -195,10 +192,12 @@ namespace Project_Voix
 
             if (command.Contains("Tars Close"))
             {
-                command = command.Remove(0,11);
+                command = command.Remove(0, 11);
             }
-            
-            int i = GetIndexOfCommand(command,ref runningExecutables);
+            if (command.Contains("Close"))
+                command = command.Remove(0, 6);
+
+            int i = GetIndexOfCommand(command, ref runningExecutables);
             CloseProcess(i);
             if (runningExecutables.Count == 0)
                 GrammarManipulator.DisableCloseGrammar();

@@ -1,0 +1,44 @@
+﻿<Window x:Class="Project_Voix.ResponseBox"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Project_Voix"
+        mc:Ignorable="d"
+        Title="ResponseBox" Height="200" Width="400">
+    <StackPanel Background="Snow">
+        <TextBlock x:Name="responseBoxName" Text="Open" FontSize="20" Margin="5" Foreground="DarkSlateGray" Padding="5" TextAlignment="Center" Background="Snow">
+            <TextBlock.Effect>
+                <BlurEffect Radius="1.5"/>
+            </TextBlock.Effect>
+        </TextBlock>
+        <TextBox x:Name="recogWordDisplay" Margin="5" FontSize="25" Foreground="DarkSlateGray" Text="Notepad++" AcceptsReturn="True" Background="WhiteSmoke" TextDecorations="{x:Null}" FontStyle="Italic" IsUndoEnabled="True">
+            <TextBox.Effect>
+                <DropShadowEffect Color="#FF10889B"/>
+            </TextBox.Effect>
+        </TextBox>
+        <Grid Height="50" Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" ></ColumnDefinition>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="btnOk" Content="Ok" Padding="5" Grid.Column="0" Background="WhiteSmoke" Foreground="DarkSlateGray" FontSize="20" Margin="5">
+                <Button.Effect>
+                    <DropShadowEffect Color="#FF10889B"/>
+                </Button.Effect>
+            </Button>
+            <Button x:Name="btnCancel" Content="Cancel" Padding="5"  Background="WhiteSmoke" Grid.Column="1" FontSize="20" Foreground="DarkSlateGray" Margin="5" >
+                <Button.Effect>
+                    <DropShadowEffect Color="#FF10889B"/>
+                </Button.Effect>
+            </Button>
+            <Button x:Name="reInitRec" Content="Reinitialize Recognition" Foreground="DarkSlateGray" Padding="5"  Background="WhiteSmoke" FontSize="20" Grid.Column="2" Margin="5">
+                <Button.Effect>
+                    <DropShadowEffect Color="#FF10889B"/>
+                </Button.Effect>
+            </Button>
+        </Grid>
+    </StackPanel>
+
+</Window>

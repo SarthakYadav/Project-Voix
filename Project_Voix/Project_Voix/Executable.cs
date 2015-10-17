@@ -13,18 +13,20 @@
            2. CompareTo(Executable other): Implementation of the IComparable<Executable> interface
 */
 
+
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
+using System.Diagnostics;
 
 namespace Project_Voix
 {
     class Executable:IComparable<Executable>
     {
+
         #region Fields
         string executableLoc;                       //effective address of the Executable
         string executableCommand;                   //resp command name for the executable which is recognized by the SRE
@@ -43,7 +45,7 @@ namespace Project_Voix
         public string TargetAddress
         {
             get { return executableLoc; }
-            set { executableLoc = value;}
+            set { executableLoc = value; }
         }
 
         public ProcessStartInfo PInfo
@@ -51,7 +53,7 @@ namespace Project_Voix
             get { return processInfo; }
             set
             {
-                if(value!=null)
+                if (value != null)
                     processInfo = value;
             }
         }
@@ -106,6 +108,5 @@ namespace Project_Voix
                 throw new NotImplementedException();
         }
         #endregion
-
     }
 }

@@ -1,5 +1,5 @@
 ﻿/*
-    description: GrammerFeeder class
+    description: GrammarFeeder class
                 -static class
                 -Grammar creation,loading  the grammar into the S.R.E ,updating and compiling to .cfg(not added as of now,after testing) 
     
@@ -24,25 +24,31 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Speech.Recognition;
-using System.Speech.Recognition.SrgsGrammar;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
+using System.Speech.Recognition;
+using System.Speech.Synthesis;
+using System.Speech.Recognition.SrgsGrammar;
+using System.Windows;
 
 namespace Project_Voix
 {
     static class GrammarFeeder
     {
         #region Fields
-        static GrammarBuilder optionalComponent = new GrammarBuilder(new GrammarBuilder("Tars"), 0, 1);
+        static GrammarBuilder optionalComponent = null; 
         static Choices programChoices = null;
         static string[] programCommands = null;
+        static SpeechRecognitionEngine speechEngine = null;
+
         #endregion
+
+        static GrammarFeeder()
+        {
+            optionalComponent= new GrammarBuilder(new GrammarBuilder(DataStore.ReturnAssistantName()), 0, 1);
+                
+        }
 
         static public event GenerateResponse BasicResponse;
         static public event GenerateResponse Open_SearchTypeResponse;
@@ -52,10 +58,12 @@ namespace Project_Voix
         static public event GenerateResponse UIResponse;
 
         #region Public Methods
-        public static void GrammarLoader(ref SpeechRecognitionEngine speechEngine)            //only method publically available
+        public static void GrammarLoader(ref SpeechRecognitionEngine sre)            //only method publically available
         {
+
             // main method that loads the S.R.E with all the grammars
-            Grammar basicGrammar =Task.Factory.StartNew<Grammar>(new Func<Grammar>(BasicGrammar)).Result;
+            speechEngine = sre;
+            Grammar basicGrammar = Task.Factory.StartNew<Grammar>(new Func<Grammar>(BasicGrammar)).Result;
             basicGrammar.Name = "basicGrammar";
             basicGrammar.Priority = 10;
             basicGrammar.SpeechRecognized += BasicGrammar_SpeechRecognized;
@@ -98,7 +106,7 @@ namespace Project_Voix
             speechEngine.LoadGrammarAsync(responseBoxGrammar);
             speechEngine.LoadGrammarAsync(nonOperative);
             speechEngine.LoadGrammarAsync(uiGrammar);
-            speechEngine.LoadGrammarAsync(closeProgramGrammar);       
+            speechEngine.LoadGrammarAsync(closeProgramGrammar);
         }
 
         #endregion
@@ -129,7 +137,7 @@ namespace Project_Voix
 
             return new Grammar(ResponseBoxBuilder);
         }
-        
+
         //grammar that recognizes the Open_Type command parameter   (the program to open)
         private static Grammar OpenCommandGrammar()
         {
@@ -137,11 +145,11 @@ namespace Project_Voix
                 Returns the grammar which consists of Identifier names for the Programs available in start menu of a system
                 which can be recognized by the S.R.E whilst in the open_type response box
             */
-            
+
             //Console.WriteLine("OpenCommandGrammar is on thread {0}",Thread.CurrentThread.ManagedThreadId);
             programCommands = Utilities.CommandList();
 
-            
+
             programChoices = new Choices(programCommands);
             GrammarBuilder programGrammar = new GrammarBuilder();
             programGrammar.Append(optionalComponent);
@@ -214,13 +222,13 @@ namespace Project_Voix
             question2.Append(new Choices(new GrammarBuilder[] { "what is", "tell me" }));
             question2.Append("the time");
 
-            Choices choice = new Choices(greeting,question1, question2);
+            Choices choice = new Choices(greeting, question1, question2);
             GrammarBuilder gb = new GrammarBuilder(choice);
             //to save the grammar as an SrgsDocument
-            SrgsDocument basicGrammar = new SrgsDocument(gb);
-            System.Xml.XmlWriter writer = System.Xml.XmlWriter.Create(@"H:\voix\NonOperativeCommands.xml");
-            basicGrammar.WriteSrgs(writer);
-            writer.Close();
+            //SrgsDocument basicGrammar = new SrgsDocument(gb);
+            //System.Xml.XmlWriter writer = System.Xml.XmlWriter.Create(@"H:\voix\NonOperativeCommands.xml");
+            //basicGrammar.WriteSrgs(writer);
+            //writer.Close();
 
             return new Grammar(gb);
         }
@@ -267,13 +275,13 @@ namespace Project_Voix
 
             Choices basicChoices = new Choices(new GrammarBuilder[] { "Wake Up", "Sleep" });
             basicChoices.Add(systemCommand);                        //basic choices become Wake up,Sleep,System Shutdown/Restart
-            
+
             //creating for open_type and search_type respectively
             Choices search_typeChoices = new Choices(new GrammarBuilder[] { "Find", "Search", "Look for" });
             Choices open_typeChoices = new Choices(new GrammarBuilder[] { "Open", "Execute", "Run", "Intialize", "Start" });
 
             //all choices become a combination of Basic CHoices,Open_Type and Search_type choices
-            Choices allchoices = new Choices(basicChoices,search_typeChoices, open_typeChoices);
+            Choices allchoices = new Choices(basicChoices, search_typeChoices, open_typeChoices);
 
             GrammarBuilder gb = new GrammarBuilder();
             gb.Append(optionalComponent);
@@ -296,10 +304,12 @@ namespace Project_Voix
         {
             if (e.Result != null)
             {
+                DataStore.AddRecentCommand(e.Result.Text);
                 Console.WriteLine(e.Result.Text);
                 if (e.Result.Text.Contains("Open") | e.Result.Text.Contains("Execute") | e.Result.Text.Contains("Run") | e.Result.Text.Contains("Intialize") | e.Result.Text.Contains("Start"))
                 {
-                    GrammarManipulator.EnableOpenGrammar();
+                    //GrammarManipulator.EnableOpenGrammar();
+
                     BasicResponse(new Response(CommandType.Open, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
 
                 }
@@ -315,6 +325,7 @@ namespace Project_Voix
         {
             if (e.Result != null)
             {
+                DataStore.AddRecentCommand(e.Result.Text);
                 Console.WriteLine(e.Result.Text);
                 GrammarManipulator.EnableCloseGrammar();
                 ProgramManager.SendOpenCommand(e.Result.Text);
@@ -327,8 +338,17 @@ namespace Project_Voix
         {
             if (e.Result != null)
             {
+                DataStore.AddRecentCommand(e.Result.Text);
                 Console.WriteLine(e.Result.Text);
-                NonOperativeResponse(new Response(CommandType.NonOperational,DateTime.Now.TimeOfDay.Hours,e.Result.Text));
+                try {
+                    NonOperativeResponse(new Response(CommandType.NonOperational, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
+                }
+                catch(Exception exception)
+                {
+                    MessageBox.Show(string.Format("The message is {0} and sent by {1} and this is the stack traced {2}", exception.Message, exception.Source, exception.StackTrace));
+                    MessageBox.Show(string.Format("The message is {0} and sent by {1} and this is the stack traced {2}", exception.InnerException.Message, exception.InnerException.Source, exception.InnerException.StackTrace));
+                    //MessageBox.Show(e.InnerException.InnerException.Message);
+                }
             }
         }
 
@@ -336,6 +356,7 @@ namespace Project_Voix
         {
             if (e.Result != null)
             {
+                DataStore.AddRecentCommand(e.Result.Text);
                 ProgramManager.SendCloseCommand(e.Result.Text);
                 CloseProgramResponse(new Response(CommandType.CloseProgram, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
             }
@@ -344,8 +365,9 @@ namespace Project_Voix
 
         private static void UiGrammar_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
         {
-            if(e.Result!=null)
+            if (e.Result != null)
             {
+                DataStore.AddRecentCommand(e.Result.Text);
                 //do UI refreshing here
                 UIResponse(new Response(CommandType.UI, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
             }
@@ -353,8 +375,9 @@ namespace Project_Voix
 
         private static void ResponseBoxGrammar_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
         {
-            if(e.Result!=null)
+            if (e.Result != null)
             {
+                DataStore.AddRecentCommand(e.Result.Text);
                 //code for reanalyses, ok and cancel selection here
                 ResponseBoxResponse(new Response(CommandType.ResponseBox, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
             }

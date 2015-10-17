@@ -17,17 +17,20 @@
            3. LoadNonOperativeCommands and DeloadNonOperativeCommands Pair
                         ->for manipulation of NonOperative grammar
 */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Speech.Recognition;
 using System.Text;
 using System.Threading.Tasks;
+using System.Speech.Recognition;
+using System.Speech.Synthesis;
 
 namespace Project_Voix
 {
     static class GrammarManipulator
     {
+
         #region Fields
         static List<Grammar> listOfGrammars;
         const int highPriority = 15;
@@ -49,7 +52,7 @@ namespace Project_Voix
         static private int DefaultBasicPriority { get; set; }
         static private int DefaultResponseBoxPriority { get; set; }
         static private int DefaultNonOperativePriority { get; set; }
-        static private int DefaultOpenTypePriority { get;  set; }
+        static private int DefaultOpenTypePriority { get; set; }
         static public int DefaultCloseProgramGrammarPriority { get; set; }
         #endregion
 
@@ -81,7 +84,7 @@ namespace Project_Voix
                         break;
                     case "open_typeGrammar":
                         indexOfOpenType = listOfGrammars.IndexOf(g);
-                        g.Enabled = false;
+                        g.Enabled = true;
                         DefaultOpenTypePriority = g.Priority;
                         break;
                     case "responseBoxGrammar":
@@ -119,7 +122,7 @@ namespace Project_Voix
             /*
                 used by the S.R.E to allow manipulation of it's Grammars with the GrammarManipulator class
             */
-            
+
             registeredEngine = speechEngine;
             listOfGrammars = GetGrammarList(ref registeredEngine);
             Task.Run(() =>
@@ -131,14 +134,13 @@ namespace Project_Voix
         #region Manipulation of Open_typeGramma
         static public void EnableOpenGrammar()
         {
-            IsRegistered();
             registeredEngine.RequestRecognizerUpdate();
 
             registeredEngine.RecognizerUpdateReached += (sender, e) =>
             {
                 listOfGrammars[indexOfOpenType].Enabled = true;
                 listOfGrammars[indexOfOpenType].Priority = highPriority;
-                
+
             };
         }
 
@@ -166,7 +168,7 @@ namespace Project_Voix
             IsRegistered();
             registeredEngine.RequestRecognizerUpdate();
 
-            registeredEngine.RecognizerUpdateReached+=(sender,e)=>
+            registeredEngine.RecognizerUpdateReached += (sender, e) =>
             {
                 listOfGrammars[indexOfResponseBox].Enabled = true;
                 listOfGrammars[indexOfResponseBox].Priority = highPriority;
@@ -199,7 +201,7 @@ namespace Project_Voix
                 {
                     DisableOpenGrammar();
                     EnableCloseGrammar();
-                    if(listOfGrammars[indexOfNonOperative].Enabled==true)
+                    if (listOfGrammars[indexOfNonOperative].Enabled == true)
                         EnableNonOperativeCommands();
                 }
                 //similarly for Search type
@@ -227,8 +229,6 @@ namespace Project_Voix
                 listOfGrammars[indexOfcloseProgramGrammar].Enabled = false;
                 listOfGrammars[indexOfcloseProgramGrammar].Priority = DefaultCloseProgramGrammarPriority;
             };
-            
-
         }
         #endregion
 
@@ -238,7 +238,7 @@ namespace Project_Voix
             /*
                 Actions to be executed when the UI is loaded
             */
-            
+
             IsRegistered();
             registeredEngine.RequestRecognizerUpdate();
             registeredEngine.RecognizerUpdateReached += (sender, e) =>
@@ -246,11 +246,11 @@ namespace Project_Voix
                 listOfGrammars[indexOfUi].Enabled = true;
                 listOfGrammars[indexOfUi].Priority = highPriority;
 
-                if (listOfGrammars[indexOfNonOperative].Enabled==true)
+                if (listOfGrammars[indexOfNonOperative].Enabled == true)
                     DisableNonOperativeCommands();
-                
+
             };
-            
+
         }
         static public void UIDeloaded()
         {
@@ -267,7 +267,7 @@ namespace Project_Voix
                 if (listOfGrammars[indexOfNonOperative].Enabled == true)
                     EnableNonOperativeCommands();
             };
-            
+
         }
         #endregion
 
@@ -285,8 +285,8 @@ namespace Project_Voix
             registeredEngine.RecognizerUpdateReached += (sender, e) =>
             {
                 listOfGrammars[indexOfNonOperative].Enabled = true;
-                
-                if(listOfGrammars[indexOfcloseProgramGrammar].Enabled==true)
+
+                if (listOfGrammars[indexOfcloseProgramGrammar].Enabled == true)
                     DisableCloseGrammar();
             };
         }
@@ -298,16 +298,15 @@ namespace Project_Voix
                 This is to execute in all other instances apart from the default instance Nonoperative Commands are to be deloaded
                 It's priority remains fixed for most of the cases
             */
-            
+
             IsRegistered();
             registeredEngine.RequestRecognizerUpdate();
             registeredEngine.RecognizerUpdateReached += (sender, e) =>
             {
                 listOfGrammars[indexOfNonOperative].Enabled = false;
             };
-            
+
         }
-        
         #endregion
         #endregion
     }
