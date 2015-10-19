@@ -12,7 +12,7 @@
                 <BlurEffect Radius="1.5"/>
             </TextBlock.Effect>
         </TextBlock>
-        <TextBox x:Name="recogWordDisplay" Margin="5" FontSize="25" Foreground="DarkSlateGray" Text="Notepad++" AcceptsReturn="True" Background="WhiteSmoke" TextDecorations="{x:Null}" FontStyle="Italic" IsUndoEnabled="True">
+        <TextBox x:Name="recogWordDisplay" Margin="5" FontSize="25" Foreground="DarkSlateGray" AcceptsReturn="True" Background="WhiteSmoke" TextDecorations="{x:Null}" FontStyle="Italic" IsUndoEnabled="True" TextWrapping="Wrap">
             <TextBox.Effect>
                 <DropShadowEffect Color="#FF10889B"/>
             </TextBox.Effect>
@@ -23,12 +23,12 @@
                 <ColumnDefinition Width="2*"></ColumnDefinition>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <Button x:Name="btnOk" Content="Ok" Padding="5" Grid.Column="0" Background="WhiteSmoke" Foreground="DarkSlateGray" FontSize="20" Margin="5">
+            <Button x:Name="btnOk" IsDefault="True" Content="Ok" Padding="5" Grid.Column="0" Background="WhiteSmoke" Foreground="DarkSlateGray" FontSize="20" Margin="5" Click="btnOkClick">
                 <Button.Effect>
                     <DropShadowEffect Color="#FF10889B"/>
                 </Button.Effect>
             </Button>
-            <Button x:Name="btnCancel" Content="Cancel" Padding="5"  Background="WhiteSmoke" Grid.Column="1" FontSize="20" Foreground="DarkSlateGray" Margin="5" >
+            <Button x:Name="btnCancel" Content="Cancel" IsCancel="True" Padding="5"  Background="WhiteSmoke" Grid.Column="1" FontSize="20" Foreground="DarkSlateGray" Margin="5" Click="btnCancelClicked" >
                 <Button.Effect>
                     <DropShadowEffect Color="#FF10889B"/>
                 </Button.Effect>

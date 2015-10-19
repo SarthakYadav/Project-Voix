@@ -41,13 +41,15 @@ namespace Project_Voix
         static Choices programChoices = null;
         static string[] programCommands = null;
         static SpeechRecognitionEngine speechEngine = null;
-
+        static string openRecogPhrase;
+        //static ResponseBox resp = null;
+      
         #endregion
 
         static GrammarFeeder()
         {
             optionalComponent= new GrammarBuilder(new GrammarBuilder(DataStore.ReturnAssistantName()), 0, 1);
-                
+            openRecogPhrase = "";
         }
 
         static public event GenerateResponse BasicResponse;
@@ -57,6 +59,10 @@ namespace Project_Voix
         static public event GenerateResponse NonOperativeResponse;
         static public event GenerateResponse UIResponse;
 
+        static public event UpdateLog writeToTextBox;
+        static public event StartResponseBox CallResponseBox;
+        static public event ShowOpenTypeRecog RespBoxRecogDisplay;
+        static public event CloseResponseBox CloseResponseBoxEvent;
         #region Public Methods
         public static void GrammarLoader(ref SpeechRecognitionEngine sre)            //only method publically available
         {
@@ -308,7 +314,22 @@ namespace Project_Voix
                 Console.WriteLine(e.Result.Text);
                 if (e.Result.Text.Contains("Open") | e.Result.Text.Contains("Execute") | e.Result.Text.Contains("Run") | e.Result.Text.Contains("Intialize") | e.Result.Text.Contains("Start"))
                 {
-                    //GrammarManipulator.EnableOpenGrammar();
+                    Task.Run(() =>
+                    {
+                        writeToTextBox(e.Result.Text);
+                    });
+                        try
+                    {
+                        ResponseBox.CreateResponseBox();
+                    }
+                    catch (Exception ex)
+                    {
+                        writeToTextBox(string.Format("Main exception {0}",ex.Message));
+                        writeToTextBox(string.Format("Main exception stack trace {0}",ex.StackTrace));
+                        writeToTextBox(string.Format("Inner exception {0}",ex.InnerException.Message));
+                        writeToTextBox(string.Format("inner Exception stack trace {0}",ex.InnerException.StackTrace));
+                    }
+                    
 
                     BasicResponse(new Response(CommandType.Open, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
 
@@ -325,12 +346,19 @@ namespace Project_Voix
         {
             if (e.Result != null)
             {
+                openRecogPhrase = e.Result.Text;
+                Task.Run(() =>
+                {
+                    writeToTextBox(e.Result.Text);
+                });
                 DataStore.AddRecentCommand(e.Result.Text);
-                Console.WriteLine(e.Result.Text);
-                GrammarManipulator.EnableCloseGrammar();
-                ProgramManager.SendOpenCommand(e.Result.Text);
+                RespBoxRecogDisplay(openRecogPhrase);
+
+                
+                
+
                 Open_SearchTypeResponse(new Response(CommandType.Open, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
-                GrammarManipulator.DisableOpenGrammar();
+                
             }
         }
 
@@ -339,8 +367,10 @@ namespace Project_Voix
             if (e.Result != null)
             {
                 DataStore.AddRecentCommand(e.Result.Text);
-                Console.WriteLine(e.Result.Text);
-                try {
+                //Console.WriteLine(e.Result.Text);
+                writeToTextBox(e.Result.Text);
+                try
+                {
                     NonOperativeResponse(new Response(CommandType.NonOperational, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
                 }
                 catch(Exception exception)
@@ -356,6 +386,7 @@ namespace Project_Voix
         {
             if (e.Result != null)
             {
+                writeToTextBox(e.Result.Text);
                 DataStore.AddRecentCommand(e.Result.Text);
                 ProgramManager.SendCloseCommand(e.Result.Text);
                 CloseProgramResponse(new Response(CommandType.CloseProgram, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
@@ -367,6 +398,11 @@ namespace Project_Voix
         {
             if (e.Result != null)
             {
+                Task.Run(() =>
+                {
+                    writeToTextBox(e.Result.Text);
+                });
+                
                 DataStore.AddRecentCommand(e.Result.Text);
                 //do UI refreshing here
                 UIResponse(new Response(CommandType.UI, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
@@ -377,12 +413,31 @@ namespace Project_Voix
         {
             if (e.Result != null)
             {
+                Task.Run(() =>
+                {
+                    writeToTextBox(e.Result.Text);
+                });
+                
                 DataStore.AddRecentCommand(e.Result.Text);
-                //code for reanalyses, ok and cancel selection here
+
+                if (e.Result.Text == "Ok")
+                {
+                    ProgramManager.SendOpenCommand(openRecogPhrase);
+                    GrammarManipulator.EnableCloseGrammar();
+                    CloseResponseBoxEvent();
+                }
+                else if(e.Result.Text=="Cancel")
+                {
+                    CloseResponseBoxEvent();
+                }
+                else
+                {
+                    writeToTextBox("");
+                    //remove the text in the analyzed textbox
+                }
                 ResponseBoxResponse(new Response(CommandType.ResponseBox, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
             }
         }
-
         #endregion
     }
 }

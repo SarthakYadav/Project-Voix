@@ -12,8 +12,6 @@ namespace Project_Voix
 {
     static class Speaker
     {
-
-
         static SpeechSynthesizer mainSynthesizer = null;
         public static void Synthesizer(object resp)
         {

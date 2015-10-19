@@ -127,8 +127,15 @@ namespace Project_Voix
             /*
                 Event handler for Responses corresponding to ResponseBox type commands
             */
-            if (resp.RecognizedPhrase.ToLower().Contains("reanalyze"))
+            resp.RecognizedPhrase = resp.RecognizedPhrase.ToLower();
+            if (resp.RecognizedPhrase.Contains("ok"))
+                resp.SynthesisOutput = "Running the given program";
+
+            else if (resp.RecognizedPhrase.Contains("cancel"))
+                resp.SynthesisOutput = "Response box is now closing";
+            else
                 resp.SynthesisOutput = "Rephrase the command again";
+
 
             SendForSynthesis(resp);
         }
@@ -143,7 +150,11 @@ namespace Project_Voix
             else
             {
                 resp.RecognizedPhrase = resp.RecognizedPhrase.ToLower();
-                resp.SynthesisOutput = "Closing program" + resp.RecognizedPhrase.Replace("tars close", "");
+                if (resp.RecognizedPhrase.Contains("tars close"))
+                    resp.RecognizedPhrase=resp.RecognizedPhrase.Replace("tars close", "");
+                if (resp.RecognizedPhrase.Contains("close"))
+                    resp.RecognizedPhrase = resp.RecognizedPhrase.Replace("close", "");
+                resp.SynthesisOutput = "Closing program" + resp.RecognizedPhrase;
                 SendForSynthesis(resp);
             }
         }
@@ -181,7 +192,7 @@ namespace Project_Voix
                     resp.RecognizedPhrase.Remove(0, 5);
                 else
                 {
-                    resp.SynthesisOutput = resp.CommandType.ToString() + "ing" + resp.RecognizedPhrase;
+                    resp.SynthesisOutput ="Speak Ok to " +resp.CommandType.ToString() + resp.RecognizedPhrase;
                     SendForSynthesis(resp);
                 }
             }

@@ -60,6 +60,7 @@
     <Compile Include="Executable.cs" />
     <Compile Include="GrammarFeeder.cs" />
     <Compile Include="GrammarManipulator.cs" />
+    <Compile Include="MainWindowViewModel.cs" />
     <Compile Include="MiscTypes.cs" />
     <Compile Include="Init.cs" />
     <Compile Include="ProgramManager.cs" />

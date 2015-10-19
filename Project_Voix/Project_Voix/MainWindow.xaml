@@ -6,7 +6,27 @@
         xmlns:local="clr-namespace:Project_Voix"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
-    <Grid>
+    <Grid Background="AliceBlue">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <TextBox x:Name="commandLog"  Grid.Column="1" TextWrapping="Wrap" FontSize="20" Text="Log :-">
+            <TextBox.Effect>
+                <DropShadowEffect Color="SteelBlue"/>
+            </TextBox.Effect>
+        
+        </TextBox>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Vertical">
+                <Button Height="75"/>
+            </StackPanel>
+        </Grid>
+            
         
     </Grid>
 </Window>

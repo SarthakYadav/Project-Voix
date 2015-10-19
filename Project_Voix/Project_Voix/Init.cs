@@ -14,11 +14,13 @@ namespace Project_Voix
 
         public static AutoResetEvent waitHandle = new AutoResetEvent(false);
         public static AutoResetEvent waitHandle2 = new AutoResetEvent(false);
-        //[STAThread]
         public static void StartInit()
         {
-            //DataStore.LoadUserSettings();
 
+            if (MainWindow.ct.IsCancellationRequested)
+                return;
+
+            
             Task.Run(() =>
             {
                 DataStore.AddUser();
@@ -46,10 +48,10 @@ namespace Project_Voix
             waitHandle.WaitOne();
 
             //ResponseGenerator.NonOperational_ResponseHandler(new Response(CommandType.NonOperational,DateTime.Now.TimeOfDay.Hours,"hello Tars"));
-            ProgramManager.SendOpenCommand("Notepad++");
+            //ProgramManager.SendOpenCommand("Notepad++");
             //ResponseGenerator.CloseProgram_ResponseHandler(new Response(CommandType.CloseProgram, DateTime.Now.TimeOfDay.Hours, "Notepad++"));
             //Thread.Sleep(2000);
-            ProgramManager.SendCloseCommand("Tars Close Notepad++");
+            //ProgramManager.SendCloseCommand("Tars Close Notepad++");
 
 
             //Console.WriteLine("Doin it now5");

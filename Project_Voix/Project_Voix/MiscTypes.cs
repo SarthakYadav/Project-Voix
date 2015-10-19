@@ -40,4 +40,10 @@ namespace Project_Voix
 
     delegate void GenerateResponse(Response response);              // delegate for signatures of Response events
 
+    public delegate void UpdateLog(string logUpdate);                      //delegate to update the text box with recognized text
+    delegate void StartResponseBox(string respBoxType);
+
+    delegate void ShowOpenTypeRecog(string recogPhrase);
+
+    delegate void CloseResponseBox();
 }
