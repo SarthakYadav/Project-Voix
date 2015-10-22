@@ -29,6 +29,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Project_Voix
 {
@@ -115,27 +116,35 @@ namespace Project_Voix
             if (i < 0)
                 throw new Exception("Invalid index of requested close command. Recheck the command and make sure it corresponds to a running Executable");
 
-            Executable ex = runningExecutables[i] as Executable;
-            string name = ex.PInfo.FileName;
-            name = name.Substring(name.LastIndexOf('\\') + 1);                      //derives substring from last occurence of '/' to the end
-            name = name.Remove(name.LastIndexOf('.'));                              //deletes from last occurence of '.'
-            name = char.ToLowerInvariant(name[0]) + name.Substring(1);              //to convert the first letter of name to lowercase
-
-            Process[] processes = Process.GetProcessesByName(name);                 // here we did the trick. To get the name of the Process,we did use the runningExecutables list                                                                                                
-            foreach (var item in processes)                                         //but instead searched for all executing processes of the same name and closed them
+            try
             {
-                item.Kill();
-                item.WaitForExit();
+                Executable ex = runningExecutables[i] as Executable;
+                string name = ex.PInfo.FileName;
+                name = name.Substring(name.LastIndexOf('\\') + 1);                      //derives substring from last occurence of '/' to the end
+                name = name.Remove(name.LastIndexOf('.'));                              //deletes from last occurence of '.'
+                name = char.ToLowerInvariant(name[0]) + name.Substring(1);              //to convert the first letter of name to lowercase
+                
+                Process[] processes = Process.GetProcessesByName(name);                 // here we did the trick. To get the name of the Process,we did use the runningExecutables list                                                                                                
+                foreach (var item in processes)                                         //but instead searched for all executing processes of the same name and closed them
+                {
+                    item.Kill();
+                    item.WaitForExit();
+                }
+                runningExecutables.RemoveAt(i);
+                //if (runningExecutables[i].ExecutableProcess.ProcessName.CompareTo(name) == 0)
+                //{
+
+                //    runningExecutables.RemoveAt(i);
+                //}
+
             }
-
-            //if (runningExecutables[i].ExecutableProcess.ProcessName.CompareTo(name) == 0)
-            //{
-            //    runningExecutables[i].ExecutableProcess.Kill();
-            //    runningExecutables[i].ExecutableProcess.WaitForExit();
-            //    runningExecutables.RemoveAt(i);
-            //}
-            //throw;
-
+            catch(Exception e)
+            {
+                Task.Run(() => 
+                {
+                    MessageBox.Show(string.Format("{0}\n {1}", e.Message, e.StackTrace));
+                });
+            }
         }
         #endregion
 
@@ -194,8 +203,10 @@ namespace Project_Voix
             {
                 command = command.Remove(0, 11);
             }
-            if (command.Contains("Close"))
+            else if (command.Contains("Close"))
                 command = command.Remove(0, 6);
+            else
+                throw new Exception("Unknown Command");
 
             int i = GetIndexOfCommand(command, ref runningExecutables);
             CloseProcess(i);

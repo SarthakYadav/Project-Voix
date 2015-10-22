@@ -23,15 +23,16 @@ namespace Project_Voix
     /// </summary>
     public partial class MainWindow : Window
     {
-        
+        static public Stopwatch initStopwatch;
         public CancellationTokenSource cancelToken = new CancellationTokenSource();
         static public CancellationToken ct;
         
         public MainWindow()
         {
-            
+            initStopwatch = new Stopwatch();
+            Stopwatch stop = new Stopwatch();
+            stop.Start();
             InitializeComponent();
-            this.DataContext = new MainWindowViewModel();
             ct = cancelToken.Token;
             Task initRun = new Task(new Action(Init.StartInit),cancelToken.Token);
             this.Closed += (sender, e) =>
@@ -39,7 +40,10 @@ namespace Project_Voix
                 Console.WriteLine(ct.CanBeCanceled.ToString());
                 cancelToken.Cancel();
             };
-            initRun.Start();                                                //starts the Init.StartInit method, which is the main recognizer thread, asynchronously
+            initRun.Start();           //starts the Init.StartInit method, which is the main recognizer thread, asynchronously
+            stop.Stop();
+            GrammarFeeder_writeToTextBox(string.Format("time taken in the mainwindow instantiator {0} ms",stop.ElapsedMilliseconds));
+            
             GrammarFeeder.writeToTextBox += GrammarFeeder_writeToTextBox;          //event handler for GrammarFeeder's writeToTextBox event
         }
 
@@ -47,6 +51,5 @@ namespace Project_Voix
         {
             commandLog.Dispatcher.InvokeAsync(()=> { commandLog.Text += string.Format("\n{0}", logUpdate); });          //used to access A UI element from another thread
         }
-        
     }
 }

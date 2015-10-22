@@ -128,8 +128,8 @@ namespace Project_Voix
             */
             //Console.WriteLine("REsponseBox Grammar is on thread {0}",Thread.CurrentThread.ManagedThreadId);
             GrammarBuilder reanalyzeCommand = new GrammarBuilder();
-            reanalyzeCommand.Append("Reanalyze");
-            reanalyzeCommand.Append("the given input", 0, 1);
+            reanalyzeCommand.Append("Reinitialize");
+            reanalyzeCommand.Append("Recognition", 0, 1);
 
             Choices ResponseBoxChoices = new Choices(new GrammarBuilder[] { "Ok", "Cancel", reanalyzeCommand });
 

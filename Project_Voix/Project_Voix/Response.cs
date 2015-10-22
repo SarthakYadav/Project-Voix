@@ -65,9 +65,9 @@ namespace Project_Voix
         {
             if (HourOfDay < 6 & HourOfDay > 0)
                 TimeOfDay = "late night";
-            if (HourOfDay > 6 & HourOfDay <= 11)
+            if (HourOfDay >= 6 & HourOfDay <= 11)
                 TimeOfDay = "morning";
-            if (HourOfDay >= 12 & HourOfDay <= 17)
+            if (HourOfDay >= 12 & HourOfDay < 18)
                 TimeOfDay = "afternoon";
             if (HourOfDay >= 18 & HourOfDay <= 21)
                 TimeOfDay = "evening";
@@ -81,7 +81,7 @@ namespace Project_Voix
                 {
                 "Good " + this.TimeOfDay + " " + acknowledgementGender,
                 "A very good " + this.TimeOfDay + " " + acknowledgementGender,
-                "Good " + this.TimeOfDay + " " + acknowledgementGender + " How are you this beautiful " + this.TimeOfDay,
+                "Hello " + acknowledgementGender + " How are you this beautiful " + this.TimeOfDay,
                 "Good " + this.TimeOfDay + " " + acknowledgementGender + " How is your day going",
                 "Greetings from Tars" + acknowledgementGender + " And a very good" + this.TimeOfDay
                 };

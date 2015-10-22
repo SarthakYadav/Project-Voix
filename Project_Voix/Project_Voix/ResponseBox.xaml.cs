@@ -21,7 +21,6 @@ namespace Project_Voix
     /// </summary>
     public partial class ResponseBox : Window
     {
-        Dispatcher currentDispatcher;
         private ResponseBox()
         {
             InitializeComponent();
@@ -31,15 +30,12 @@ namespace Project_Voix
 
         private void GrammarFeeder_CloseResponseBoxEvent()
         {
-            //currentDispatcher = Dispatcher.CurrentDispatcher;
-
-            //this.btnOkClick(null, null);
             this.Dispatcher.InvokeAsync(() => { this.Close(); });
         }
 
         private void GrammarFeeder_RespBoxRecogDisplay(string recogPhrase)
         {
-            if(recogPhrase!=null)
+            if (recogPhrase != null)
             {
                 try
                 {
@@ -47,12 +43,11 @@ namespace Project_Voix
                 }
                 catch (Exception e)
                 {
-                    MessageBox.Show(string.Format("Exception message : {0}\n Exception stack : {1}",e.Message,e.StackTrace));
+                    //MessageBox.Show(string.Format("Exception message : {0}\n Exception stack : {1}",e.Message,e.StackTrace));
                 }
             }
-           
         }
-        
+
         static public void CreateResponseBox()
         {
             Thread thread = new Thread(() =>
@@ -77,7 +72,6 @@ namespace Project_Voix
 
         private void btnOkClick(object sender, RoutedEventArgs e)
         {
-            //start the recognized process here
             this.Close();
         }
 

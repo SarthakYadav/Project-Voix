@@ -16,6 +16,7 @@ namespace Project_Voix
         public static AutoResetEvent waitHandle2 = new AutoResetEvent(false);
         public static void StartInit()
         {
+            MainWindow.initStopwatch.Start();
 
             if (MainWindow.ct.IsCancellationRequested)
                 return;
@@ -34,29 +35,18 @@ namespace Project_Voix
             watch.Start();
 
             GrammarFeeder.GrammarLoader(ref speechEngine);      //call to the public method of GrammarFeeder class 
-
             List<Grammar> grammarList = new List<Grammar>(speechEngine.Grammars);
             GrammarManipulator.RegisterWithManipulator(ref speechEngine);
-            //GrammarManipulator.LoadNonOperativeCommands(ref speechEngine);
+            
 
             ProgramManager.InitializeManager();
             watch.Stop();
-
-            //Console.WriteLine("total ticks {0}", watch.ElapsedMilliseconds);
-
-
             waitHandle.WaitOne();
 
-            //ResponseGenerator.NonOperational_ResponseHandler(new Response(CommandType.NonOperational,DateTime.Now.TimeOfDay.Hours,"hello Tars"));
-            //ProgramManager.SendOpenCommand("Notepad++");
-            //ResponseGenerator.CloseProgram_ResponseHandler(new Response(CommandType.CloseProgram, DateTime.Now.TimeOfDay.Hours, "Notepad++"));
-            //Thread.Sleep(2000);
-            //ProgramManager.SendCloseCommand("Tars Close Notepad++");
-
-
-            //Console.WriteLine("Doin it now5");
-            //ResponseGenerator.NonOperational_ResponseHandler("tell me the time");
             speechEngine.SetInputToDefaultAudioDevice();
+
+            MainWindow.initStopwatch.Stop();
+            Console.WriteLine("time taken in the Init instantiator {0} ms", MainWindow.initStopwatch.ElapsedMilliseconds);
             speechEngine.RecognizeAsync(RecognizeMode.Multiple);
 
 
@@ -70,14 +60,11 @@ namespace Project_Voix
 
             DataStore.SaveUserSettings();
 
-
             foreach (var item in DataStore.Users)
             {
                 Console.WriteLine(item);
             }
             Console.ReadLine();
-
-
         }
 
     }
