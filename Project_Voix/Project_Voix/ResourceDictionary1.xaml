@@ -1,0 +1,138 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Project_Voix">
+
+    <Color x:Key="LogoColor1">#FF0083DD</Color>
+    <Color x:Key="LogoColor2">#FF00FFA1</Color>
+
+    <LinearGradientBrush x:Key="btnBrush1" EndPoint="200,200" MappingMode="Absolute" SpreadMethod="Reflect">
+        <GradientStop Color="{StaticResource LogoColor2}" Offset="0.307"/>
+        <GradientStop Color="{StaticResource LogoColor1}" Offset="0.902"/>
+        <GradientStop Color="#FF00C7BB" Offset="0.641"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="gridBrush1" EndPoint="1,1" MappingMode="RelativeToBoundingBox" StartPoint="0,0">
+        <GradientStop Color="#FF4B4A4A" Offset="0.509"/>
+        <GradientStop Color="#FF131313" Offset="0.983"/>
+        <GradientStop Color="#FF4B4A4A" Offset="0.037"/>
+        <GradientStop Color="#FF646363" Offset="0.784"/>
+        <GradientStop Color="#FF727272" Offset="0.21"/>
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="logoCenterBrush1" EndPoint="0.5,1" StartPoint="0.5,0">
+        <GradientStop Color="#FF112028" Offset="0.195"/>
+        <GradientStop Color="#FF112432" Offset="1"/>
+        <GradientStop Color="#FF112432" Offset="0.549"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="logoCenterBrush2" EndPoint="0.5,1" StartPoint="0.5,0">
+        <GradientStop Color="#FF0A2C3E" Offset="0.968"/>
+        <GradientStop Color="#FF112232" Offset="0.494"/>
+        <GradientStop Color="#FF111E32" Offset="0.101"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="sidePanelBrush1" EndPoint="0.5,1" StartPoint="0.5,0">
+        <GradientStop Color="#FF157F4F" Offset="0.997"/>
+        <GradientStop Color="#FF157F32" Offset="0.276"/>
+        <GradientStop Color="#FF157F3B" Offset="0.583"/>
+        <GradientStop Color="#FF157F45" Offset="0.741"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="logoCenterBrush3" EndPoint="0.5,1" StartPoint="0.5,0">
+        <GradientStop Color="#FF112028" Offset="0.078"/>
+        <GradientStop Color="#FF142833" Offset="0.871"/>
+        <GradientStop Color="#FF132530" Offset="0.707"/>
+        <GradientStop Color="#FF12222C" Offset="0.414"/>
+        <GradientStop Color="#FF11212A" Offset="0.29"/>
+        <GradientStop Color="#FF12232E" Offset="0.569"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="gridBrush2" EndPoint="1,1" StartPoint="0,0">
+        <GradientStop Color="Silver" Offset="0.425"/>
+        <GradientStop Color="Gray" Offset="0.032"/>
+        <GradientStop Color="LightGray" Offset="0.845"/>
+        <GradientStop Color="Silver" Offset="0.641"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="textBoxBrush1" EndPoint="0.5,1" StartPoint="0.5,0">
+        <GradientStop Color="#FF00FFA1" Offset="0.899"/>
+        <GradientStop Color="#FF00DD8D" Offset="0.181"/>
+        <GradientStop Color="#FF00EF97" Offset="0.463"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="textBoxBrush2" EndPoint="1,1" StartPoint="0,0">
+        <GradientStop Color="#FF00DD8D" Offset="0.057"/>
+        <GradientStop Color="#FF02FFA3" Offset="0.58"/>
+        <GradientStop Color="#FF00ED97" Offset="0.764"/>
+        <GradientStop Color="#FF02FFA3" Offset="0.236"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="textBoxBrush3" EndPoint="1,1" StartPoint="0,0">
+        <GradientStop Color="#FF0291F3" Offset="0.382"/>
+        <GradientStop Color="#FF0392F3" Offset="0.661"/>
+        <GradientStop Color="#FF057BCB" Offset="0.845"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="textBoxBrush4" EndPoint="1,1" StartPoint="0,0">
+        <GradientStop Color="#FF646464"/>
+        <GradientStop Color="LightGray" Offset="1"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="bestTextBoxBrush" EndPoint="0.5,1" StartPoint="0.5,0">
+        <GradientStop Color="#FFC7C0C0" Offset="0.46"/>
+        <GradientStop Color="White" Offset="1"/>
+    </LinearGradientBrush>
+    
+    <Style x:Key="textBoxStyle1" TargetType="TextBox">
+        <Setter Property="FontSize" Value="25"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Background" Value="{StaticResource bestTextBoxBrush}"/>
+        <Setter Property="TextAlignment" Value="Center"/>
+        <Setter Property="Foreground" Value="DarkSlateGray"/>
+        <Setter Property="Margin" Value="2"/>
+    </Style>
+    
+    <Color x:Key="centrePanelColor1">#FF222B31</Color>
+    <Color x:Key="sidePanelColor1">#FF25765C</Color>
+
+    <Style x:Key="textBlockStyle1" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="25"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="Foreground" Value="Snow"/>
+        <Setter Property="Margin" Value="2"/>
+    </Style>
+
+    <Style x:Key="comboBoxItemStyle1" TargetType="ComboBoxItem">
+        <Setter Property="Foreground" Value="DarkSlateGray"/>
+        <Setter Property="FontSize" Value="25"/>
+        <Setter Property="Background" Value="{StaticResource bestTextBoxBrush}"/>
+    </Style>
+    
+    <!--#region  Image Button-->
+    <!--
+        Creates a new Button Template that uses a Rectangle as it's Button Surface Type
+        The rectangle's Fill property is set as the Background property of the button object, which itself uses
+        ImageBrush as it's Background , and hence when we click the button, in the event Handler the OpenDialog box is used to open an image file
+        and the ImageBrush's ImageSource is set to the opened Image
+    -->
+    
+    <ControlTemplate x:Key="imageButtonTemplate" TargetType="{x:Type Button}">
+        <Border x:Name="imgBtnBorder" BorderBrush="{TemplateBinding BorderBrush}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" 
+                VerticalAlignment="{TemplateBinding VerticalAlignment}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10,10,10,10" ToolTip="{TemplateBinding ToolTip}">
+            <Rectangle x:Name="btnImage" Margin="{TemplateBinding Padding}" ToolTip="{TemplateBinding ToolTip}" Fill="{TemplateBinding Background}" RadiusX="10" RadiusY="10"/>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="imgBtnBorder" Property="Background" Value="#FFBEE6FD"/>
+            </Trigger>
+
+            <Trigger Property="IsPressed" Value="True">
+                <Setter TargetName="imgBtnBorder" Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                <Setter TargetName="imgBtnBorder" Property="RenderTransform">
+                    <Setter.Value>
+                        <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
+                    </Setter.Value>
+                </Setter>
+                <Setter TargetName="btnImage" Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                <Setter TargetName="btnImage" Property="RenderTransform">
+                    <Setter.Value>
+                        <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+    <!--#endregion-->
+
+</ResourceDictionary>

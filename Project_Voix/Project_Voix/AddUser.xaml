@@ -1,0 +1,106 @@
+﻿<Window x:Class="Project_Voix.AddUser"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Project_Voix"
+        mc:Ignorable="d"
+        Title="AddUser" Height="400" Width="650" ResizeMode="CanMinimize">
+    <Grid>
+        <Grid.Background>
+            <SolidColorBrush Color="{DynamicResource centrePanelColor1}"/>
+        </Grid.Background>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" >
+            <StackPanel.Background>
+                <SolidColorBrush Color="{DynamicResource centrePanelColor1}"/>
+            </StackPanel.Background>
+            <TextBlock Text="Add user Dialogue Box" Foreground="Snow" FontSize="25"/>
+            <Grid Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Grid.Row="0" Text="Username* : " Style="{StaticResource textBlockStyle1}" HorizontalAlignment="Right"/>
+                <TextBlock Grid.Column="0" Grid.Row="1" Text="User Gender* : " Style="{StaticResource textBlockStyle1}" HorizontalAlignment="Right"/>
+                <TextBlock Grid.Column="0" Grid.Row="2" Text="Assitant Name : " Style="{StaticResource textBlockStyle1}" HorizontalAlignment="Right"/>
+                <TextBlock Grid.Column="0" Grid.Row="3" Text="Voice Gender : " Style="{StaticResource textBlockStyle1}"  HorizontalAlignment="Right"/>
+                <TextBlock Grid.Column="0" Grid.Row="4" Text="Voice Age : " Style="{StaticResource textBlockStyle1}" HorizontalAlignment="Right"/>
+                <TextBlock Grid.ColumnSpan="2" Grid.Row="5" FontSize="15" Style="{StaticResource textBlockStyle1}" HorizontalAlignment="Left" Text=" fields marked * are mandatory"/>
+                
+                <TextBox Grid.Column="1" Grid.Row="0" Text="Sarthak Yadav" Style="{StaticResource textBoxStyle1}" Background="{DynamicResource bestTextBoxBrush}"/>
+                <ComboBox x:Name="userGenderListbox" Margin="2" Grid.Column="1" Grid.Row="1" FontSize="25">
+                    <ComboBox.Background>
+                        <SolidColorBrush Color="{StaticResource LogoColor1}"/>
+                    </ComboBox.Background>
+                    <ComboBoxItem Style="{StaticResource comboBoxItemStyle1}">Male</ComboBoxItem>
+                    <ComboBoxItem Style="{StaticResource comboBoxItemStyle1}">Female</ComboBoxItem>
+                </ComboBox>
+                <TextBox Grid.Column="1" Grid.Row="2" Text="Tars" Style="{StaticResource textBoxStyle1}"/>
+
+                <ComboBox Grid.Column="1" Margin="2" Grid.Row="3" FontSize="25" Background="{StaticResource bestTextBoxBrush}">
+                    <ComboBoxItem Style="{StaticResource comboBoxItemStyle1}">Male</ComboBoxItem>
+                    <ComboBoxItem Style="{StaticResource comboBoxItemStyle1}">Female</ComboBoxItem>
+                </ComboBox>
+                <ComboBox Grid.Column="1" Margin="2" Grid.Row="4" FontSize="25">
+                    <ComboBoxItem Style="{StaticResource comboBoxItemStyle1}">Adult</ComboBoxItem>
+                    <ComboBoxItem Style="{StaticResource comboBoxItemStyle1}">Child</ComboBoxItem>
+                    <ComboBoxItem Style="{StaticResource comboBoxItemStyle1}">Senior</ComboBoxItem>
+                    <ComboBoxItem Style="{StaticResource comboBoxItemStyle1}">Teen</ComboBoxItem>
+                </ComboBox>
+            </Grid>
+            <Grid Margin="5" x:Name="btnGrid">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <Button x:Name="addUserOk" Margin="5" Grid.Column="0" Foreground="White" Content="Ok" BorderBrush="White" 
+                        BorderThickness="2" FontSize="25" Template="{StaticResource ButtonControlTemplate1}">
+                    <Button.Background>
+                        <SolidColorBrush Color="{DynamicResource centrePanelColor1}"/>
+                    </Button.Background>
+                    <Button.Effect>
+                        <DropShadowEffect Color="White"/>
+                    </Button.Effect>
+                </Button>
+                <Button x:Name="addUserCancel" Margin="5" Grid.Column="1" Foreground="White" BorderBrush="White" 
+                        BorderThickness="2" Content="Cancel" FontSize="25" Template="{StaticResource ButtonControlTemplate1}">
+                    <Button.Effect>
+                        <DropShadowEffect Color="White"/>
+                    </Button.Effect>
+                    <Button.Background>
+                        <SolidColorBrush Color="{DynamicResource centrePanelColor1}"/>
+                    </Button.Background>
+                </Button>
+            </Grid>
+        </StackPanel>
+
+        <Grid x:Name="imgGrid" Grid.Column="1" Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Image Grid.Row="1" Source="Images/Voix.png" Stretch="None"/>
+            <Button x:Name="addImgBtn" Grid.Row="0" BorderBrush="Snow" BorderThickness="2" ToolTip="Click to add or change Image" Template="{DynamicResource imageButtonTemplate}" Click="addImgBtnClick">
+                <Button.Background>
+                    <ImageBrush x:Name="imgBrush" Stretch="UniformToFill"/>
+                </Button.Background>
+            </Button>
+
+           
+        </Grid>
+    </Grid>
+</Window>
