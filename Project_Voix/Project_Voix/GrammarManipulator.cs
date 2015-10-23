@@ -86,7 +86,7 @@ namespace Project_Voix
                         break;
                     case "open_typeGrammar":
                         indexOfOpenType = listOfGrammars.IndexOf(g);
-                        g.Enabled = true;
+                        g.Enabled = false;
                         DefaultOpenTypePriority = g.Priority;
                         break;
                     case "responseBoxGrammar":

@@ -5,28 +5,135 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Project_Voix"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid Background="AliceBlue">
+        Title="MainWindow" Height="500" MaxHeight="720" MaxWidth="1200" Width="600">
+    <Grid x:Name="baseGrid">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="2*"/>
+            <ColumnDefinition x:Name="expandableColumn" Width="Auto"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="1.5*"/>
         </Grid.ColumnDefinitions>
-        <TextBox x:Name="commandLog"  Grid.Column="1" TextWrapping="Wrap" FontSize="20" Text="Log :-">
-            <TextBox.Effect>
-                <DropShadowEffect Color="SteelBlue"/>
-            </TextBox.Effect>
-        
-        </TextBox>
-        <Grid Grid.Column="0">
+        <Grid Grid.Column="1" Margin="2">
+            <Grid.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF222B31" Offset="0.77"/>
+                    <GradientStop Color="#FF222B31" Offset="0.307"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+            <Button x:Name="btn" Template="{StaticResource RoundButtonTemplate1}" Content="Click" Width="70" Height="70" Margin="68,223,65,42" />
+            <Rectangle Width="200" RadiusX="10" RadiusY="10" Margin="6,10,7,138"  >
+                <Rectangle.Fill>
+                    <ImageBrush ImageSource="Images/logoVoix.jpg" Stretch="UniformToFill"/>
+                </Rectangle.Fill>
+            </Rectangle>
+
+        </Grid>
+        <Grid Grid.Column="0" Width="Auto">
+            <Grid.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF25765C" Offset="1"/>
+                    <GradientStop Color="#FF25765C"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+
+            <Expander Margin="2" ExpandDirection="Left">
+                <Expander.Background>
+                    <SolidColorBrush Color="{DynamicResource sidePanelColor1}"/>
+                </Expander.Background>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="Active User" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="25" Foreground="Snow"/>
+                    <Image x:Name="userImage" Margin="10" Width="200" Height="200" Source="Images/user1Image.jpg"/>
+
+                    <Grid x:Name="expanderGrid">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Padding="2" Grid.Column="0" Grid.Row="0" Text="Name :" FontSize="25" Margin="2" HorizontalAlignment="Right" Foreground="Snow">
+
+                        </TextBlock>
+                        <TextBlock Padding="2" Grid.Column="0" Grid.Row="1" Text="Gender :" FontSize="25" Margin="2" HorizontalAlignment="Right" Foreground="Snow">
+
+                        </TextBlock>
+                        <TextBlock Padding="2" Grid.Column="0" Grid.Row="2" Text="Assistant :" FontSize="25" Margin="2" HorizontalAlignment="Right" Foreground="Snow">
+
+                        </TextBlock>
+                        <TextBlock Padding="2" Grid.Column="0" Grid.Row="3" Text="Voice Gender :" FontSize="25" Margin="2" HorizontalAlignment="Right" Foreground="Snow">
+
+                        </TextBlock>
+
+
+                        <TextBlock Padding="2" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" Margin="2" FontSize="25" Text="Sarthak Yadav" Foreground="Snow"/>
+                        <TextBlock Padding="2" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Margin="2" FontSize="25" Text="Male" Foreground="Snow"/>
+                        <TextBlock Padding="2" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="2" FontSize="25" Text="Tars" Foreground="Snow"/>
+                        <TextBlock Padding="2" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" Margin="2" FontSize="25" Text="Female" Foreground="Snow"/>
+                    </Grid>
+                    <Grid  x:Name="buttonGrid" Margin="10">
+                        <Grid.Background>
+                            <SolidColorBrush Color="{DynamicResource sidePanelColor1}"/>
+                        </Grid.Background>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Margin="5" Grid.Column="0" BorderBrush="White" BorderThickness="2" 
+                                HorizontalAlignment="Center" VerticalAlignment="Center" Template="{StaticResource ButtonControlTemplate1}" 
+                                Foreground="Snow" Content="Select User" FontSize="25" >
+                            <Button.Effect>
+                                <DropShadowEffect Color="Silver"/>
+                            </Button.Effect>
+                            <Button.Background>
+                                <SolidColorBrush Color="{DynamicResource sidePanelColor1}"/>
+                            </Button.Background>
+                        </Button>
+                        <Button x:Name="addUser" Margin="5" Grid.Column="1" BorderBrush="White" BorderThickness="2" 
+                                HorizontalAlignment="Center" VerticalAlignment="Center" Template="{StaticResource ButtonControlTemplate1}" 
+                                Foreground="Snow" Content="Add User" VerticalContentAlignment="Center" FontSize="25" Click="addUser_Click">
+                            <Button.Effect>
+                                <DropShadowEffect Color="Silver"/>
+                            </Button.Effect>
+                            <Button.Background>
+                                <SolidColorBrush Color="{DynamicResource sidePanelColor1}"/>
+                            </Button.Background>
+                        </Button>
+                    </Grid>
+                </StackPanel>
+
+            </Expander>
+        </Grid>
+        <Grid Grid.Column="2" Margin="2">
+            <Grid.Background>
+                <SolidColorBrush Color="{DynamicResource sidePanelColor1}"/>
+            </Grid.Background>
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <StackPanel Orientation="Vertical">
-                <Button Height="75"/>
-            </StackPanel>
+
+            <TextBox x:Name="commandLog"  Grid.Row="0" Margin="2" TextWrapping="Wrap" Foreground="Snow" FontSize="20" Text="Log :-">
+                <TextBox.Background>
+                    <SolidColorBrush Color="{DynamicResource sidePanelColor1}"/>
+                </TextBox.Background>
+                <TextBox.Effect>
+                    <DropShadowEffect Color="SteelBlue"/>
+                </TextBox.Effect>
+
+            </TextBox>
         </Grid>
+    </Grid>
+
+    
+        
+        
+        
+        
             
         
-    </Grid>
+    
 </Window>

@@ -1,0 +1,113 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Project_Voix">
+    <ControlTemplate x:Key="NewRoundButtonTemplate" TargetType="Button">
+        <Grid>
+            <Ellipse Fill="{TemplateBinding Background}"/>
+            <ContentPresenter HorizontalAlignment="Center"                       VerticalAlignment="Center"/>
+        </Grid>
+    </ControlTemplate>
+
+    <!--#region ButtonControlTemplate1-->
+    <ControlTemplate x:Key="ButtonControlTemplate1" TargetType="{x:Type Button}">
+        <Border x:Name="btnBorder" BorderBrush="{TemplateBinding BorderBrush}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" 
+                VerticalAlignment="{TemplateBinding VerticalAlignment}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10,10,10,10">
+            <Grid x:Name="btnTemplateLayout" Opacity="{TemplateBinding Opacity}">
+            <Rectangle x:Name="btnSurface" Fill="{TemplateBinding Background}" Height="{TemplateBinding Height}" Width="{TemplateBinding Property=Width}"
+                       RadiusX="10" RadiusY="10" />
+
+            <Label x:Name="btnContent" Content="{TemplateBinding Content}" FontSize="{TemplateBinding FontSize}"
+        				
+        				HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                        FontFamily="{TemplateBinding FontFamily}" Margin="{TemplateBinding Padding}" Foreground="{TemplateBinding Foreground}"/>
+        </Grid>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsDefaulted" Value="True">
+                <Setter  Property="Border.BorderBrush">
+                    <Setter.Value>
+                        <DynamicResource ResourceKey="{x:Static SystemColors.HighlightBrushKey}"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="btnBorder" Property="Background" Value="#FFBEE6FD"/>
+                <Setter TargetName="btnSurface" Property="Fill" Value="#FFBEE6FD"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter TargetName="btnBorder" Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                <Setter TargetName="btnBorder" Property="RenderTransform">
+                    <Setter.Value>
+                        <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
+                    </Setter.Value>
+                </Setter>
+                <Setter TargetName="btnTemplateLayout" Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                <Setter TargetName="btnTemplateLayout" Property="RenderTransform">
+                    <Setter.Value>
+                        <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+    <!--#endregion-->
+    
+    <Style x:Key ="RoundButtonStyle" TargetType ="Button">
+        <Setter Property ="Foreground" Value ="Black"/>
+        <Setter Property ="FontSize" Value ="14"/>
+        <Setter Property ="FontWeight" Value ="Bold"/>
+        <Setter Property="Width" Value="100"/>
+        <Setter Property="Height" Value="100"/>
+        <!-- Here is the template! -->
+        <Setter Property ="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType ="Button">
+                    <Grid x:Name="controlLayout">
+                        <Ellipse x:Name="buttonSurface" Fill="{TemplateBinding Background}"/>
+                        <Label x:Name="buttonCaption" Content ="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property = "IsMouseOver" Value = "True">
+                            <Setter TargetName = "buttonSurface" Property = "Fill" Value = "Blue"/>
+                            <Setter TargetName = "buttonCaption" Property = "Foreground" Value = "Yellow"/>
+                        </Trigger>
+                        <Trigger Property = "IsPressed" Value="True">
+                            <Setter TargetName="controlLayout"                      Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                            <Setter TargetName="controlLayout" Property="RenderTransform">
+                                <Setter.Value>
+                                    <ScaleTransform ScaleX="0.8" ScaleY="0.8"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <ControlTemplate x:Key="RoundButtonTemplate1" TargetType="{x:Type Button}">
+        <Grid x:Name="controlLayout">
+            <Ellipse x:Name="buttonSurface" Fill="{TemplateBinding Background}"/>
+            <Label x:Name="buttonCaption" VerticalAlignment="Center"
+    				HorizontalAlignment="Center" FontWeight="Bold" FontSize="20"
+    				Content="{TemplateBinding Content}"/>
+        </Grid>
+
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="buttonSurface" Property="Fill" Value="Blue"/>
+                <Setter TargetName="buttonCaption" Property="Foreground" Value="Yellow"/>
+
+            </Trigger>
+            
+            <Trigger Property="IsPressed" Value="True">
+                <Setter TargetName="controlLayout" Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                <Setter TargetName="controlLayout" Property="RenderTransform">
+                    <Setter.Value>
+                        <ScaleTransform ScaleX="0.8" ScaleY="0.8"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+</ResourceDictionary>

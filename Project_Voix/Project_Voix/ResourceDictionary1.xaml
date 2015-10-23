@@ -64,20 +64,75 @@
         <GradientStop Color="#FF0392F3" Offset="0.661"/>
         <GradientStop Color="#FF057BCB" Offset="0.845"/>
     </LinearGradientBrush>
-    <Style x:Key="textBoxStyle1" TargetType="TextBox">
-        <Setter Property="FontSize" Value="25"/>
-        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-        <Setter Property="VerticalContentAlignment" Value="Center"/>
-        <Setter Property="Background" Value="{StaticResource textBoxBrush3}"/>
-        <Setter Property="TextAlignment" Value="Center"/>
-    </Style>
     <LinearGradientBrush x:Key="textBoxBrush4" EndPoint="1,1" StartPoint="0,0">
         <GradientStop Color="#FF646464"/>
         <GradientStop Color="LightGray" Offset="1"/>
     </LinearGradientBrush>
+    <LinearGradientBrush x:Key="bestTextBoxBrush" EndPoint="0.5,1" StartPoint="0.5,0">
+        <GradientStop Color="#FFC7C0C0" Offset="0.46"/>
+        <GradientStop Color="White" Offset="1"/>
+    </LinearGradientBrush>
+    
+    <Style x:Key="textBoxStyle1" TargetType="TextBox">
+        <Setter Property="FontSize" Value="25"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Background" Value="{StaticResource bestTextBoxBrush}"/>
+        <Setter Property="TextAlignment" Value="Center"/>
+        <Setter Property="Foreground" Value="DarkSlateGray"/>
+        <Setter Property="Margin" Value="2"/>
+    </Style>
+    
     <Color x:Key="centrePanelColor1">#FF222B31</Color>
     <Color x:Key="sidePanelColor1">#FF25765C</Color>
-    
 
+    <Style x:Key="textBlockStyle1" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="25"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="Foreground" Value="Snow"/>
+        <Setter Property="Margin" Value="2"/>
+    </Style>
+
+    <Style x:Key="comboBoxItemStyle1" TargetType="ComboBoxItem">
+        <Setter Property="Foreground" Value="DarkSlateGray"/>
+        <Setter Property="FontSize" Value="25"/>
+        <Setter Property="Background" Value="{StaticResource bestTextBoxBrush}"/>
+    </Style>
+    
+    <!--#region  Image Button-->
+    <!--
+        Creates a new Button Template that uses a Rectangle as it's Button Surface Type
+        The rectangle's Fill property is set as the Background property of the button object, which itself uses
+        ImageBrush as it's Background , and hence when we click the button, in the event Handler the OpenDialog box is used to open an image file
+        and the ImageBrush's ImageSource is set to the opened Image
+    -->
+    
+    <ControlTemplate x:Key="imageButtonTemplate" TargetType="{x:Type Button}">
+        <Border x:Name="imgBtnBorder" BorderBrush="{TemplateBinding BorderBrush}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" 
+                VerticalAlignment="{TemplateBinding VerticalAlignment}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10,10,10,10" ToolTip="{TemplateBinding ToolTip}">
+            <Rectangle x:Name="btnImage" Margin="{TemplateBinding Padding}" ToolTip="{TemplateBinding ToolTip}" Fill="{TemplateBinding Background}" RadiusX="10" RadiusY="10"/>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="imgBtnBorder" Property="Background" Value="#FFBEE6FD"/>
+            </Trigger>
+
+            <Trigger Property="IsPressed" Value="True">
+                <Setter TargetName="imgBtnBorder" Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                <Setter TargetName="imgBtnBorder" Property="RenderTransform">
+                    <Setter.Value>
+                        <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
+                    </Setter.Value>
+                </Setter>
+                <Setter TargetName="btnImage" Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                <Setter TargetName="btnImage" Property="RenderTransform">
+                    <Setter.Value>
+                        <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+    <!--#endregion-->
 
 </ResourceDictionary>

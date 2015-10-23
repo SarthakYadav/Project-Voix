@@ -347,18 +347,21 @@ namespace Project_Voix
             if (e.Result != null)
             {
                 openRecogPhrase = e.Result.Text;
+
                 Task.Run(() =>
                 {
                     writeToTextBox(e.Result.Text);
                 });
                 DataStore.AddRecentCommand(e.Result.Text);
-                RespBoxRecogDisplay(openRecogPhrase);
-
-                
-                
-
+                try
+                {
+                    RespBoxRecogDisplay(openRecogPhrase);
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine(exception.Message);
+                }
                 Open_SearchTypeResponse(new Response(CommandType.Open, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
-                
             }
         }
 
@@ -367,7 +370,6 @@ namespace Project_Voix
             if (e.Result != null)
             {
                 DataStore.AddRecentCommand(e.Result.Text);
-                //Console.WriteLine(e.Result.Text);
                 writeToTextBox(e.Result.Text);
                 try
                 {
@@ -377,7 +379,6 @@ namespace Project_Voix
                 {
                     MessageBox.Show(string.Format("The message is {0} and sent by {1} and this is the stack traced {2}", exception.Message, exception.Source, exception.StackTrace));
                     MessageBox.Show(string.Format("The message is {0} and sent by {1} and this is the stack traced {2}", exception.InnerException.Message, exception.InnerException.Source, exception.InnerException.StackTrace));
-                    //MessageBox.Show(e.InnerException.InnerException.Message);
                 }
             }
         }
@@ -391,7 +392,6 @@ namespace Project_Voix
                 ProgramManager.SendCloseCommand(e.Result.Text);
                 CloseProgramResponse(new Response(CommandType.CloseProgram, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
             }
-            //throw new NotImplementedException();
         }
 
         private static void UiGrammar_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)

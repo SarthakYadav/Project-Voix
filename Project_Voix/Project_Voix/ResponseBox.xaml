@@ -17,7 +17,7 @@
         <StackPanel Grid.Column="0" >
             <TextBlock x:Name="responseBoxName" Text="Open" FontSize="20" Margin="5" Padding="5" TextAlignment="Center">
                 <TextBlock.Background>
-                    <SolidColorBrush Color="{DynamicResource centrePanelColor1}"/>
+                    <SolidColorBrush Color="{StaticResource centrePanelColor1}"/>
                 </TextBlock.Background>
                 <TextBlock.Foreground>
                     <SolidColorBrush Color="Snow"/>
@@ -26,7 +26,7 @@
                     <BlurEffect Radius="1.5"/>
                 </TextBlock.Effect>
             </TextBlock>
-            <TextBox x:Name="recogWordDisplay" Text="Wtf" Style="{StaticResource textBoxStyle1}" Background="WhiteSmoke"  Margin="5" FontSize="25" FontStyle="Italic" IsUndoEnabled="True" TextWrapping="Wrap" >
+            <TextBox x:Name="recogWordDisplay" IsReadOnly="True" Style="{StaticResource textBoxStyle1}" Background="WhiteSmoke" Margin="5" FontSize="25" FontStyle="Italic" IsUndoEnabled="True" TextWrapping="Wrap" >
                 <TextBox.Foreground>
                     <SolidColorBrush Color="{DynamicResource centrePanelColor1}"/>
                 </TextBox.Foreground>
@@ -40,7 +40,7 @@
                     <ColumnDefinition Width="2*"></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="btnOk" IsDefault="True" Content="Ok" Padding="5" Grid.Column="0" Background="WhiteSmoke"  FontSize="20" Margin="5" >
+                <Button x:Name="btnOk" IsDefault="True" Content="Ok" Padding="5" Grid.Column="0" Background="WhiteSmoke" Template="{StaticResource ButtonControlTemplate1}" FontSize="20" Margin="5" >
                     <Button.Foreground>
                         <SolidColorBrush Color="{DynamicResource centrePanelColor1}"/>
                     </Button.Foreground>
@@ -48,7 +48,7 @@
                         <DropShadowEffect Color="Silver"/>
                     </Button.Effect>
                 </Button>
-                <Button x:Name="btnCancel" Content="Cancel" IsCancel="True" Padding="5"  Background="WhiteSmoke" Grid.Column="1" FontSize="20" Margin="5"  >
+                <Button x:Name="btnCancel" Content="Cancel" IsCancel="True" Padding="5"  Background="WhiteSmoke" Grid.Column="1" FontSize="20" Margin="5" Template="{DynamicResource ButtonControlTemplate1}"  >
                     <Button.Foreground>
                         <SolidColorBrush Color="{DynamicResource centrePanelColor1}"/>
                     </Button.Foreground>
@@ -56,7 +56,7 @@
                         <DropShadowEffect Color="Silver"/>
                     </Button.Effect>
                 </Button>
-                <Button x:Name="reInitRec" Content="Reinitialize Recognition" Padding="5"  Background="WhiteSmoke" FontSize="20" Grid.Column="2" Margin="5">
+                <Button x:Name="reInitRec" Content="Reinitialize Recognition" Padding="5"  Background="WhiteSmoke" FontSize="20" Grid.Column="2" Margin="5" Template="{DynamicResource ButtonControlTemplate1}">
                     <Button.Foreground>
                         <SolidColorBrush Color="{DynamicResource centrePanelColor1}"/>
                     </Button.Foreground>
@@ -68,7 +68,7 @@
         </StackPanel>
         <Rectangle Grid.Column="1" >
             <Rectangle.Fill>
-                <ImageBrush ImageSource="Images/logoVoix.jpg" Stretch="UniformToFill"/>
+                <ImageBrush ImageSource="Images/voixHolo.png" Stretch="UniformToFill"/>
             </Rectangle.Fill>
         </Rectangle>
     </Grid>

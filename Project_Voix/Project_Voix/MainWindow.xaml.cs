@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -42,6 +43,7 @@ namespace Project_Voix
             };
             initRun.Start();           //starts the Init.StartInit method, which is the main recognizer thread, asynchronously
             stop.Stop();
+            
             GrammarFeeder_writeToTextBox(string.Format("time taken in the mainwindow instantiator {0} ms",stop.ElapsedMilliseconds));
             
             GrammarFeeder.writeToTextBox += GrammarFeeder_writeToTextBox;          //event handler for GrammarFeeder's writeToTextBox event
@@ -50,6 +52,13 @@ namespace Project_Voix
         private void GrammarFeeder_writeToTextBox(string logUpdate)                                     
         {
             commandLog.Dispatcher.InvokeAsync(()=> { commandLog.Text += string.Format("\n{0}", logUpdate); });          //used to access A UI element from another thread
+        }
+
+        private void addUser_Click(object sender, RoutedEventArgs e)
+        {
+            AddUser userTab = new AddUser();
+            userTab.Show();
+            //AddUser.CreateAddUserTab();
         }
     }
 }
