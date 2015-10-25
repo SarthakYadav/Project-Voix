@@ -10,7 +10,7 @@
 
     <!--#region ButtonControlTemplate1-->
     <ControlTemplate x:Key="ButtonControlTemplate1" TargetType="{x:Type Button}">
-        <Border x:Name="btnBorder" BorderBrush="{TemplateBinding BorderBrush}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" 
+        <Border x:Name="btnBorder" BorderBrush="{TemplateBinding BorderBrush}"   HorizontalAlignment="{TemplateBinding HorizontalAlignment}" 
                 VerticalAlignment="{TemplateBinding VerticalAlignment}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10,10,10,10">
             <Grid x:Name="btnTemplateLayout" Opacity="{TemplateBinding Opacity}">
             <Rectangle x:Name="btnSurface" Fill="{TemplateBinding Background}" Height="{TemplateBinding Height}" Width="{TemplateBinding Property=Width}"
@@ -19,7 +19,7 @@
             <Label x:Name="btnContent" Content="{TemplateBinding Content}" FontSize="{TemplateBinding FontSize}"
         				
         				HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                        FontFamily="{TemplateBinding FontFamily}" Margin="{TemplateBinding Padding}" Foreground="{TemplateBinding Foreground}"/>
+                        FontFamily="{TemplateBinding FontFamily}" Foreground="{TemplateBinding Foreground}"/>
         </Grid>
         </Border>
         <ControlTemplate.Triggers>

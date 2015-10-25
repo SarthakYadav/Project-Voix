@@ -17,11 +17,12 @@ using System.Linq;
 using System.Speech.Synthesis;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace Project_Voix
 {
     [Serializable]
-    class UserSettings
+    public class UserSettings
     {
 
         #region Fields
@@ -32,9 +33,21 @@ namespace Project_Voix
         VoiceAge synthAge = VoiceAge.NotSet;                        //not specified by default
         int synthVol = 100;
         int synthRate = 0;
+       
+        //BitmapImage userImage;                                      // To store and image of the user
         #endregion
 
         #region Properties
+        //public BitmapImage UserImage
+        //{
+        //    get { return userImage; }
+        //    set
+        //    {
+        //        if (value != null)
+        //            userImage = value;
+        //    }
+                
+        //}
         public string Username
         {
             get { return userName; }
@@ -112,7 +125,6 @@ namespace Project_Voix
             SynthesizerVoiceAge = voiceAge;
             SynthesizerVolume = synthVol;
             SynthesizerRate = synthRate;
-
         }
         #endregion
 
@@ -155,7 +167,6 @@ namespace Project_Voix
         #endregion
 
         #region Public Methods
-
         public async void WriteSettings(string location = @"C:\Users\HEWLETT PACKARD\Documents\Project Voix")
         {
             Directory.CreateDirectory(location);
@@ -170,7 +181,7 @@ namespace Project_Voix
             if (userName != "")
             {
                 filePath = @"C:\Users\HEWLETT PACKARD\Documents\Project Voix" + @"\" + userName.ToLower() + ".file";
-                Console.WriteLine(filePath);
+                Console.WriteLine("filepath is {0}",filePath);
             }
             return ReadFromBinaryFile<UserSettings>(filePath);
         }

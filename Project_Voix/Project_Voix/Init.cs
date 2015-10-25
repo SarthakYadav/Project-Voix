@@ -1,4 +1,21 @@
-﻿using System;
+﻿/*
+    static class Init
+            - contains the heart of the program. The main thread which consists of the SpeechRecognitionEngine
+
+     date created: 10/10/2015
+
+     log:-
+       Update 1: 15/10/2015          Author: Sarthak         Description: Fixed UI thread inaccessibility problems
+       Update 2: 20/10/2015          Author: Sarthak         Description: Added support for DataStore Tasks
+
+       latest update: 20/10/2015     Update 2            Author: Sarthak
+
+     Public MEthods:
+        - ProgramInit: starts the process of Recognition and fires up the required services
+
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -14,18 +31,20 @@ namespace Project_Voix
 
         public static AutoResetEvent waitHandle = new AutoResetEvent(false);
         public static AutoResetEvent waitHandle2 = new AutoResetEvent(false);
-        public static void StartInit()
+
+        public static void ProgramInit()
         {
             MainWindow.initStopwatch.Start();
 
             if (MainWindow.ct.IsCancellationRequested)
                 return;
 
-            
+
             Task.Run(() =>
             {
-                DataStore.AddUser();
+                DataStore.StartDataStoreManager();
             });
+
             waitHandle2.WaitOne();
             SpeechRecognitionEngine speechEngine = new SpeechRecognitionEngine();
             Stopwatch watch = new Stopwatch();

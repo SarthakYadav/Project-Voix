@@ -1,4 +1,25 @@
-﻿using System;
+﻿/*
+    MainWindow class
+            - The main UI window
+
+    date created: -15/10/15                                 Author- Sarthak
+
+    log:-
+        Update 1: 20/10/15  Author: Sarthak         Description: Closing in towards completion of UI, added new custom controls
+        Update 2: 25/10/15  Author: Sarthak         Description: Completed the most bare basic UI Infrastructure, which AddUser and SelectUser functionality
+
+        latest update: 25/10/2015     Update 2           Author: Sarthak
+
+     UI Elements and their Functionality:(sans the layout details)
+           -commandLog textbox: shows the command log (basic here)
+           -userImage: the current User's image is displayed
+           -UserDetails TextBLock group: group of textboxes that display the details of the current user
+
+    Public Methods:
+           -OpenUserSelectWindow(): opens a New SelectUser Type window ON A SEPARATE THREAD OF EXECUTION, so that the main UI thread is not blocked
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -34,17 +55,15 @@ namespace Project_Voix
             Stopwatch stop = new Stopwatch();
             stop.Start();
             InitializeComponent();
-            ct = cancelToken.Token;
-            Task initRun = new Task(new Action(Init.StartInit),cancelToken.Token);
+            ct = cancelToken.Token;                                                     //token that signals to holds up the Init.StartInit thread 
+            Task initRun = new Task(new Action(Init.ProgramInit),cancelToken.Token);
             this.Closed += (sender, e) =>
             {
                 Console.WriteLine(ct.CanBeCanceled.ToString());
-                cancelToken.Cancel();
+                cancelToken.Cancel();                                                   //when this ui is closed, hold up the Init.StartInit thread
             };
             initRun.Start();           //starts the Init.StartInit method, which is the main recognizer thread, asynchronously
             stop.Stop();
-            
-            GrammarFeeder_writeToTextBox(string.Format("time taken in the mainwindow instantiator {0} ms",stop.ElapsedMilliseconds));
             
             GrammarFeeder.writeToTextBox += GrammarFeeder_writeToTextBox;          //event handler for GrammarFeeder's writeToTextBox event
         }
@@ -56,9 +75,20 @@ namespace Project_Voix
 
         private void addUser_Click(object sender, RoutedEventArgs e)
         {
+            /*
+                UI blocking AddUser Window
+            */
             AddUser userTab = new AddUser();
             userTab.Show();
-            //AddUser.CreateAddUserTab();
+        }
+
+        private void selectUserClick(object sender, RoutedEventArgs e)
+        {
+            /*
+                Non thread blocking Function to SelectUser window. would be made Synchronous
+            */
+            SelectUser.OpenUserSelectWindow();
+
         }
     }
 }

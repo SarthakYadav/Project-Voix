@@ -56,7 +56,7 @@
                         <DropShadowEffect Color="Silver"/>
                     </Button.Effect>
                 </Button>
-                <Button x:Name="reInitRec" Content="Reinitialize Recognition" Padding="5"  Background="WhiteSmoke" FontSize="20" Grid.Column="2" Margin="5" Template="{DynamicResource ButtonControlTemplate1}">
+                <Button x:Name="reInitRec" Content="Reinitialize Recognition" Padding="5" Background="WhiteSmoke" FontSize="20" Grid.Column="2" Margin="5" Template="{DynamicResource ButtonControlTemplate1}">
                     <Button.Foreground>
                         <SolidColorBrush Color="{DynamicResource centrePanelColor1}"/>
                     </Button.Foreground>

@@ -14,16 +14,19 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Speech.Synthesis;
 using System.Threading.Tasks;
-
+using System.Windows;
+using System.Threading;
 
 namespace Project_Voix
 {
-    static class DataStore
+    public static class DataStore
     {
-
+        public static AutoResetEvent handle1 = new AutoResetEvent(false);
 
         #region Fields
+        static bool NoStoredUser = false;
         static List<UserSettings> listOfUsers = new List<UserSettings>();                   //store the list of users
         static UserSettings currentUser = null;                                             //stores the current user
         static Queue<string> recentCommands = new Queue<string>();                          //stores a Queue of recent Commands (max 10)
@@ -39,42 +42,57 @@ namespace Project_Voix
             get { return listOfUsers; }
         }
 
-        #region Public Methods
-        public static void AddUser()
+        public static UserSettings CurrentUser
         {
-            //opens a new AddUser Dialog Box here
-
-            //Console.WriteLine("New user dialog open. Add details for entering users");
-
-            //UserGender uGender;
-            //Console.WriteLine("Press 1 to enter a new user and set him as current user.");
-            //Console.WriteLine("Press 2 to load an existing user.");
-            //int choice = int.Parse(Console.ReadLine());
-            //Console.WriteLine("Enter user name");
-            //string userName = Console.ReadLine();
-            //switch (choice)
-            //{
-            //    case 2:
-            //        LoadUser(userName);
-            //        break;
-            //    case 1:
-            //        Console.WriteLine("Enter the user's gender (Male or Female in the exact way) : ");
-            //        string gender = Console.ReadLine();
-
-            //        if (gender.ToLower() == "male")
-            //            uGender = UserGender.Male;
-            //        else
-            //            uGender = UserGender.Female;
-
-            //        currentUser = new UserSettings(userName, uGender);
-            //        listOfUsers.Add(currentUser);
-            //        break;
-            //    default:
-            //        throw new InvalidOperationException("Unknown choice");
-            //}
-            currentUser = new UserSettings("Sarthak Yadav",UserGender.Male);
-            listOfUsers.Add(currentUser);
+            get { return currentUser; }
+        }
+        #region Public Methods
+        public static void StartDataStoreManager()
+        {
+            
+            LoadUserSettings();
+            if (NoStoredUser)
+            {
+                AddUser.OpenAddUserDialog();
+                handle1.WaitOne();
+            }
+            else
+            {
+                SelectUser.OpenUserSelectWindow();
+                handle1.WaitOne();
+            }
             Init.waitHandle2.Set();
+        }
+        public static void AddNewUser(string username,string userGender,string assistantName,string voiceGender,string voiceAge)
+        {
+            UserGender _userGender;
+            VoiceGender _voiceGender;
+            if (userGender == "Male")
+                _userGender = UserGender.Male;
+            else
+                _userGender = UserGender.Female;
+
+            if (voiceGender == "Male")
+                _voiceGender = VoiceGender.Male;
+            else if (voiceGender == "Female")
+                _voiceGender = VoiceGender.Female;
+            else
+                _voiceGender = VoiceGender.Neutral;
+
+            currentUser = new UserSettings(username,_userGender,assistantName,_voiceGender);
+
+            if (voiceAge == "Adult")
+                currentUser.SynthesizerVoiceAge = VoiceAge.Adult;
+            else if (voiceAge == "Child")
+                currentUser.SynthesizerVoiceAge = VoiceAge.Child;
+            else if (voiceAge == "Senior")
+                currentUser.SynthesizerVoiceAge = VoiceAge.Senior;
+            else
+                currentUser.SynthesizerVoiceAge = VoiceAge.Teen;
+
+            listOfUsers.Add(currentUser);
+            SaveUserSettings();
+            
         }
         public static void AddRecentCommand(string phrase)
         {
@@ -87,8 +105,7 @@ namespace Project_Voix
 
         public static string ReturnAssistantName()
         {
-            return "Tars";
-            //return currentUser.AssistantName;
+            return currentUser.AssistantName;
         }
 
         public static string GetUserAcknowledgement()
@@ -108,17 +125,26 @@ namespace Project_Voix
 
         public static void LoadUserSettings()
         {
-
-            var items = Directory.GetFiles(@"C:\Users\HEWLETT PACKARD\Documents\Project Voix", "*.file");
-            if(items.Length!=0)
+            string _name = "";
+            try
             {
-                foreach (var item in items)
+                var items = Directory.GetFiles(@"C:\Users\HEWLETT PACKARD\Documents\Project Voix", "*.file");
+                if (items.Length > 0)
                 {
-                    listOfUsers.Add(UserSettings.GetSettings(item));
+                    foreach (var item in items)
+                    {
+                        _name=item.Substring(item.LastIndexOf('\\') + 1).Replace(".file", "");
+                        listOfUsers.Add(UserSettings.GetSettings(item, _name));
+                    }
                 }
+                else
+                    NoStoredUser = true;
             }
-            
-
+            catch(Exception e)
+            {
+                
+                MessageBox.Show(string.Format("{0}\n Please ensure that there is a stored User File",e.Message));
+            }
         }
         public static void DisplayCurrentUser()
         {
@@ -127,8 +153,9 @@ namespace Project_Voix
 
         public static void LoadUser(string userName)
         {
-            currentUser = UserSettings.GetSettings(@"C:\Users\HEWLETT PACKARD\Documents\Project Voix", "Sarthak Yadav");
+            currentUser = UserSettings.GetSettings(@"C:\Users\HEWLETT PACKARD\Documents\Project Voix",userName);
         }
+
         #endregion
     }
 }

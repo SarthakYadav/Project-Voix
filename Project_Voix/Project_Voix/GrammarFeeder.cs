@@ -43,12 +43,11 @@ namespace Project_Voix
         static SpeechRecognitionEngine speechEngine = null;
         static string openRecogPhrase;
         //static ResponseBox resp = null;
-      
-        #endregion
+             #endregion
 
         static GrammarFeeder()
         {
-            optionalComponent= new GrammarBuilder(new GrammarBuilder(DataStore.ReturnAssistantName()), 0, 1);
+            optionalComponent= new GrammarBuilder(new GrammarBuilder("Tars"), 0, 1);
             openRecogPhrase = "";
         }
 
@@ -329,10 +328,18 @@ namespace Project_Voix
                         writeToTextBox(string.Format("Inner exception {0}",ex.InnerException.Message));
                         writeToTextBox(string.Format("inner Exception stack trace {0}",ex.InnerException.StackTrace));
                     }
-                    
 
-                    BasicResponse(new Response(CommandType.Open, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
-
+                    try
+                    {
+                        BasicResponse(new Response(CommandType.Open, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
+                    }
+                    catch(Exception excep)
+                    {
+                        writeToTextBox(string.Format("Main exception {0}", excep.Message));
+                        writeToTextBox(string.Format("Main exception stack trace {0}", excep.StackTrace));
+                        writeToTextBox(string.Format("Inner exception {0}", excep.InnerException.Message));
+                        writeToTextBox(string.Format("inner Exception stack trace {0}", excep.InnerException.StackTrace));
+                    }
                 }
                 else if (e.Result.Text.Contains("Find") | e.Result.Text.Contains("Search") | e.Result.Text.Contains("Look for"))
                     BasicResponse(new Response(CommandType.Search, DateTime.Now.TimeOfDay.Hours, e.Result.Text));

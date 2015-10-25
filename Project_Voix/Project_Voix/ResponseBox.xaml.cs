@@ -1,4 +1,22 @@
-﻿using System;
+﻿/*
+    description: ResponseBox class
+                -Opens a ResponseBox Window when Open command is detected 
+    
+    date created: 12/09/15
+
+    log:-
+       Update 1: 15/10/2015          Author: Sarthak         Description: Fixed UI thread inaccessibility problems
+       Update 2: 20/10/2015          Author: Sarthak         Description: Enhanced UI with custom designed button control
+
+       latest update: 20/10/2015     Update 2            Author: Sarthak
+    
+    UI elements and Controls:
+        -recogWordDisplay textbox which displays the recognized OpenGrammar Command
+    Listed Methods:
+    1. public CreateResponseBox(): creates a response box window on the NEw thread to avoid MAin ui thread blocking
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -39,11 +57,11 @@ namespace Project_Voix
             {
                 try
                 {
-                    recogWordDisplay.Dispatcher.InvokeAsync(() => { recogWordDisplay.Text = recogPhrase; });
+                    recogWordDisplay.Dispatcher.InvokeAsync(() => { recogWordDisplay.Text = recogPhrase; });            //displays the recognized Open Command
                 }
                 catch (Exception e)
                 {
-                    //MessageBox.Show(string.Format("Exception message : {0}\n Exception stack : {1}",e.Message,e.StackTrace));
+                    MessageBox.Show(string.Format("Exception message : {0}\n Exception stack : {1}",e.Message,e.StackTrace));
                 }
             }
         }

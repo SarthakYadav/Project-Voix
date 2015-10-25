@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Project_Voix"
         mc:Ignorable="d"
-        Title="MainWindow" Height="500" MaxHeight="720" MaxWidth="1200" Width="600">
+        Title="MainWindow" Height="600" MaxHeight="720" MaxWidth="1200" Width="700">
     <Grid x:Name="baseGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition x:Name="expandableColumn" Width="Auto"/>
@@ -68,10 +68,10 @@
                         </TextBlock>
 
 
-                        <TextBlock Padding="2" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" Margin="2" FontSize="25" Text="Sarthak Yadav" Foreground="Snow"/>
-                        <TextBlock Padding="2" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Margin="2" FontSize="25" Text="Male" Foreground="Snow"/>
-                        <TextBlock Padding="2" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="2" FontSize="25" Text="Tars" Foreground="Snow"/>
-                        <TextBlock Padding="2" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" Margin="2" FontSize="25" Text="Female" Foreground="Snow"/>
+                        <TextBlock x:Name="currentUserName" Padding="2" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" Margin="2" FontSize="25" Text="Sarthak Yadav" Foreground="Snow"/>
+                        <TextBlock x:Name="currUserGender" Padding="2" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Margin="2" FontSize="25" Text="Male" Foreground="Snow"/>
+                        <TextBlock x:Name="currUserAssitantName" Padding="2" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="2" FontSize="25" Text="Tars" Foreground="Snow"/>
+                        <TextBlock x:Name="currUserVoiceGender" Padding="2" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" Margin="2" FontSize="25" Text="Female" Foreground="Snow"/>
                     </Grid>
                     <Grid  x:Name="buttonGrid" Margin="10">
                         <Grid.Background>
@@ -82,9 +82,9 @@
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
 
-                        <Button Margin="5" Grid.Column="0" BorderBrush="White" BorderThickness="2" 
+                        <Button x:Name="selectUser" Margin="5" Grid.Column="0" BorderBrush="White" BorderThickness="2" 
                                 HorizontalAlignment="Center" VerticalAlignment="Center" Template="{StaticResource ButtonControlTemplate1}" 
-                                Foreground="Snow" Content="Select User" FontSize="25" >
+                                Foreground="Snow" Content="Select User" FontSize="25" Click="selectUserClick" >
                             <Button.Effect>
                                 <DropShadowEffect Color="Silver"/>
                             </Button.Effect>

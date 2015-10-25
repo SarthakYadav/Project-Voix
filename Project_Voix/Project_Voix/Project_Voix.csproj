@@ -71,6 +71,9 @@
       <DependentUpon>ResponseBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="ResponseGenerator.cs" />
+    <Compile Include="SelectUser.xaml.cs">
+      <DependentUpon>SelectUser.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Speaker.cs" />
     <Compile Include="UserSettings.cs" />
     <Compile Include="Utilities.cs" />
@@ -99,6 +102,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="ResponseBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SelectUser.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
