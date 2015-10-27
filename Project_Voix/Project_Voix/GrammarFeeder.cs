@@ -47,7 +47,7 @@ namespace Project_Voix
 
         static GrammarFeeder()
         {
-            optionalComponent= new GrammarBuilder(new GrammarBuilder("Tars"), 0, 1);
+            //optionalComponent = new GrammarBuilder(new GrammarBuilder(DataStore.CurrentUser.AssistantName), 0, 1);
             openRecogPhrase = "";
         }
 
@@ -112,6 +112,11 @@ namespace Project_Voix
             speechEngine.LoadGrammarAsync(nonOperative);
             speechEngine.LoadGrammarAsync(uiGrammar);
             speechEngine.LoadGrammarAsync(closeProgramGrammar);
+        }
+
+        public static void SetAssistantName(string name)
+        {
+            optionalComponent = new GrammarBuilder(new GrammarBuilder(name), 0, 1);
         }
 
         #endregion

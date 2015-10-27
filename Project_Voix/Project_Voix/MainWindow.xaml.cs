@@ -45,10 +45,11 @@ namespace Project_Voix
     /// </summary>
     public partial class MainWindow : Window
     {
+        
         static public Stopwatch initStopwatch;
         public CancellationTokenSource cancelToken = new CancellationTokenSource();
         static public CancellationToken ct;
-        
+        public UserSettings User { get; set; }
         public MainWindow()
         {
             initStopwatch = new Stopwatch();
@@ -63,15 +64,32 @@ namespace Project_Voix
                 cancelToken.Cancel();                                                   //when this ui is closed, hold up the Init.StartInit thread
             };
             initRun.Start();           //starts the Init.StartInit method, which is the main recognizer thread, asynchronously
-            stop.Stop();
             
+            stop.Stop();
+            DataStore.SetUserNow += DataStore_SetUserNow;                           //event handler for DataStore's SetUserNow event, which notifies when User is set
             GrammarFeeder.writeToTextBox += GrammarFeeder_writeToTextBox;          //event handler for GrammarFeeder's writeToTextBox event
+        }
+
+        private void DataStore_SetUserNow(UserSettings user)
+        {
+            /*
+                Invokes Dispatcher object of each UIELEMENT and sets the respective value
+
+            */
+
+            User = user;
+            currentUserName.Dispatcher.InvokeAsync(() => { currentUserName.Text = User.Username; });
+            currUserAssitantName.Dispatcher.InvokeAsync(() => { currUserAssitantName.Text = User.AssistantName; });
+            currUserGender.Dispatcher.InvokeAsync(()=>{ currUserGender.Text = User.Gender.ToString(); });
+            currUserVoiceGender.Dispatcher.InvokeAsync(() => { currUserVoiceGender.Text = User.SynthesizerVoiceGender.ToString(); });
         }
 
         private void GrammarFeeder_writeToTextBox(string logUpdate)                                     
         {
             commandLog.Dispatcher.InvokeAsync(()=> { commandLog.Text += string.Format("\n{0}", logUpdate); });          //used to access A UI element from another thread
         }
+       
+        
 
         private void addUser_Click(object sender, RoutedEventArgs e)
         {

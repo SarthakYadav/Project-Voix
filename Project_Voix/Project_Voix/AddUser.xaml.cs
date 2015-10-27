@@ -66,9 +66,13 @@ namespace Project_Voix
 
         private void addUserOkClick(object sender, RoutedEventArgs e)
         {
+            
             DataStore.AddNewUser(userNameTextBox.Text, userGenderListbox.Text, assistantNameTextbox.Text, voiceGenderSelection.Text, voiceAgeSelection.Text);
+
+            GrammarFeeder.SetAssistantName(assistantNameTextbox.Text);
+           
             //if (imgBrush.ImageSource != null)
-              //  DataStore.CurrentUser.UserImage =(BitmapImage) imgBrush.ImageSource;
+            //  DataStore.CurrentUser.UserImage =(BitmapImage) imgBrush.ImageSource;
             this.Close();
         }
 

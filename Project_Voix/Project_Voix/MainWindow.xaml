@@ -68,10 +68,10 @@
                         </TextBlock>
 
 
-                        <TextBlock x:Name="currentUserName" Padding="2" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" Margin="2" FontSize="25" Text="Sarthak Yadav" Foreground="Snow"/>
-                        <TextBlock x:Name="currUserGender" Padding="2" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Margin="2" FontSize="25" Text="Male" Foreground="Snow"/>
-                        <TextBlock x:Name="currUserAssitantName" Padding="2" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="2" FontSize="25" Text="Tars" Foreground="Snow"/>
-                        <TextBlock x:Name="currUserVoiceGender" Padding="2" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" Margin="2" FontSize="25" Text="Female" Foreground="Snow"/>
+                        <TextBlock x:Name="currentUserName" Padding="2" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" Margin="2" FontSize="25" Foreground="Snow"/>
+                        <TextBlock x:Name="currUserGender" Padding="2" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Margin="2" FontSize="25"  Foreground="Snow"/>
+                        <TextBlock x:Name="currUserAssitantName" Padding="2" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="2" FontSize="25"  Foreground="Snow"/>
+                        <TextBlock x:Name="currUserVoiceGender" Padding="2" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" Margin="2" FontSize="25"  Foreground="Snow"/>
                     </Grid>
                     <Grid  x:Name="buttonGrid" Margin="10">
                         <Grid.Background>
@@ -125,8 +125,16 @@
                 </TextBox.Effect>
 
             </TextBox>
+            <StackPanel Grid.Row="1" Margin="10" Orientation="Vertical">
+
+                <TextBlock Text="Synthesizer Volume :" HorizontalAlignment="Left" Margin="5" FontSize="25"  Style="{StaticResource textBlockStyle1}" />
+                <Slider Margin="5"/>
+                <TextBlock Text="Synthesizer Rate :" HorizontalAlignment="Left" Style="{StaticResource textBlockStyle1}" FontSize="25" Margin="5"/>
+                <Slider Margin="5"/>
+            </StackPanel>
         </Grid>
-    </Grid>
+        
+        </Grid>
 
     
         

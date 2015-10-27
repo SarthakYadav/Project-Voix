@@ -75,6 +75,8 @@ namespace Project_Voix
             Console.WriteLine("Detected user is {0}", user);
             DataStore.LoadUser(user.Username);                                          //which is then Loaded by the DataStore as the Current User
             DataStore.DisplayCurrentUser();
+            GrammarFeeder.SetAssistantName(user.AssistantName);
+            
             this.Close();
         }
 

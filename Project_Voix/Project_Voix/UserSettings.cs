@@ -66,7 +66,7 @@ namespace Project_Voix
             set { userGender = value; }
         }
 
-        public VoiceGender SynthesizerVoice
+        public VoiceGender SynthesizerVoiceGender
         {
             get { return synthVoiceGender; }
             set { synthVoiceGender = value; }
@@ -121,7 +121,7 @@ namespace Project_Voix
             Username = username;
             Gender = usergender;
             AssistantName = assistantName;
-            SynthesizerVoice = voiceGender;
+            SynthesizerVoiceGender = voiceGender;
             SynthesizerVoiceAge = voiceAge;
             SynthesizerVolume = synthVol;
             SynthesizerRate = synthRate;

@@ -44,6 +44,6 @@ namespace Project_Voix
     delegate void StartResponseBox(string respBoxType);
 
     delegate void ShowOpenTypeRecog(string recogPhrase);
-
+    public delegate void SetUser(UserSettings user);
     delegate void CloseResponseBox();
 }

@@ -27,9 +27,11 @@ namespace Project_Voix
 
         #region Fields
         static bool NoStoredUser = false;
+        static bool IsUserSet = false;
         static List<UserSettings> listOfUsers = new List<UserSettings>();                   //store the list of users
         static UserSettings currentUser = null;                                             //stores the current user
         static Queue<string> recentCommands = new Queue<string>();                          //stores a Queue of recent Commands (max 10)
+        public static event SetUser SetUserNow;
         #endregion
 
         public static Queue<string> RecentCommands                                          //read only type public Property encapsulating recentCommands
@@ -56,11 +58,15 @@ namespace Project_Voix
                 AddUser.OpenAddUserDialog();
                 handle1.WaitOne();
             }
+
             else
             {
                 SelectUser.OpenUserSelectWindow();
                 handle1.WaitOne();
             }
+            //MainWindow.User = CurrentUser;
+            SetUserNow(CurrentUser);
+            IsUserSet = true;
             Init.waitHandle2.Set();
         }
         public static void AddNewUser(string username,string userGender,string assistantName,string voiceGender,string voiceAge)
@@ -91,6 +97,7 @@ namespace Project_Voix
                 currentUser.SynthesizerVoiceAge = VoiceAge.Teen;
 
             listOfUsers.Add(currentUser);
+            //MainWindow.SetCurrentUser(currentUser);
             SaveUserSettings();
             
         }
@@ -156,6 +163,7 @@ namespace Project_Voix
             currentUser = UserSettings.GetSettings(@"C:\Users\HEWLETT PACKARD\Documents\Project Voix",userName);
         }
 
+//        public static UserSettings ReturnUser()
         #endregion
     }
 }
