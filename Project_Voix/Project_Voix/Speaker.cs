@@ -1,4 +1,17 @@
-﻿using System;
+﻿/*
+    description: Speaker class
+           -class contains the main TTS engine
+           
+    date created: -14/10/15
+
+    log:-
+    * No Updates Done*
+
+     Listed Public Methods:
+           * NONE*
+
+*/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,11 +23,52 @@ using System.Windows;
 
 namespace Project_Voix
 {
-    static class Speaker
-    {
-        static SpeechSynthesizer mainSynthesizer = null;
+     static class Speaker
+     {
+        static SpeechSynthesizer mainSynthesizer;
+
+        //static constructor of the Class, which initialises the SpeechSynthesizer , and registers the several events
+        static Speaker()                                            
+        {
+            mainSynthesizer=new SpeechSynthesizer();
+            mainSynthesizer.SelectVoiceByHints(DataStore.CurrentUser.SynthesizerVoiceGender);
+            mainSynthesizer.SetOutputToDefaultAudioDevice();
+
+            DataStore.VoiceGenderChanged += DataStore_VoiceGenderChanged;                       //DataStore's VoiceGenderChanged event which occurs when the gender of the TTS engine has changed
+            MainWindow.VolumeChanged += MainWindow_VolumeChanged;                               //MainWindow VolumeChanged event which occurs when Volume of the TTS engine changes
+            MainWindow.RateChanged += MainWindow_RateChanged;                                   //MainWindow RateChanged event which occurs when Synthesis Rate of the TTS engine changes
+        }
+
+
+        #region Private Methods
+
+        private static void DataStore_VoiceGenderChanged(VoiceGender voiceGender)
+        {
+            //handler for the VoiceGenderChanged Event
+            mainSynthesizer.SelectVoiceByHints(voiceGender);
+        }
+
+        private static void MainWindow_RateChanged(int rate)
+        {
+            //handler for the RateChanged event
+            mainSynthesizer.Rate = rate;
+        }
+
+
+        private static void MainWindow_VolumeChanged(int vol)
+        {
+            //Handler for the VolumeChanged event
+            mainSynthesizer.Volume = vol;
+        }
+        #endregion
+
+        #region Public Methods
         public static void Synthesizer(object resp)
         {
+            /*
+                all the calls made by the ResponseGenerator SendForSynthesis 
+                method are delegated to this method
+            */
             Console.WriteLine("Synthesizer Method on thread : {0}", Thread.CurrentThread.ManagedThreadId);
             string response = null;
             try
@@ -30,8 +84,9 @@ namespace Project_Voix
             {
                 MessageBox.Show(e.Message);
             }
-            mainSynthesizer = new SpeechSynthesizer();
             mainSynthesizer.Speak(response);
         }
+        #endregion
+
     }
 }

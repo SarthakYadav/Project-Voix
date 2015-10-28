@@ -5,41 +5,51 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Project_Voix"
         mc:Ignorable="d"
-        Title="SelectUser" Height="300" Width="300" WindowStartupLocation="CenterScreen">
+        Title="SelectUser" Height="300" Width="450" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.Background>
             <SolidColorBrush Color="{DynamicResource centrePanelColor1}"/>
         </Grid.Background>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="2*"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <ListBox x:Name="usersListBox" FontSize="25" Grid.Row="0" Margin="5" Foreground="Snow">
-            <ListBox.Background>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="1.5*"/>
+        </Grid.ColumnDefinitions>
+        <Image Grid.Column="1" Source="Images/voixOnlyDesignHolo.png" />
+        <Grid Grid.Column="0">
+            <Grid.Background>
                 <SolidColorBrush Color="{DynamicResource centrePanelColor1}"/>
-            </ListBox.Background>
-        </ListBox>
-        <Grid Grid.Row="1" Margin="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="2*"/>
-            </Grid.ColumnDefinitions>
-            <Button x:Name="btnOk" Grid.Column="0" Margin="5" Content="Ok" Foreground="Snow" FontSize="25" Template="{StaticResource ButtonControlTemplate1}" BorderBrush="SkyBlue" BorderThickness="2" Click="btnOkClick">
-                <Button.Effect>
-                    <DropShadowEffect Color="SkyBlue"/>
-                </Button.Effect>
-                <Button.Background>
+            </Grid.Background>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <ListBox x:Name="usersListBox" FontSize="25" Grid.Row="0" Margin="5" Foreground="Snow">
+                <ListBox.Background>
                     <SolidColorBrush Color="{DynamicResource centrePanelColor1}"/>
-                </Button.Background>
-            </Button>
-            <Button x:Name="btnCancel" Grid.Column="1" Content="Cancel" Foreground="Snow" FontSize="25" Margin="5" Template="{StaticResource ButtonControlTemplate1}" BorderBrush="SkyBlue" BorderThickness="2" Click="btnCancelClick">
-                <Button.Effect>
-                    <DropShadowEffect Color="SkyBlue"/>
-                </Button.Effect>
-                <Button.Background>
-                    <SolidColorBrush Color="{DynamicResource centrePanelColor1}"/>
-                </Button.Background>
-            </Button>
+                </ListBox.Background>
+            </ListBox>
+            <Grid Grid.Row="1" Margin="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="btnOk" Grid.Column="0" Margin="5" Content="Ok" Foreground="Snow" FontSize="25" Template="{StaticResource ButtonControlTemplate1}" BorderBrush="SkyBlue" BorderThickness="2" Click="btnOkClick">
+                    <Button.Effect>
+                        <DropShadowEffect Color="SkyBlue"/>
+                    </Button.Effect>
+                    <Button.Background>
+                        <SolidColorBrush Color="{DynamicResource centrePanelColor1}"/>
+                    </Button.Background>
+                </Button>
+                <Button x:Name="btnCancel" Grid.Column="1" Content="Cancel" Foreground="Snow" FontSize="25" Margin="5" Template="{StaticResource ButtonControlTemplate1}" BorderBrush="SkyBlue" BorderThickness="2" Click="btnCancelClick">
+                    <Button.Effect>
+                        <DropShadowEffect Color="SkyBlue"/>
+                    </Button.Effect>
+                    <Button.Background>
+                        <SolidColorBrush Color="{DynamicResource centrePanelColor1}"/>
+                    </Button.Background>
+                </Button>
+            </Grid>
         </Grid>
     </Grid>
 </Window>

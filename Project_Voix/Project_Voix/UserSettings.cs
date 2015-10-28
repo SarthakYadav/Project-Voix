@@ -33,21 +33,16 @@ namespace Project_Voix
         VoiceAge synthAge = VoiceAge.NotSet;                        //not specified by default
         int synthVol = 100;
         int synthRate = 0;
-       
-        //BitmapImage userImage;                                      // To store and image of the user
+        string userImageSource;                                         //stores the source address of the User Image
         #endregion
 
         #region Properties
-        //public BitmapImage UserImage
-        //{
-        //    get { return userImage; }
-        //    set
-        //    {
-        //        if (value != null)
-        //            userImage = value;
-        //    }
-                
-        //}
+        
+        public string ImageSource
+        {
+            get { return userImageSource; }
+            set { userImageSource = value; }
+        }
         public string Username
         {
             get { return userName; }

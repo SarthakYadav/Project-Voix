@@ -291,12 +291,12 @@ namespace Project_Voix
             Choices open_typeChoices = new Choices(new GrammarBuilder[] { "Open", "Execute", "Run", "Intialize", "Start" });
 
             //all choices become a combination of Basic CHoices,Open_Type and Search_type choices
-            Choices allchoices = new Choices(basicChoices, search_typeChoices, open_typeChoices);
+            Choices allchoices = new Choices(basicChoices, search_typeChoices, open_typeChoices,"Give a demo");
 
             GrammarBuilder gb = new GrammarBuilder();
             gb.Append(optionalComponent);
             gb.Append(allchoices);                      // the grammar prototype becomes "(optional)Tars plus all choices"
-
+            //gb.Append("demo");
             //to save the grammar as an SrgsDocument
             //SrgsDocument basicGrammar = new SrgsDocument(gb);
             //System.Xml.XmlWriter writer = System.Xml.XmlWriter.Create(@"H:\voix\basicCommands.xml");
@@ -322,23 +322,23 @@ namespace Project_Voix
                     {
                         writeToTextBox(e.Result.Text);
                     });
-                        try
+                    try
                     {
                         ResponseBox.CreateResponseBox();
                     }
                     catch (Exception ex)
                     {
-                        writeToTextBox(string.Format("Main exception {0}",ex.Message));
-                        writeToTextBox(string.Format("Main exception stack trace {0}",ex.StackTrace));
-                        writeToTextBox(string.Format("Inner exception {0}",ex.InnerException.Message));
-                        writeToTextBox(string.Format("inner Exception stack trace {0}",ex.InnerException.StackTrace));
+                        writeToTextBox(string.Format("Main exception {0}", ex.Message));
+                        writeToTextBox(string.Format("Main exception stack trace {0}", ex.StackTrace));
+                        writeToTextBox(string.Format("Inner exception {0}", ex.InnerException.Message));
+                        writeToTextBox(string.Format("inner Exception stack trace {0}", ex.InnerException.StackTrace));
                     }
 
                     try
                     {
                         BasicResponse(new Response(CommandType.Open, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
                     }
-                    catch(Exception excep)
+                    catch (Exception excep)
                     {
                         writeToTextBox(string.Format("Main exception {0}", excep.Message));
                         writeToTextBox(string.Format("Main exception stack trace {0}", excep.StackTrace));
@@ -350,7 +350,10 @@ namespace Project_Voix
                     BasicResponse(new Response(CommandType.Search, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
 
                 else
+                {
                     BasicResponse(new Response(CommandType.Basic, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
+
+                }
             }
         }
 

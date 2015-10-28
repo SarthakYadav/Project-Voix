@@ -35,7 +35,7 @@
 
                 <TextBlock Grid.Column="0" Grid.Row="0" Text="Username* : " Style="{StaticResource textBlockStyle1}" HorizontalAlignment="Right"/>
                 <TextBlock Grid.Column="0" Grid.Row="1" Text="User Gender* : " Style="{StaticResource textBlockStyle1}" HorizontalAlignment="Right"/>
-                <TextBlock Grid.Column="0" Grid.Row="2" Text="Assitant Name : " Style="{StaticResource textBlockStyle1}" HorizontalAlignment="Right"/>
+                <TextBlock Grid.Column="0" Grid.Row="2" Text="Assistant Name : " Style="{StaticResource textBlockStyle1}" HorizontalAlignment="Right"/>
                 <TextBlock Grid.Column="0" Grid.Row="3" Text="Voice Gender : " Style="{StaticResource textBlockStyle1}"  HorizontalAlignment="Right"/>
                 <TextBlock Grid.Column="0" Grid.Row="4" Text="Voice Age : " Style="{StaticResource textBlockStyle1}" HorizontalAlignment="Right"/>
                 <TextBlock Grid.ColumnSpan="2" Grid.Row="5" FontSize="15" Style="{StaticResource textBlockStyle1}" HorizontalAlignment="Left" Text=" fields marked * are mandatory"/>
@@ -93,7 +93,7 @@
                 <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <Image Grid.Row="1" Source="Images/Voix.png" Stretch="None"/>
+            <Image Grid.Row="1" Source="Images/voixOnlyDesignHolo.png" Stretch="UniformToFill"/>
             <Button x:Name="addImgBtn" Grid.Row="0" BorderBrush="Snow" BorderThickness="2" ToolTip="Click to add or change Image" Template="{DynamicResource imageButtonTemplate}" Click="addImgBtnClick">
                 <Button.Background>
                     <ImageBrush x:Name="imgBrush" Stretch="UniformToFill"/>

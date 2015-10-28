@@ -39,11 +39,14 @@ namespace Project_Voix
     /// </summary>
     public partial class AddUser : Window
     {
+        BitmapImage img = null;
+        Image userImage;
+        string imageUri;
         //UserSettings currentUser;
         public AddUser()
         {
             InitializeComponent();
-            
+            userImage = new Image();
         }
         
         private void addImgBtnClick(object sender, RoutedEventArgs e)
@@ -51,7 +54,7 @@ namespace Project_Voix
             /*
                 Sets the Background image for the Image Button
             */
-            BitmapImage userImage = null;
+            
             OpenFileDialog openImageFile = new OpenFileDialog();
             openImageFile.Title = "User Image Selection";
             openImageFile.Filter = "Image Files (*.jpg,*.gif,*.png,*.jpe,*.bmp)|*.jpg;*.gif;*.png;*.jpe;*.bmp";
@@ -59,20 +62,18 @@ namespace Project_Voix
             openImageFile.Multiselect = false;
             if (openImageFile.ShowDialog() == true)
             {
-                userImage = new BitmapImage(new Uri(openImageFile.FileName));
-                imgBrush.ImageSource = userImage;
+                imageUri = openImageFile.FileName;
+                img = new BitmapImage(new Uri(openImageFile.FileName));
+                imgBrush.ImageSource = img;
+                
             }
+            
         }
 
         private void addUserOkClick(object sender, RoutedEventArgs e)
         {
-            
-            DataStore.AddNewUser(userNameTextBox.Text, userGenderListbox.Text, assistantNameTextbox.Text, voiceGenderSelection.Text, voiceAgeSelection.Text);
-
+            DataStore.AddNewUser(userNameTextBox.Text, userGenderListbox.Text, assistantNameTextbox.Text, voiceGenderSelection.Text, voiceAgeSelection.Text,imageUri);
             GrammarFeeder.SetAssistantName(assistantNameTextbox.Text);
-           
-            //if (imgBrush.ImageSource != null)
-            //  DataStore.CurrentUser.UserImage =(BitmapImage) imgBrush.ImageSource;
             this.Close();
         }
 
@@ -83,6 +84,9 @@ namespace Project_Voix
 
         public static void OpenAddUserDialog()
         {
+            /*
+                Starts a new Add user window on a separate UI thread
+            */
             Thread thread = new Thread(() =>
               {
                   AddUser adduser = new AddUser();

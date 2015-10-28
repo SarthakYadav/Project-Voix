@@ -45,11 +45,12 @@ namespace Project_Voix
     /// </summary>
     public partial class MainWindow : Window
     {
-        
+        public static event SetSynthesisVolume VolumeChanged;
+        public static event SetSynthesisRate RateChanged;
         static public Stopwatch initStopwatch;
         public CancellationTokenSource cancelToken = new CancellationTokenSource();
         static public CancellationToken ct;
-        public UserSettings User { get; set; }
+        
         public MainWindow()
         {
             initStopwatch = new Stopwatch();
@@ -64,7 +65,6 @@ namespace Project_Voix
                 cancelToken.Cancel();                                                   //when this ui is closed, hold up the Init.StartInit thread
             };
             initRun.Start();           //starts the Init.StartInit method, which is the main recognizer thread, asynchronously
-            
             stop.Stop();
             DataStore.SetUserNow += DataStore_SetUserNow;                           //event handler for DataStore's SetUserNow event, which notifies when User is set
             GrammarFeeder.writeToTextBox += GrammarFeeder_writeToTextBox;          //event handler for GrammarFeeder's writeToTextBox event
@@ -77,11 +77,16 @@ namespace Project_Voix
 
             */
 
-            User = user;
-            currentUserName.Dispatcher.InvokeAsync(() => { currentUserName.Text = User.Username; });
-            currUserAssitantName.Dispatcher.InvokeAsync(() => { currUserAssitantName.Text = User.AssistantName; });
-            currUserGender.Dispatcher.InvokeAsync(()=>{ currUserGender.Text = User.Gender.ToString(); });
-            currUserVoiceGender.Dispatcher.InvokeAsync(() => { currUserVoiceGender.Text = User.SynthesizerVoiceGender.ToString(); });
+            currentUserName.Dispatcher.InvokeAsync(() => { currentUserName.Text = user.Username; });
+            currUserAssitantName.Dispatcher.InvokeAsync(() => { currUserAssitantName.Text = user.AssistantName; });
+            currUserGender.Dispatcher.InvokeAsync(()=>{ currUserGender.Text = user.Gender.ToString(); });
+            currUserVoiceGender.Dispatcher.InvokeAsync(() => { currUserVoiceGender.Text = user.SynthesizerVoiceGender.ToString(); });
+            userImage.Dispatcher.InvokeAsync(() => 
+            {
+                var bitmap = new BitmapImage(new Uri(user.ImageSource));                    //new Bitmap Image using the ImageSource of the current user
+                userImage.Source = bitmap;                                                  //sets the source of the userImage control with the bitmap image
+            });
+            
         }
 
         private void GrammarFeeder_writeToTextBox(string logUpdate)                                     
@@ -107,6 +112,40 @@ namespace Project_Voix
             */
             SelectUser.OpenUserSelectWindow();
 
+        }
+
+        private void volSliderValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            /*
+                fired when the volSlider value changes
+            */
+            var slider = sender as Slider;
+            try
+            {
+                VolumeChanged((int)slider.Value);                   //throws the VolumeChanged Event
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(string.Format(" message : {0}\n Source : {1}\n Stack : {2} ", ex.Message, ex.Source, ex.StackTrace));
+            }
+            Console.WriteLine((int)slider.Value);
+            
+        }
+
+        private void rateSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            /*
+                fired when the rateSlider value changes
+            */
+            var slider = sender as Slider;
+            try
+            {
+                RateChanged((int)slider.Value);                     //throws the RateChanged event
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(" message : {0}\n Source : {1}\n Stack : {2} ", ex.Message, ex.Source, ex.StackTrace);
+            }
         }
     }
 }

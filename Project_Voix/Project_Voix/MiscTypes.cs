@@ -14,6 +14,10 @@
 using System;
 using System.IO;
 using System.Speech;
+using System.Speech.Synthesis;
+using System.Windows.Controls;
+using System.Windows.Media.Imaging;
+
 namespace Project_Voix
 {
     public enum UserGender                  //enum that sets the gender of the user, and correspondingly sets how Tars acknowledges you. i.e Sir or Ma'am
@@ -38,6 +42,7 @@ namespace Project_Voix
         ResponseBox,
     }
 
+    
     delegate void GenerateResponse(Response response);              // delegate for signatures of Response events
 
     public delegate void UpdateLog(string logUpdate);                      //delegate to update the text box with recognized text
@@ -46,4 +51,7 @@ namespace Project_Voix
     delegate void ShowOpenTypeRecog(string recogPhrase);
     public delegate void SetUser(UserSettings user);
     delegate void CloseResponseBox();
+    public delegate void SetSynthesisVolume(int vol);
+    public delegate void SetSynthesisRate(int rate);
+    public delegate void SynthesisGenderChange(VoiceGender voiceGender);
 }

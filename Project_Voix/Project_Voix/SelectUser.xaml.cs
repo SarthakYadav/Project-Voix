@@ -54,6 +54,10 @@ namespace Project_Voix
         
         public static void OpenUserSelectWindow()
         {
+            /*
+                Starts a new SelectUser window on separate thread of execution 
+                hence not blocking the Main UI
+            */
             Thread thread = new Thread(() =>
               {
                   SelectUser su = new SelectUser();
@@ -71,6 +75,7 @@ namespace Project_Voix
 
         private void btnOkClick(object sender, RoutedEventArgs e)
         {
+            //handler for the Ok button
             UserSettings user = usersListBox.SelectedItem as UserSettings;              //the selected item from the usersListBox control is casted as a UserSettings object
             Console.WriteLine("Detected user is {0}", user);
             DataStore.LoadUser(user.Username);                                          //which is then Loaded by the DataStore as the Current User
@@ -82,6 +87,7 @@ namespace Project_Voix
 
         private void btnCancelClick(object sender, RoutedEventArgs e)
         {
+            //handler for the Cancel button
             this.Close();
         }
     }

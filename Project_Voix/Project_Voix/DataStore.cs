@@ -18,9 +18,13 @@ using System.Speech.Synthesis;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Threading;
+using System.Windows.Media.Imaging;
+using System.Windows.Controls;
 
 namespace Project_Voix
 {
+    
+    
     public static class DataStore
     {
         public static AutoResetEvent handle1 = new AutoResetEvent(false);
@@ -29,9 +33,11 @@ namespace Project_Voix
         static bool NoStoredUser = false;
         static bool IsUserSet = false;
         static List<UserSettings> listOfUsers = new List<UserSettings>();                   //store the list of users
+        
         static UserSettings currentUser = null;                                             //stores the current user
         static Queue<string> recentCommands = new Queue<string>();                          //stores a Queue of recent Commands (max 10)
         public static event SetUser SetUserNow;
+        public static event SynthesisGenderChange VoiceGenderChanged;
         #endregion
 
         public static Queue<string> RecentCommands                                          //read only type public Property encapsulating recentCommands
@@ -64,13 +70,14 @@ namespace Project_Voix
                 SelectUser.OpenUserSelectWindow();
                 handle1.WaitOne();
             }
-            //MainWindow.User = CurrentUser;
             SetUserNow(CurrentUser);
             IsUserSet = true;
             Init.waitHandle2.Set();
         }
-        public static void AddNewUser(string username,string userGender,string assistantName,string voiceGender,string voiceAge)
+        
+        public static void AddNewUser(string username,string userGender,string assistantName,string voiceGender,string voiceAge,string imageUri)
         {
+           
             UserGender _userGender;
             VoiceGender _voiceGender;
             if (userGender == "Male")
@@ -86,7 +93,7 @@ namespace Project_Voix
                 _voiceGender = VoiceGender.Neutral;
 
             currentUser = new UserSettings(username,_userGender,assistantName,_voiceGender);
-
+            
             if (voiceAge == "Adult")
                 currentUser.SynthesizerVoiceAge = VoiceAge.Adult;
             else if (voiceAge == "Child")
@@ -96,8 +103,21 @@ namespace Project_Voix
             else
                 currentUser.SynthesizerVoiceAge = VoiceAge.Teen;
 
+            if (imageUri != "")
+                currentUser.ImageSource = imageUri;
+
             listOfUsers.Add(currentUser);
             //MainWindow.SetCurrentUser(currentUser);
+            SetUserNow(currentUser);
+            try
+            {
+                VoiceGenderChanged(currentUser.SynthesizerVoiceGender);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("message : {0}\n Source : {1}\n StackTrace : {2}",ex.Message,ex.Source,ex.StackTrace);
+            }
+            //currentUser = user;
             SaveUserSettings();
             
         }
@@ -161,9 +181,19 @@ namespace Project_Voix
         public static void LoadUser(string userName)
         {
             currentUser = UserSettings.GetSettings(@"C:\Users\HEWLETT PACKARD\Documents\Project Voix",userName);
+            try
+            {
+                SetUserNow(currentUser);
+                VoiceGenderChanged(currentUser.SynthesizerVoiceGender);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(" message : {0}\n Source : {1}\n Stack : {2} ", ex.Message, ex.Source, ex.StackTrace);
+            }
+            
         }
 
-//        public static UserSettings ReturnUser()
+
         #endregion
     }
 }

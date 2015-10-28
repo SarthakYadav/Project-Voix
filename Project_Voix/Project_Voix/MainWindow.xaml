@@ -41,7 +41,7 @@
                 </Expander.Background>
                 <StackPanel Orientation="Vertical">
                     <TextBlock Text="Active User" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="25" Foreground="Snow"/>
-                    <Image x:Name="userImage" Margin="10" Width="200" Height="200" Source="Images/user1Image.jpg"/>
+                    <Image x:Name="userImage" Margin="10" Width="200" Height="200"/>
 
                     <Grid x:Name="expanderGrid">
                         <Grid.RowDefinitions>
@@ -93,8 +93,8 @@
                             </Button.Background>
                         </Button>
                         <Button x:Name="addUser" Margin="5" Grid.Column="1" BorderBrush="White" BorderThickness="2" 
-                                HorizontalAlignment="Center" VerticalAlignment="Center" Template="{StaticResource ButtonControlTemplate1}" 
-                                Foreground="Snow" Content="Add User" VerticalContentAlignment="Center" FontSize="25" Click="addUser_Click">
+                                HorizontalAlignment="Center" Content="Add User" VerticalAlignment="Center" Template="{StaticResource ButtonControlTemplate1}" 
+                                Foreground="Snow" VerticalContentAlignment="Center"  FontSize="25" Click="addUser_Click">
                             <Button.Effect>
                                 <DropShadowEffect Color="Silver"/>
                             </Button.Effect>
@@ -116,32 +116,35 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
-            <TextBox x:Name="commandLog"  Grid.Row="0" Margin="2" TextWrapping="Wrap" Foreground="Snow" FontSize="20" Text="Log :-">
+            <TextBox x:Name="commandLog"  Grid.Row="0" Margin="2" FontSize="25" Foreground="Snow" Text="Log:-" ScrollViewer.HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                 <TextBox.Background>
                     <SolidColorBrush Color="{DynamicResource sidePanelColor1}"/>
                 </TextBox.Background>
-                <TextBox.Effect>
-                    <DropShadowEffect Color="SteelBlue"/>
-                </TextBox.Effect>
+               
 
             </TextBox>
             <StackPanel Grid.Row="1" Margin="10" Orientation="Vertical">
+                <StackPanel.Background>
+                    <SolidColorBrush Color="{DynamicResource sidePanelColor1}"/>
+                </StackPanel.Background>
 
                 <TextBlock Text="Synthesizer Volume :" HorizontalAlignment="Left" Margin="5" FontSize="25"  Style="{StaticResource textBlockStyle1}" />
-                <Slider Margin="5"/>
+                <Slider x:Name="volSlider" Margin="5" ValueChanged="volSliderValueChanged" TickFrequency="25" Maximum="100" Value="100" SmallChange="1" ToolTip="{Binding ElementName=volSlider,Path=Value}" TickPlacement="BottomRight" />
                 <TextBlock Text="Synthesizer Rate :" HorizontalAlignment="Left" Style="{StaticResource textBlockStyle1}" FontSize="25" Margin="5"/>
-                <Slider Margin="5"/>
+                <Slider x:Name="rateSlider" Margin="5" Maximum="10" Minimum="-10" SmallChange="1" Value="0" ValueChanged="rateSlider_ValueChanged" ToolTip="{Binding ElementName=rateSlider,Path=Value}" AutoToolTipPlacement="TopLeft" TickPlacement="BottomRight">
+                    
+                </Slider>
             </StackPanel>
         </Grid>
-        
-        </Grid>
 
-    
-        
-        
-        
-        
-            
-        
-    
+    </Grid>
+
+
+
+
+
+
+
+
+
 </Window>
