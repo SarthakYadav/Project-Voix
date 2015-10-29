@@ -7,7 +7,11 @@
 
     log:-
         update 1 : 09/10/2015       Added functionality pertaining to CloseProgramGrammar
+        update 2: 30/10/2015     author: Sarthak       description: Added functionality pertaining to PrimaryGrammar, 
+                                                                    and hence the ability to pause/restart recognition using voice commands alone , by disabling all grammars
+                                                                    and restoring them to their original states prior to halting the recognition
 
+    latest Update:      update 2
     Listed Public Methods:
            1. ResponseBoxLoaded and ResponseBoxDeloaded Pair 
                         ->for manipulation of ResponseBox grammar and the respective Open_type 
@@ -16,6 +20,9 @@
                         ->for manipulation of UI grammar
            3. LoadNonOperativeCommands and DeloadNonOperativeCommands Pair
                         ->for manipulation of NonOperative grammar
+           4. RegisterWithManipulator: registers an existing SRE to use the services of the GrammarManipulator Class
+           5. RecognitionHalted: to do what is necessary to halt the recognition of other grammars and their commands
+           6. RecognitionResumed: to resume recognition of other grammars and their commands
 */
 
 using System;
@@ -37,7 +44,14 @@ namespace Project_Voix
         static List<Grammar> listOfGrammars;
         const int highPriority = 15;
         static SpeechRecognitionEngine registeredEngine;
+        static List<bool> currentStateList;
         #endregion
+
+        static GrammarManipulator()
+        {
+            currentStateList = new List<bool>();
+        }
+        
 
         #region Indexes
         static int indexOfBasic;
@@ -79,6 +93,9 @@ namespace Project_Voix
             {
                 switch (g.Name)
                 {
+                    case "primaryGrammar":
+                        g.Enabled = true;
+                        break;
                     case "basicGrammar":
                         indexOfBasic = listOfGrammars.IndexOf(g);
                         g.Enabled = true;
@@ -128,7 +145,7 @@ namespace Project_Voix
             }
 
         }
-        
+
         #endregion
 
         #region Public Methods
@@ -147,6 +164,36 @@ namespace Project_Voix
                 SetDefaultGrammarStates();
             });
         }
+
+        #region Manipulation of all grammars decided by PrimaryGrammar
+        public static void HaltRecognition()
+        {
+            /*
+                called by the PrimaryGrammar speechrecognized event when either of Halt/pause commands is detected.
+            */
+            foreach (var grammar in listOfGrammars)                 
+            {
+                currentStateList.Add(grammar.Enabled);              //stores the CURRENT Enabled flag of each grammar in a new list    
+            }
+
+            foreach (var grammar in listOfGrammars)
+            {
+                if (grammar.Name != "primaryGrammar")
+                    grammar.Enabled = false;                        //then disables all other grammars except the primaryGrammar
+            }
+        }
+
+        public static void ResumeRecognition()
+        {
+            /*
+                Called by the PrimaryGrammar's SpeechRecognized event when any of the Resume type commands is detected
+            */
+            for (int i = 0; i < listOfGrammars.Count; i++)
+            {
+                listOfGrammars[i].Enabled = currentStateList[i];                        //restores the states of all the grammars back to the states prior to Halting/Pausing command
+            }
+        }
+        #endregion
 
         #region Manipulation of Open_typeGrammar
         static public void EnableOpenGrammar()

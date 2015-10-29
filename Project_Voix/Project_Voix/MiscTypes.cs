@@ -40,6 +40,7 @@ namespace Project_Voix
         Basic,
         CloseProgram,
         ResponseBox,
+        Primary
     }
 
     

@@ -54,6 +54,21 @@ namespace Project_Voix
         #endregion
 
         #region GenerateResponse Event Handlers
+        public static void PrimaryGrammar_ResponseHandler(Response resp)
+        {
+            resp.RecognizedPhrase = resp.RecognizedPhrase.ToLower();
+            string responseText = "";
+
+            if(resp.CommandType==CommandType.Primary)
+            {
+                if (resp.RecognizedPhrase.Contains("wake up") | resp.RecognizedPhrase.Contains("resume recognition"))
+                    responseText = " Awake . Recognition Resumed . ";
+                else
+                    responseText = " Asleep . Recognition Halted . ";
+
+                SendForSynthesis(responseText);
+            }
+        }
 
         public static void BasicGrammar_ResponseHandler(Response resp)
         {
@@ -81,11 +96,8 @@ namespace Project_Voix
             resp.RecognizedPhrase = resp.RecognizedPhrase.ToLower();
             if (resp.CommandType == CommandType.Basic)
             {
-                if (resp.RecognizedPhrase.Contains("wake up"))
-                    responseText = "Tars Awake";
-                else if (resp.RecognizedPhrase.Contains("sleep"))
-                    responseText = "Tars Asleep";
-                else if (resp.RecognizedPhrase.Contains("system shutdown"))
+                
+                if (resp.RecognizedPhrase.Contains("system shutdown"))
                     responseText = "System shutdown requested";
                 else if (resp.RecognizedPhrase.Contains("system restart"))
                     responseText = "System restart requested";

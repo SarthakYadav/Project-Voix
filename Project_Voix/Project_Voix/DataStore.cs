@@ -184,7 +184,7 @@ namespace Project_Voix
         }
         public static void DisplayCurrentUser()
         {
-            Console.WriteLine("Current user is : {0}", currentUser);
+            AddToMessageDump(string.Format("Current user is : {0}", currentUser));
         }
 
         public static void LoadUser(string userName)
@@ -235,8 +235,7 @@ namespace Project_Voix
             {
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
-            }
-            
+            }    
         }
         #endregion
     }

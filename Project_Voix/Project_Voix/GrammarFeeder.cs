@@ -32,6 +32,7 @@ using System.Speech.Recognition;
 using System.Speech.Synthesis;
 using System.Speech.Recognition.SrgsGrammar;
 using System.Windows;
+using System.Xml;
 
 namespace Project_Voix
 {
@@ -59,6 +60,7 @@ namespace Project_Voix
         static public event GenerateResponse CloseProgramResponse;
         static public event GenerateResponse NonOperativeResponse;
         static public event GenerateResponse UIResponse;
+        static public event GenerateResponse PrimaryResponse;
 
         static public event UpdateLog writeToTextBox;
         static public event StartResponseBox CallResponseBox;
@@ -76,6 +78,14 @@ namespace Project_Voix
             basicGrammar.Priority = 10;
             basicGrammar.SpeechRecognized += BasicGrammar_SpeechRecognized;
             BasicResponse += ResponseGenerator.BasicGrammar_ResponseHandler;
+            #endregion
+
+            #region Grammar for Primary Commands
+            Grammar primaryGrammar = Task.Factory.StartNew<Grammar>(new Func<Grammar>(PrimaryGrammar)).Result;
+            primaryGrammar.Name = "primaryGrammar";
+            primaryGrammar.Priority = 12;
+            primaryGrammar.SpeechRecognized += PrimaryGrammar_SpeechRecognized;
+            PrimaryResponse += ResponseGenerator.PrimaryGrammar_ResponseHandler;
             #endregion
 
             #region Grammar for Open Type commands
@@ -120,6 +130,7 @@ namespace Project_Voix
 
             #region Loading all Grammars in the SRE
             //loading all the grammars into the S.R.E
+            speechEngine.LoadGrammarAsync(primaryGrammar);
             speechEngine.LoadGrammarAsync(basicGrammar);
             speechEngine.LoadGrammarAsync(open_typeGrammar);
             speechEngine.LoadGrammarAsync(responseBoxGrammar);
@@ -129,6 +140,8 @@ namespace Project_Voix
             #endregion
         }
 
+        
+
         public static void SetAssistantName(string name)
         {
             optionalComponent = new GrammarBuilder(new GrammarBuilder(name), 0, 1);
@@ -137,6 +150,26 @@ namespace Project_Voix
         #endregion
 
         #region Private methods
+        private static Grammar PrimaryGrammar()
+        {
+            /*
+                This is the Outermost, highest Priority grammar which is always enabled no matter what
+                It has commands for halting recognition by disabling all other grammars and storing their state 
+                and re-enabling recognition by restoring the states of the various grammars 
+                at the time through restoring their states as what they were prior to halting.
+            */
+            Choices haltChoice = new Choices(new GrammarBuilder[] { "Sleep", "Pause" });                            //commands to halt/pause recognition
+            Choices resumeChoices = new Choices(new GrammarBuilder[] { "Resume Recognition", "Wake up" });          //commands to resume recognition
+            Choices allchoices = new Choices(haltChoice,resumeChoices);
+            GrammarBuilder primaryGrammarBuilder = GrammarBuilder.Add(optionalComponent, allchoices);
+
+            //creating an Srgs compliant .xml grammar file
+            //SrgsDocument responseBoxDoc = new SrgsDocument(primaryGrammarBuilder);
+            //XmlWriter writer = XmlWriter.Create(@"H:\voix\PrimaryGrammar.xml");
+            //responseBoxDoc.WriteSrgs(writer);
+            //writer.Close();
+            return new Grammar(primaryGrammarBuilder);
+        }
         private static Grammar ResponseBoxSelection()
         {
             /* To create grammar of the Response box's selection options
@@ -298,12 +331,10 @@ namespace Project_Voix
 
                     command list:
                     (optional) Tars
-                    1. Wake Up
-                    2. Sleep
-                    3. System Shutdown
-                    4. System Restart
-                    5. Search_Type command
-                    6. Open_Type command
+                    1. System Shutdown
+                    2. System Restart
+                    3. Search_Type command
+                    4. Open_Type command
             */
 
             //Console.WriteLine("basic Grammar is on thread {0}",Thread.CurrentThread.ManagedThreadId);
@@ -311,15 +342,15 @@ namespace Project_Voix
             Choices sysPowerChoices = new Choices(new GrammarBuilder[] { "Shutdown", "Restart" });
             systemCommand.Append(sysPowerChoices);                  // System choices become System Shutdown/Restart
 
-            Choices basicChoices = new Choices(new GrammarBuilder[] { "Wake Up", "Sleep" });
-            basicChoices.Add(systemCommand);                        //basic choices become Wake up,Sleep,System Shutdown/Restart
+            //Choices basicChoices = new Choices(new GrammarBuilder[] { "Wake Up", "Sleep" });
+            //basicChoices.Add(systemCommand);                        //basic choices become Wake up,Sleep,System Shutdown/Restart
 
             //creating for open_type and search_type respectively
             Choices search_typeChoices = new Choices(new GrammarBuilder[] { "Find", "Search", "Look for" });
             Choices open_typeChoices = new Choices(new GrammarBuilder[] { "Open", "Execute", "Run", "Intialize", "Start" });
 
             //all choices become a combination of Basic CHoices,Open_Type and Search_type choices
-            Choices allchoices = new Choices(basicChoices, search_typeChoices, open_typeChoices,"Give a demo");
+            Choices allchoices = new Choices(search_typeChoices, open_typeChoices,"Give a demo");
 
             GrammarBuilder gb = new GrammarBuilder();
             gb.Append(optionalComponent);
@@ -338,12 +369,45 @@ namespace Project_Voix
         #endregion
 
         #region Grammar Event Handlers
+        private static void PrimaryGrammar_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
+        {
+            
+            if (e.Result!=null)
+            {
+                Task.Run(() =>
+                {
+                    writeToTextBox(e.Result.Text);
+                });
+                DataStore.AddRecentCommand(e.Result.Text);
+                try
+                {
+                    if (e.Result.Text.Contains("Sleep") | e.Result.Text.Contains("Pause"))
+                    {
+                        GrammarManipulator.HaltRecognition();
+                        PrimaryResponse(new Response(CommandType.Primary, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
+                    }
+
+                    else if (e.Result.Text.Contains("Resume Recognition") | e.Result.Text.Contains("Wake up"))
+                    {
+                        GrammarManipulator.ResumeRecognition();
+                        PrimaryResponse(new Response(CommandType.Primary, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
+                    }
+                    else
+                        throw new Exception("Unknown recognition by PrimaryGrammar ");
+                }
+                catch (Exception ex)
+                {
+                    DataStore.AddToErrorLog(ex.Message);
+                }
+            }
+        }
+
         private static void BasicGrammar_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
         {
             if (e.Result != null)
             {
                 DataStore.AddRecentCommand(e.Result.Text);
-                Console.WriteLine(e.Result.Text);
+                DataStore.AddToMessageDump(e.Result.Text);
                 if (e.Result.Text.Contains("Open") | e.Result.Text.Contains("Execute") | e.Result.Text.Contains("Run") | e.Result.Text.Contains("Intialize") | e.Result.Text.Contains("Start"))
                 {
                     Task.Run(() =>

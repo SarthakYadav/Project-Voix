@@ -165,9 +165,6 @@
     <Resource Include="Images\voixHolo.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\user1Image.jpg" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\Untitled-1.png" />
     <Resource Include="Images\voixOnlyDesignHolo.png" />
   </ItemGroup>
