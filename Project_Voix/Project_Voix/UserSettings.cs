@@ -30,14 +30,20 @@ namespace Project_Voix
         UserGender userGender;                        //default is Male
         VoiceGender synthVoiceGender = VoiceGender.Male;            //default is Male
         string userName;
-        VoiceAge synthAge = VoiceAge.NotSet;                        //not specified by default
+        string moviesFolderLoc = "";
         int synthVol = 100;
         int synthRate = 0;
         string userImageSource;                                         //stores the source address of the User Image
         #endregion
 
         #region Properties
-        
+
+        public string Movies
+        {
+            get { return moviesFolderLoc; }
+            set { moviesFolderLoc = value; }
+        }
+
         public string ImageSource
         {
             get { return userImageSource; }
@@ -67,11 +73,7 @@ namespace Project_Voix
             set { synthVoiceGender = value; }
         }
 
-        public VoiceAge SynthesizerVoiceAge
-        {
-            get { return synthAge; }
-            set { synthAge = value; }
-        }
+        
 
         public int SynthesizerVolume
         {
@@ -111,13 +113,13 @@ namespace Project_Voix
         #endregion
 
         #region Constructor
-        public UserSettings(string username, UserGender usergender, string assistantName = "Tars", VoiceGender voiceGender = VoiceGender.Male, VoiceAge voiceAge = VoiceAge.NotSet, int synthVol = 100, int synthRate = 0)
+        public UserSettings(string username, UserGender usergender, string assistantName = "Tars", VoiceGender voiceGender = VoiceGender.Male, int synthVol = 100, int synthRate = 0)
         {
             Username = username;
             Gender = usergender;
             AssistantName = assistantName;
             SynthesizerVoiceGender = voiceGender;
-            SynthesizerVoiceAge = voiceAge;
+            //Movies = moviesFolder;
             SynthesizerVolume = synthVol;
             SynthesizerRate = synthRate;
         }

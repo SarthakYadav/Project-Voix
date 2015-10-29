@@ -66,6 +66,7 @@ namespace Project_Voix
             try
             {
                 ex.ExecutableProcess = Process.Start(ex.PInfo);
+                ex.ExecutableProcess.WaitForExit();
             }
             catch (Exception e)
             {
@@ -76,6 +77,8 @@ namespace Project_Voix
                     {
                         ex.PInfo.FileName = ex.PInfo.FileName.Substring(ex.PInfo.FileName.LastIndexOf('\\') + 1);
                         ex.ExecutableProcess = Process.Start(ex.PInfo as ProcessStartInfo);
+                        ex.ExecutableProcess.WaitForExit();
+
                     }
                     catch (Exception exp)
                     {
@@ -85,6 +88,8 @@ namespace Project_Voix
                             ex.PInfo.FileName = prevfileName;
                             ex.PInfo.FileName.Replace("System32", "Sysnative");
                             ex.ExecutableProcess = Process.Start(ex.PInfo);
+                            ex.ExecutableProcess.WaitForExit();
+
                         }
                         else
                             System.Windows.MessageBox.Show(exp.Message);
@@ -105,7 +110,7 @@ namespace Project_Voix
             string targetAddress = executablesList[i].TargetAddress;
             string commandName = executablesList[i].CommandName;
             ex.PInfo.FileName = targetAddress;
-            InitProcess(ex);
+            Task.Run(() => { InitProcess(ex); });
         }
 
         private static void CloseProcess(int i)
@@ -118,7 +123,7 @@ namespace Project_Voix
 
             try
             {
-                Executable ex = runningExecutables[i] as Executable;
+                Executable ex =executablesList[i] as Executable;
                 string name = ex.PInfo.FileName;
                 name = name.Substring(name.LastIndexOf('\\') + 1);                      //derives substring from last occurence of '/' to the end
                 name = name.Remove(name.LastIndexOf('.'));                              //deletes from last occurence of '.'
@@ -127,8 +132,15 @@ namespace Project_Voix
                 Process[] processes = Process.GetProcessesByName(name);                 // here we did the trick. To get the name of the Process,we did use the runningExecutables list                                                                                                
                 foreach (var item in processes)                                         //but instead searched for all executing processes of the same name and closed them
                 {
-                    item.Kill();
-                    item.WaitForExit();
+                    try
+                    {
+                        item.CloseMainWindow();
+                    }
+                    catch (Exception excep)
+                    {
+                        DataStore.AddToErrorLog(string.Format("An Error Occured--- \n Error Message : {0}\n Error StackTrace : {1}",excep.Message,excep.StackTrace));
+                    } 
+                    
                 }
                 runningExecutables.RemoveAt(i);
                 //if (runningExecutables[i].ExecutableProcess.ProcessName.CompareTo(name) == 0)
@@ -142,7 +154,7 @@ namespace Project_Voix
             {
                 Task.Run(() => 
                 {
-                    MessageBox.Show(string.Format("{0}\n {1}", e.Message, e.StackTrace));
+                    DataStore.AddToErrorLog(string.Format("{0}\n {1}\n", e.Message, e.StackTrace));
                 });
             }
         }
@@ -154,8 +166,7 @@ namespace Project_Voix
         {
             await Task.Run(() =>
             {
-                //object obj = new object();
-                //Console.WriteLine("InitializeManager invoked on thread {0}", Thread.CurrentThread.ManagedThreadId);
+                
 
                 string[] commandList = Utilities.CommandList();
                 string[] locationList = Utilities.ShortcutTargetList();
@@ -168,10 +179,9 @@ namespace Project_Voix
                         executablesList[i].PInfo.FileName = locationList[i];
                     }
                     executablesList.Sort();
-
-                    Console.WriteLine("InitializeManager() successful");
+                    DataStore.AddToMessageDump("InitializeManager() successful");
                     Init.waitHandle.Set();
-                }
+                } 
             });
 
         }
@@ -180,10 +190,10 @@ namespace Project_Voix
         {
             if (runningExecutables.Count != 0)
                 foreach (var item in runningExecutables)
-                    Console.WriteLine(item);
+                    DataStore.AddToMessageDump(item.ToString());
 
             else
-                Console.WriteLine("The list is empty");
+                DataStore.AddToMessageDump("The list is empty");
         }
 
         static public void SendOpenCommand(string command)
@@ -198,7 +208,7 @@ namespace Project_Voix
 
         static public void SendCloseCommand(string command)
         {
-
+            int i = 0;
             if (command.Contains("Tars Close"))
             {
                 command = command.Remove(0, 11);
@@ -208,10 +218,15 @@ namespace Project_Voix
             else
                 throw new Exception("Unknown Command");
 
-            int i = GetIndexOfCommand(command, ref runningExecutables);
-            CloseProcess(i);
-            if (runningExecutables.Count == 0)
-                GrammarManipulator.DisableCloseGrammar();
+            i = GetIndexOfCommand(command, ref executablesList);
+
+            if (i >-1)
+                CloseProcess(i);
+            else
+                DataStore.AddToErrorLog("There is no program of the given name which is currently running");
+
+            //if (runningExecutables.Count == 0)
+              //  GrammarManipulator.DisableCloseGrammar();
         }
         #endregion
     }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Project_Voix"
         mc:Ignorable="d"
-        Title="AddUser" Height="400" Width="650" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen">
+        Title="AddUser" Height="400" Width="650" ResizeMode="CanMinimize" WindowStartupLocation="Manual">
     <Grid>
         <Grid.Background>
             <SolidColorBrush Color="{DynamicResource centrePanelColor1}"/>
@@ -37,29 +37,29 @@
                 <TextBlock Grid.Column="0" Grid.Row="1" Text="User Gender* : " Style="{StaticResource textBlockStyle1}" HorizontalAlignment="Right"/>
                 <TextBlock Grid.Column="0" Grid.Row="2" Text="Assistant Name : " Style="{StaticResource textBlockStyle1}" HorizontalAlignment="Right"/>
                 <TextBlock Grid.Column="0" Grid.Row="3" Text="Voice Gender : " Style="{StaticResource textBlockStyle1}"  HorizontalAlignment="Right"/>
-                <TextBlock Grid.Column="0" Grid.Row="4" Text="Voice Age : " Style="{StaticResource textBlockStyle1}" HorizontalAlignment="Right"/>
+                <TextBlock Grid.Column="0" Grid.Row="4" Text="Movies folder : " Style="{StaticResource textBlockStyle1}" HorizontalAlignment="Right"/>
                 <TextBlock Grid.ColumnSpan="2" Grid.Row="5" FontSize="15" Style="{StaticResource textBlockStyle1}" HorizontalAlignment="Left" Text=" fields marked * are mandatory"/>
                 
-                <TextBox x:Name="userNameTextBox" Grid.Column="1" Grid.Row="0" Text="Sarthak Yadav" Style="{StaticResource textBoxStyle1}" Background="{DynamicResource bestTextBoxBrush}"/>
-                <ComboBox x:Name="userGenderListbox" Margin="2" Grid.Column="1" Grid.Row="1" FontSize="25">
+                <TextBox x:Name="userNameTextBox" ToolTip="Enter the username" Grid.Column="1" Grid.Row="0" Text="Sarthak Yadav" Style="{StaticResource textBoxStyle1}" Background="{DynamicResource bestTextBoxBrush}"/>
+                <ComboBox x:Name="userGenderListbox" ToolTip="Select the User gender" Margin="2" Grid.Column="1" Grid.Row="1" FontSize="25">
                     <ComboBox.Background>
                         <SolidColorBrush Color="{StaticResource LogoColor1}"/>
                     </ComboBox.Background>
                     <ComboBoxItem Style="{StaticResource comboBoxItemStyle1}">Male</ComboBoxItem>
                     <ComboBoxItem Style="{StaticResource comboBoxItemStyle1}">Female</ComboBoxItem>
                 </ComboBox>
-                <TextBox x:Name="assistantNameTextbox" Grid.Column="1" Grid.Row="2" Text="Tars" Style="{StaticResource textBoxStyle1}"/>
+                <TextBox x:Name="assistantNameTextbox" ToolTip="Select the name of your Assistant (Default is Tars) ."  Grid.Column="1" Grid.Row="2" Text="Tars" Style="{StaticResource textBoxStyle1}"/>
 
-                <ComboBox x:Name="voiceGenderSelection" Grid.Column="1" Margin="2" Grid.Row="3" FontSize="25" Background="{StaticResource bestTextBoxBrush}">
+                <ComboBox x:Name="voiceGenderSelection" ToolTip="Select preferred voice Gender" Grid.Column="1" Margin="2" Grid.Row="3" FontSize="25" Background="{StaticResource bestTextBoxBrush}">
                     <ComboBoxItem Style="{StaticResource comboBoxItemStyle1}">Male</ComboBoxItem>
                     <ComboBoxItem Style="{StaticResource comboBoxItemStyle1}">Female</ComboBoxItem>
                 </ComboBox>
-                <ComboBox x:Name="voiceAgeSelection" Grid.Column="1" Margin="2" Grid.Row="4" FontSize="25">
-                    <ComboBoxItem Style="{StaticResource comboBoxItemStyle1}">Adult</ComboBoxItem>
-                    <ComboBoxItem Style="{StaticResource comboBoxItemStyle1}">Child</ComboBoxItem>
-                    <ComboBoxItem Style="{StaticResource comboBoxItemStyle1}">Senior</ComboBoxItem>
-                    <ComboBoxItem Style="{StaticResource comboBoxItemStyle1}">Teen</ComboBoxItem>
-                </ComboBox>
+                
+                <TextBox x:Name="moviesFolderSelection" ToolTip="Type/Paste the location where you store Movies" Grid.Column="1" Grid.Row="4" Text="Type/Paste location" Margin="2" FontSize="18" Style="{StaticResource textBoxStyle1}" MouseRightButtonDown="moviesFolderSelection_RightClick" TextChanged="moviesFolderSelection_TextChanged">
+                    
+                </TextBox>
+             
+                
             </Grid>
             <Grid Margin="5" x:Name="btnGrid">
                 <Grid.ColumnDefinitions>
@@ -67,7 +67,7 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <Button x:Name="addUserOk" Margin="5" Grid.Column="0" Foreground="White" Content="Ok" BorderBrush="White" 
+                <Button x:Name="addUserOk" Margin="5" Grid.Column="0" Foreground="White" IsDefault="True" ToolTip="Ok, Add this user to the DataStore" Content="Ok" BorderBrush="White" 
                         BorderThickness="2" FontSize="25" Template="{StaticResource ButtonControlTemplate1}" Click="addUserOkClick">
                     <Button.Background>
                         <SolidColorBrush Color="{DynamicResource centrePanelColor1}"/>
@@ -77,7 +77,7 @@
                     </Button.Effect>
                 </Button>
                 <Button x:Name="addUserCancel" Margin="5" Grid.Column="1" Foreground="White" BorderBrush="White" 
-                        BorderThickness="2" Content="Cancel" FontSize="25" Template="{StaticResource ButtonControlTemplate1}" Click="addUserCancelClick">
+                        BorderThickness="2" Content="Cancel" FontSize="25" IsCancel="True" Template="{StaticResource ButtonControlTemplate1}" ToolTip="Cancel" Click="addUserCancelClick">
                     <Button.Effect>
                         <DropShadowEffect Color="White"/>
                     </Button.Effect>

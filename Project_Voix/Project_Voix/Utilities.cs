@@ -92,7 +92,7 @@ namespace Project_Voix
                 programCommands[i] = CommandName(filesList[i]);            //gets the command name for the given program in the filesList to be used for recognition
             }
             watch.Stop();
-            Console.WriteLine("In command list generation , milliseconds taken : {0}", watch.ElapsedTicks);
+            DataStore.AddToMessageDump(string.Format("In command list generation , milliseconds taken : {0}", watch.ElapsedTicks));
             return programCommands;
         }
         public static string CommandName(string str)

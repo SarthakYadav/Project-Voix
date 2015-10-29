@@ -9,8 +9,9 @@
        Update 1: 2/10/2015          Author: Sarthak 
        Update 2: 9/10/2015          Author: Sarthak         Description: Added Grammar CloseProgramGrammar, Added Asynchronous Support
        Update 3: 11/10/2015         Author: Sarthak         Description: Added EventHandlers for the resp Grammar types
+       update 4: 30/10/2015         Author: Sarthak         Description: Added all commands in the UI grammar and updated Respective Handlers
 
-       latest update: 11/10/2015     Update 3            Author: Sarthak
+       latest update: 11/10/2015     Update 4          
     
     Listed Methods:
     1. public method GrammarLoader() takes reference of S.R.E. and loads all the required grammars into the engine
@@ -51,6 +52,7 @@ namespace Project_Voix
             openRecogPhrase = "";
         }
 
+        static public event ChangeSlider UpdateSlider;
         static public event GenerateResponse BasicResponse;
         static public event GenerateResponse Open_SearchTypeResponse;
         static public event GenerateResponse ResponseBoxResponse;
@@ -68,43 +70,55 @@ namespace Project_Voix
 
             // main method that loads the S.R.E with all the grammars
             speechEngine = sre;
+            #region Grammar for Basic Commands
             Grammar basicGrammar = Task.Factory.StartNew<Grammar>(new Func<Grammar>(BasicGrammar)).Result;
             basicGrammar.Name = "basicGrammar";
             basicGrammar.Priority = 10;
             basicGrammar.SpeechRecognized += BasicGrammar_SpeechRecognized;
             BasicResponse += ResponseGenerator.BasicGrammar_ResponseHandler;
+            #endregion
 
+            #region Grammar for Open Type commands
             Grammar open_typeGrammar = Task.Factory.StartNew<Grammar>(new Func<Grammar>(OpenCommandGrammar)).Result;
             open_typeGrammar.Name = "open_typeGrammar";
             open_typeGrammar.Priority = 8;
             open_typeGrammar.SpeechRecognized += Open_typeGrammar_SpeechRecognized;
             Open_SearchTypeResponse += ResponseGenerator.Open_SearchType_ResponseHandler;
+            #endregion
 
+            #region Grammar for Response Box
             Grammar responseBoxGrammar = Task.Factory.StartNew<Grammar>(new Func<Grammar>(ResponseBoxSelection)).Result;
             responseBoxGrammar.Name = "responseBoxGrammar";
             responseBoxGrammar.Priority = 5;
             responseBoxGrammar.SpeechRecognized += ResponseBoxGrammar_SpeechRecognized;
             ResponseBoxResponse += ResponseGenerator.ResponseBox_ResponseHandler;
+            #endregion
 
+            #region Grammar for NonOperative Commands
             Grammar nonOperative = Task.Factory.StartNew<Grammar>(new Func<Grammar>(NonOperative)).Result;
             nonOperative.Name = "NonOperativeCommands";
             nonOperative.Priority = 4;
             nonOperative.SpeechRecognized += NonOperative_SpeechRecognized;
             NonOperativeResponse += ResponseGenerator.NonOperational_ResponseHandler;
+            #endregion
 
+            #region Grammar for UI commands
             Grammar uiGrammar = Task.Run<Grammar>(new Func<Grammar>(UIGrammar)).Result;
             uiGrammar.Name = "UIGrammar";
             uiGrammar.Priority = 3;
             uiGrammar.SpeechRecognized += UiGrammar_SpeechRecognized;
             UIResponse += ResponseGenerator.UI_ResponseHandler;
+            #endregion
 
-
+            #region Grammar for Close command
             Grammar closeProgramGrammar = Task.Factory.StartNew<Grammar>(new Func<Grammar>(CloseProgramGrammar)).Result;
             closeProgramGrammar.Name = "closeProgramGrammar";
             closeProgramGrammar.Priority = 6;
             closeProgramGrammar.SpeechRecognized += CloseProgramGrammar_SpeechRecognized;
             CloseProgramResponse += ResponseGenerator.CloseProgram_ResponseHandler;
+            #endregion
 
+            #region Loading all Grammars in the SRE
             //loading all the grammars into the S.R.E
             speechEngine.LoadGrammarAsync(basicGrammar);
             speechEngine.LoadGrammarAsync(open_typeGrammar);
@@ -112,6 +126,7 @@ namespace Project_Voix
             speechEngine.LoadGrammarAsync(nonOperative);
             speechEngine.LoadGrammarAsync(uiGrammar);
             speechEngine.LoadGrammarAsync(closeProgramGrammar);
+            #endregion
         }
 
         public static void SetAssistantName(string name)
@@ -178,13 +193,26 @@ namespace Project_Voix
         {
             /* creates grammar that is to be loaded only when UI is selected
                 list:
-                    1. Tars(optional) Refresh
-                    2. Tars(optional) Quit
+                    1. Add User
+                    2. Select User
+                    3. Expand Expander
+                    4. Increase Synthesizer Volume
+                    5. Increase Synthesizer Rate 
+                    6. Decrease Synthesizer Volume
+                    7. Decrease Sythesizer Rate
+                    8. Exit
             */
             //Console.WriteLine("UI grammar is on thread {0}",Thread.CurrentThread.ManagedThreadId);
             GrammarBuilder gb = new GrammarBuilder();
             gb.Append(optionalComponent);
-            Choices choiceUI = new Choices(new GrammarBuilder[] { "Refresh", "Quit" });
+            Choices choiceUI = new Choices();
+            choiceUI.Add(new GrammarBuilder[] 
+            {
+                "Add User","Select User",
+                "Expand Expander","Increase Synthesizer Volume",
+                "Increase Synthesizer Rate","Decrease Synthesizer Volume","Decrease Synthesizer Rate",
+                "Exit"
+            });
             gb.Append(choiceUI);
 
             //to save the grammar as an SrgsDocument
@@ -322,16 +350,15 @@ namespace Project_Voix
                     {
                         writeToTextBox(e.Result.Text);
                     });
+
                     try
                     {
                         ResponseBox.CreateResponseBox();
                     }
+
                     catch (Exception ex)
                     {
-                        writeToTextBox(string.Format("Main exception {0}", ex.Message));
-                        writeToTextBox(string.Format("Main exception stack trace {0}", ex.StackTrace));
-                        writeToTextBox(string.Format("Inner exception {0}", ex.InnerException.Message));
-                        writeToTextBox(string.Format("inner Exception stack trace {0}", ex.InnerException.StackTrace));
+                        DataStore.AddToErrorLog(string.Format("Main exception {0}\nMain exception stack trace {1}\nInner exception {2}\ninner Exception stack trace {3}", ex.Message, ex.StackTrace, ex.InnerException.Message, ex.InnerException.StackTrace));
                     }
 
                     try
@@ -340,10 +367,7 @@ namespace Project_Voix
                     }
                     catch (Exception excep)
                     {
-                        writeToTextBox(string.Format("Main exception {0}", excep.Message));
-                        writeToTextBox(string.Format("Main exception stack trace {0}", excep.StackTrace));
-                        writeToTextBox(string.Format("Inner exception {0}", excep.InnerException.Message));
-                        writeToTextBox(string.Format("inner Exception stack trace {0}", excep.InnerException.StackTrace));
+                        DataStore.AddToErrorLog(string.Format("Main exception {0}\nMain exception stack trace {1}\nInner exception {2}\ninner Exception stack trace {3}", excep.Message, excep.StackTrace, excep.InnerException.Message, excep.InnerException.StackTrace));
                     }
                 }
                 else if (e.Result.Text.Contains("Find") | e.Result.Text.Contains("Search") | e.Result.Text.Contains("Look for"))
@@ -374,7 +398,7 @@ namespace Project_Voix
                 }
                 catch (Exception exception)
                 {
-                    Console.WriteLine(exception.Message);
+                    DataStore.AddToErrorLog(exception.Message);
                 }
                 Open_SearchTypeResponse(new Response(CommandType.Open, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
             }
@@ -392,8 +416,7 @@ namespace Project_Voix
                 }
                 catch(Exception exception)
                 {
-                    MessageBox.Show(string.Format("The message is {0} and sent by {1} and this is the stack traced {2}", exception.Message, exception.Source, exception.StackTrace));
-                    MessageBox.Show(string.Format("The message is {0} and sent by {1} and this is the stack traced {2}", exception.InnerException.Message, exception.InnerException.Source, exception.InnerException.StackTrace));
+                    DataStore.AddToErrorLog(string.Format("Main exception {0}\nMain exception stack trace {1}\nInner exception {2}\ninner Exception stack trace {3}", exception.Message, exception.StackTrace, exception.InnerException.Message, exception.InnerException.StackTrace));
                 }
             }
         }
@@ -419,6 +442,31 @@ namespace Project_Voix
                 });
                 
                 DataStore.AddRecentCommand(e.Result.Text);
+                try
+                {
+                    if (e.Result.Text == "Add User")
+                        AddUser.OpenAddUserDialog();                            //opens a new AddUser Dialog box on a new thread
+                    else if (e.Result.Text == "Select User")
+                        SelectUser.OpenUserSelectWindow();                      //opens a new SelectUser Dialog box on a new thread
+                    else if (e.Result.Text == "Expand Expander")
+                        ;
+                    else if (e.Result.Text == "Increase Synthesizer Volume")
+                        UpdateSlider(1,"volume");                               //INCREASES the Synthesizer Volume slider by 1 point
+                    else if (e.Result.Text == "Increase Synthesizer Rate")
+                        UpdateSlider(1,"rate");                                 //INCREASES the Synthesizer Rate Slider by 1 point
+                    else if (e.Result.Text == "Decrease Synthesizer Volume")
+                        UpdateSlider(-1,"volume");                              //DECREASES the Synthesizer Volume slider by 1 point
+                    else if (e.Result.Text == "Decrease Synthesizer Rate")
+                        UpdateSlider(-1,"rate");                                //DECREASES the Synthesizer Volume slider by 1 point
+                    else if (e.Result.Text == "Exit")
+                        ;
+                    else
+                        throw new Exception("Unknown recognition");
+                }
+                catch (Exception exception)
+                {
+                    DataStore.AddToErrorLog(string.Format("Exception occured---\n Message : {0}\n StackTrace : {1}",exception.Message,exception.StackTrace));
+                }
                 //do UI refreshing here
                 UIResponse(new Response(CommandType.UI, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
             }

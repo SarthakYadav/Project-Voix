@@ -7,8 +7,9 @@
     log:-
         Update 1: 20/10/15  Author: Sarthak         Description: Closing in towards completion of UI, added new custom controls
         Update 2: 25/10/15  Author: Sarthak         Description: Completed the most bare basic UI Infrastructure, which AddUser and SelectUser functionality
-
-        latest update: 25/10/2015     Update 2           Author: Sarthak
+        update 3: 30/10/15  Author: Sarthak         Description: Added UIgrammar being auto loaded and auto deloaded when the application is selected or not
+        
+        latest update: 25/10/2015     Update 3           Author: Sarthak
 
      UI Elements and their Functionality:(sans the layout details)
            -commandLog textbox: shows the command log (basic here)
@@ -50,24 +51,86 @@ namespace Project_Voix
         static public Stopwatch initStopwatch;
         public CancellationTokenSource cancelToken = new CancellationTokenSource();
         static public CancellationToken ct;
-        
         public MainWindow()
         {
+            #region Non Essential Stuff
             initStopwatch = new Stopwatch();
-            Stopwatch stop = new Stopwatch();
-            stop.Start();
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            #endregion
+
             InitializeComponent();
-            ct = cancelToken.Token;                                                     //token that signals to holds up the Init.StartInit thread 
-            Task initRun = new Task(new Action(Init.ProgramInit),cancelToken.Token);
-            this.Closed += (sender, e) =>
+                       
+            #region Event Handlers of the Mainwindow itself
+            this.Closed += (sender, e) =>                                   //fires up when the UI Closes
             {
                 Console.WriteLine(ct.CanBeCanceled.ToString());
                 cancelToken.Cancel();                                                   //when this ui is closed, hold up the Init.StartInit thread
             };
+
+            this.Activated += (sender, e) =>
+            {
+                /*
+                    Fires up when the UI is "InFocus" i.e. is the active window 
+                */
+                try
+                {
+                    GrammarManipulator.UILoaded();                                      //Loads the UIGrammar 
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            };
+
+            this.Deactivated += (sender, e) =>
+            {
+                /*
+                    Fires up when the UI has "LostFocus" i.e. is no longer the active window
+                */
+                try
+                {
+                    GrammarManipulator.UIDeloaded();                                    //unloads the UI grammar
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            };
+            #endregion
+
+            #region Additional Stuff
+            Task initRun = new Task(new Action(Init.ProgramInit), cancelToken.Token);
             initRun.Start();           //starts the Init.StartInit method, which is the main recognizer thread, asynchronously
-            stop.Stop();
+            sw.Stop();
+            #endregion
+
+            #region Event Handlers for Events of External CLasses
             DataStore.SetUserNow += DataStore_SetUserNow;                           //event handler for DataStore's SetUserNow event, which notifies when User is set
             GrammarFeeder.writeToTextBox += GrammarFeeder_writeToTextBox;          //event handler for GrammarFeeder's writeToTextBox event
+            GrammarFeeder.UpdateSlider += GrammarFeeder_UpdateSlider;
+            #endregion
+
+            #region Dumping some Data
+            Task.Run(() => { DataStore.AddToMessageDump(string.Format("Time elapsed during loading of main window : {0}", sw.ElapsedMilliseconds)); });
+            logoRectangle.ToolTip = "This is the official logo of Project Voix ." +
+                "\n As opposed to the program itself, the logo is copyright protected." +
+                " Any unauthorised use is subjected to copyright infringement actions ." + "\n Designed by Grafoholics (tm).";
+            #endregion
+        }
+
+        #region Private Methods and Event Handlers
+        private void GrammarFeeder_UpdateSlider(int i, string sliderType)
+        {
+            /*
+                Handles the Update slider event.
+                Any changes made to the slider values are AUTOMATICALLY PICKED UP
+                by their own ValueChanged Events
+            */
+            if (sliderType == "volume")                                                             //checks if the sliderType is volume and performs apt actions
+                volSlider.Dispatcher.InvokeAsync(() => { volSlider.Value += i; });                  
+            else
+                rateSlider.Dispatcher.InvokeAsync(() => { rateSlider.Value += i; });                //since there are only two types of slider, performs actions on the rate slider
         }
 
         private void DataStore_SetUserNow(UserSettings user)
@@ -76,24 +139,36 @@ namespace Project_Voix
                 Invokes Dispatcher object of each UIELEMENT and sets the respective value
 
             */
-
-            currentUserName.Dispatcher.InvokeAsync(() => { currentUserName.Text = user.Username; });
-            currUserAssitantName.Dispatcher.InvokeAsync(() => { currUserAssitantName.Text = user.AssistantName; });
-            currUserGender.Dispatcher.InvokeAsync(()=>{ currUserGender.Text = user.Gender.ToString(); });
-            currUserVoiceGender.Dispatcher.InvokeAsync(() => { currUserVoiceGender.Text = user.SynthesizerVoiceGender.ToString(); });
-            userImage.Dispatcher.InvokeAsync(() => 
+            try
             {
-                var bitmap = new BitmapImage(new Uri(user.ImageSource));                    //new Bitmap Image using the ImageSource of the current user
-                userImage.Source = bitmap;                                                  //sets the source of the userImage control with the bitmap image
-            });
-            
+                currentUserName.Dispatcher.InvokeAsync(() => { currentUserName.Text = user.Username; });
+                currUserAssitantName.Dispatcher.InvokeAsync(() => { currUserAssitantName.Text = user.AssistantName; });
+                currUserGender.Dispatcher.InvokeAsync(() => { currUserGender.Text = user.Gender.ToString(); });
+                currUserVoiceGender.Dispatcher.InvokeAsync(() => { currUserVoiceGender.Text = user.SynthesizerVoiceGender.ToString(); });
+                if (user.ImageSource != "" && user.ImageSource != null)
+                    userImage.Dispatcher.InvokeAsync(() =>
+                    {
+                        var bitmap = new BitmapImage(new Uri(user.ImageSource));                    //new Bitmap Image using the ImageSource of the current user
+                        userImage.Source = bitmap;                                                  //sets the source of the userImage control with the bitmap image
+                    });
+            }
+            catch (Exception exception)
+            {
+                DataStore.AddToErrorLog(string.Format("Main exception {0}\nMain exception stack trace {1}\nInner exception {2}\ninner Exception stack trace {3}", exception.Message, exception.StackTrace, exception.InnerException.Message, exception.InnerException.StackTrace));
+            }
         }
 
         private void GrammarFeeder_writeToTextBox(string logUpdate)                                     
         {
-            commandLog.Dispatcher.InvokeAsync(()=> { commandLog.Text += string.Format("\n{0}", logUpdate); });          //used to access A UI element from another thread
+            try
+            {
+                commandLog.Dispatcher.InvokeAsync(() => { commandLog.Text += string.Format("\n{0}", logUpdate); });          //used to access A UI element from another thread
+            }
+            catch (Exception exception)
+            {
+                DataStore.AddToErrorLog(string.Format("Main exception {0}\nMain exception stack trace {1}\nInner exception {2}\ninner Exception stack trace {3}", exception.Message, exception.StackTrace, exception.InnerException.Message, exception.InnerException.StackTrace));
+            }
         }
-       
         
 
         private void addUser_Click(object sender, RoutedEventArgs e)
@@ -111,7 +186,6 @@ namespace Project_Voix
                 Non thread blocking Function to SelectUser window. would be made Synchronous
             */
             SelectUser.OpenUserSelectWindow();
-
         }
 
         private void volSliderValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -126,9 +200,9 @@ namespace Project_Voix
             }
             catch(Exception ex)
             {
-                Console.WriteLine(string.Format(" message : {0}\n Source : {1}\n Stack : {2} ", ex.Message, ex.Source, ex.StackTrace));
+                DataStore.AddToErrorLog(string.Format(" message : {0}\n Source : {1}\n Stack : {2} ", ex.Message, ex.Source, ex.StackTrace));
             }
-            Console.WriteLine((int)slider.Value);
+            //Console.WriteLine((int)slider.Value);
             
         }
 
@@ -144,8 +218,19 @@ namespace Project_Voix
             }
             catch (Exception ex)
             {
-                Console.WriteLine(" message : {0}\n Source : {1}\n Stack : {2} ", ex.Message, ex.Source, ex.StackTrace);
+                DataStore.AddToErrorLog(string.Format(" message : {0}\n Source : {1}\n Stack : {2} ", ex.Message, ex.Source, ex.StackTrace));
             }
         }
+
+        private void btnPauseRecog_Click(object sender, RoutedEventArgs e)
+        {
+            Init.PauseRecog();
+        }
+
+        private void btnResumeRecog_Click(object sender, RoutedEventArgs e)
+        {
+            Init.ResumeRecog();
+        }
+        #endregion
     }
 }

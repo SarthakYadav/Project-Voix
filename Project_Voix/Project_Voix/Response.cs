@@ -44,7 +44,7 @@ namespace Project_Voix
         public CommandType CommandType { get; set; }
         public string RecognizedPhrase { get; set; }
         string TimeOfDay { get; set; }
-        public string SynthesisOutput { get; set; }
+        //public string SynthesisOutput { get; set; }
         public string AcknowledgementGender
         {
             get { return acknowledgementGender; }
@@ -65,14 +65,16 @@ namespace Project_Voix
         {
             if (HourOfDay < 6 & HourOfDay > 0)
                 TimeOfDay = "late night";
-            if (HourOfDay >= 6 & HourOfDay <= 11)
+            else if (HourOfDay >= 6 & HourOfDay <= 11)
                 TimeOfDay = "morning";
-            if (HourOfDay >= 12 & HourOfDay < 18)
+            else if (HourOfDay >= 12 & HourOfDay < 18)
                 TimeOfDay = "afternoon";
-            if (HourOfDay >= 18 & HourOfDay <= 21)
+            else if (HourOfDay >= 18 & HourOfDay < 21)
                 TimeOfDay = "evening";
-            else
+            else if (HourOfDay >= 21 & HourOfDay <= 23)
                 TimeOfDay = "night";
+            else
+                TimeOfDay = "I DOnt know what time it is!";
         }
 
         private void GenerateGreetingsList()
@@ -120,7 +122,6 @@ namespace Project_Voix
             {
                 GenerateGreetingsList();
             }
-
         }
         #endregion
     }

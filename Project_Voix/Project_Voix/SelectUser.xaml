@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Project_Voix"
         mc:Ignorable="d"
-        Title="SelectUser" Height="300" Width="450" WindowStartupLocation="CenterScreen">
+        Title="SelectUser" Height="300" Width="450" WindowStartupLocation="CenterOwner">
     <Grid>
         <Grid.Background>
             <SolidColorBrush Color="{DynamicResource centrePanelColor1}"/>
@@ -33,7 +33,7 @@
                     <ColumnDefinition/>
                     <ColumnDefinition Width="2*"/>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="btnOk" Grid.Column="0" Margin="5" Content="Ok" Foreground="Snow" FontSize="25" Template="{StaticResource ButtonControlTemplate1}" BorderBrush="SkyBlue" BorderThickness="2" Click="btnOkClick">
+                <Button x:Name="btnOk" Grid.Column="0" ToolTip="Click to load the highlighted User" IsDefault="True"  Margin="5" Content="Ok" Foreground="Snow" FontSize="25" Template="{StaticResource ButtonControlTemplate1}" BorderBrush="SkyBlue" BorderThickness="2" Click="btnOkClick">
                     <Button.Effect>
                         <DropShadowEffect Color="SkyBlue"/>
                     </Button.Effect>
@@ -41,7 +41,7 @@
                         <SolidColorBrush Color="{DynamicResource centrePanelColor1}"/>
                     </Button.Background>
                 </Button>
-                <Button x:Name="btnCancel" Grid.Column="1" Content="Cancel" Foreground="Snow" FontSize="25" Margin="5" Template="{StaticResource ButtonControlTemplate1}" BorderBrush="SkyBlue" BorderThickness="2" Click="btnCancelClick">
+                <Button x:Name="btnCancel" Grid.Column="1" ToolTip="Close this Dialog" IsCancel="True" Content="Cancel" Foreground="Snow" FontSize="25" Margin="5" Template="{StaticResource ButtonControlTemplate1}" BorderBrush="SkyBlue" BorderThickness="2" Click="btnCancelClick">
                     <Button.Effect>
                         <DropShadowEffect Color="SkyBlue"/>
                     </Button.Effect>

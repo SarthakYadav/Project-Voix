@@ -33,13 +33,22 @@ namespace Project_Voix
         static bool NoStoredUser = false;
         static bool IsUserSet = false;
         static List<UserSettings> listOfUsers = new List<UserSettings>();                   //store the list of users
-        
+                                                                                            //static StringBuilder dump;
+        static StreamWriter writer = new StreamWriter(@"C:\Users\HEWLETT PACKARD\Documents\Project Voix\Dump\Dump.txt", true);
+        static StreamWriter writer1 = new StreamWriter(@"C:\Users\HEWLETT PACKARD\Documents\Project Voix\Dump\ErrorLog.txt", true);
+
         static UserSettings currentUser = null;                                             //stores the current user
         static Queue<string> recentCommands = new Queue<string>();                          //stores a Queue of recent Commands (max 10)
         public static event SetUser SetUserNow;
         public static event SynthesisGenderChange VoiceGenderChanged;
         #endregion
 
+        static DataStore()
+        {
+            //dump = new StringBuilder(string.Format("Message Dump \t Time stamp : {0}",DateTime.Now.ToString()));
+            //errLog = new StringBuilder(string.Format("Error Log \t Time stamp : {0}", DateTime.Now.ToString()));
+        }
+        
         public static Queue<string> RecentCommands                                          //read only type public Property encapsulating recentCommands
         {
             get { return recentCommands; }
@@ -54,6 +63,10 @@ namespace Project_Voix
         {
             get { return currentUser; }
         }
+
+        #region Private Methods
+        
+        #endregion
         #region Public Methods
         public static void StartDataStoreManager()
         {
@@ -72,10 +85,12 @@ namespace Project_Voix
             }
             SetUserNow(CurrentUser);
             IsUserSet = true;
+            //System.IO.File.WriteAllText(@"C:\Users\HEWLETT PACKARD\Documents\Project Voix\Dump\ErrorLog.txt", Errorlog.ToString());
+            //System.IO.File.WriteAllText(@"C:\Users\HEWLETT PACKARD\Documents\Project Voix\Dump\Dump.txt", Dump.ToString());
             Init.waitHandle2.Set();
         }
         
-        public static void AddNewUser(string username,string userGender,string assistantName,string voiceGender,string voiceAge,string imageUri)
+        public static void AddNewUser(string username,string userGender,string assistantName,string voiceGender,string moviesFolder,string imageUri)
         {
            
             UserGender _userGender;
@@ -93,21 +108,15 @@ namespace Project_Voix
                 _voiceGender = VoiceGender.Neutral;
 
             currentUser = new UserSettings(username,_userGender,assistantName,_voiceGender);
-            
-            if (voiceAge == "Adult")
-                currentUser.SynthesizerVoiceAge = VoiceAge.Adult;
-            else if (voiceAge == "Child")
-                currentUser.SynthesizerVoiceAge = VoiceAge.Child;
-            else if (voiceAge == "Senior")
-                currentUser.SynthesizerVoiceAge = VoiceAge.Senior;
-            else
-                currentUser.SynthesizerVoiceAge = VoiceAge.Teen;
+
+            if (moviesFolder != "")
+                currentUser.Movies = moviesFolder;
 
             if (imageUri != "")
                 currentUser.ImageSource = imageUri;
 
             listOfUsers.Add(currentUser);
-            //MainWindow.SetCurrentUser(currentUser);
+           
             SetUserNow(currentUser);
             try
             {
@@ -115,7 +124,7 @@ namespace Project_Voix
             }
             catch(Exception ex)
             {
-                Console.WriteLine("message : {0}\n Source : {1}\n StackTrace : {2}",ex.Message,ex.Source,ex.StackTrace);
+                AddToErrorLog(string.Format("message : {0}\n Source : {1}\n StackTrace : {2}",ex.Message,ex.Source,ex.StackTrace));
             }
             //currentUser = user;
             SaveUserSettings();
@@ -170,7 +179,7 @@ namespace Project_Voix
             catch(Exception e)
             {
                 
-                MessageBox.Show(string.Format("{0}\n Please ensure that there is a stored User File",e.Message));
+                AddToErrorLog(string.Format("{0}\n Please ensure that there is a stored User File",e.Message));
             }
         }
         public static void DisplayCurrentUser()
@@ -188,12 +197,47 @@ namespace Project_Voix
             }
             catch (Exception ex)
             {
-                Console.WriteLine(" message : {0}\n Source : {1}\n Stack : {2} ", ex.Message, ex.Source, ex.StackTrace);
+                AddToErrorLog(string.Format(" message : {0}\n Source : {1}\n Stack : {2} ", ex.Message, ex.Source, ex.StackTrace));
             }
             
         }
 
-
+        static public void AddToMessageDump(string text)
+        {
+            try
+            {
+                Task.Run(() =>
+                {
+                    writer.Write(string.Format("\n\n" + text + "\n Time Stamp : {0}", DateTime.Now.ToString()));
+                    writer.Flush();
+                    //writer.Close();
+                });
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
+            
+        }
+        static public void AddToErrorLog(string text)
+        {
+            try
+            {
+                Task.Run(() =>
+                {
+                    writer1.Write(string.Format("\n" + text + "\n Time Stamp : {0}", DateTime.Now.ToString()));
+                    writer1.Flush();
+                    //writer1.Close();
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
+            
+        }
         #endregion
     }
 }

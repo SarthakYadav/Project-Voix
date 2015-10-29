@@ -42,7 +42,8 @@ namespace Project_Voix
         BitmapImage img = null;
         Image userImage;
         string imageUri;
-        //UserSettings currentUser;
+        string moviesFolder;
+        
         public AddUser()
         {
             InitializeComponent();
@@ -54,25 +55,32 @@ namespace Project_Voix
             /*
                 Sets the Background image for the Image Button
             */
-            
-            OpenFileDialog openImageFile = new OpenFileDialog();
-            openImageFile.Title = "User Image Selection";
-            openImageFile.Filter = "Image Files (*.jpg,*.gif,*.png,*.jpe,*.bmp)|*.jpg;*.gif;*.png;*.jpe;*.bmp";
-            openImageFile.FilterIndex = 1;
-            openImageFile.Multiselect = false;
-            if (openImageFile.ShowDialog() == true)
+            try
             {
-                imageUri = openImageFile.FileName;
-                img = new BitmapImage(new Uri(openImageFile.FileName));
-                imgBrush.ImageSource = img;
-                
+                OpenFileDialog openImageFile = new OpenFileDialog();
+                openImageFile.Title = "User Image Selection";
+                openImageFile.Filter = "Image Files (*.jpg,*.gif,*.png,*.jpe,*.bmp)|*.jpg;*.gif;*.png;*.jpe;*.bmp";
+                openImageFile.FilterIndex = 1;
+                openImageFile.Multiselect = false;
+                if (openImageFile.ShowDialog() == true)
+                {
+                    imageUri = openImageFile.FileName;
+                    img = new BitmapImage(new Uri(openImageFile.FileName));
+                    imgBrush.ImageSource = img;
+
+                }
             }
+            catch (Exception ex)
+            {
+                Task.Run(() => { DataStore.AddToErrorLog(string.Format("An Exception Occured---\n Exception message : {0}\n Excetion StackTrace : {1}",ex.Message,ex.StackTrace)); });
+            }
+            
             
         }
 
         private void addUserOkClick(object sender, RoutedEventArgs e)
         {
-            DataStore.AddNewUser(userNameTextBox.Text, userGenderListbox.Text, assistantNameTextbox.Text, voiceGenderSelection.Text, voiceAgeSelection.Text,imageUri);
+            DataStore.AddNewUser(userNameTextBox.Text, userGenderListbox.Text, assistantNameTextbox.Text, voiceGenderSelection.Text, moviesFolderSelection.Text,imageUri);
             GrammarFeeder.SetAssistantName(assistantNameTextbox.Text);
             this.Close();
         }
@@ -103,5 +111,23 @@ namespace Project_Voix
             thread.Start();
 
         }
+
+        private void moviesFolderSelection_RightClick(object sender, MouseButtonEventArgs e)
+        {
+            var dialog = new System.Windows.Forms.FolderBrowserDialog();
+            System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+            if(result== System.Windows.Forms.DialogResult.OK)
+            {
+                moviesFolder = dialog.SelectedPath;
+            }
+        }
+
+        private void moviesFolderSelection_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var obj = sender as TextBox;
+            moviesFolder = @obj.Text;
+            DataStore.AddToMessageDump(string.Format("movies folder is : {0}",moviesFolder));
+        }
+
     }
 }

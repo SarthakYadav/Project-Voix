@@ -28,10 +28,16 @@ namespace Project_Voix
 {
     static class Init
     {
+        static SpeechRecognitionEngine speechEngine;
 
+        static public SpeechRecognitionEngine Recognizer
+        {
+            get { return speechEngine; }
+            set { speechEngine = value; }
+        }
         public static AutoResetEvent waitHandle = new AutoResetEvent(false);
         public static AutoResetEvent waitHandle2 = new AutoResetEvent(false);
-
+        
         public static void ProgramInit()
         {
             MainWindow.initStopwatch.Start();
@@ -46,7 +52,7 @@ namespace Project_Voix
             });
 
             waitHandle2.WaitOne();
-            SpeechRecognitionEngine speechEngine = new SpeechRecognitionEngine();
+            speechEngine = new SpeechRecognitionEngine();
             Stopwatch watch = new Stopwatch();
             DataStore.DisplayCurrentUser();
 
@@ -65,26 +71,17 @@ namespace Project_Voix
             speechEngine.SetInputToDefaultAudioDevice();
 
             MainWindow.initStopwatch.Stop();
-            Console.WriteLine("time taken in the Init instantiator {0} ms", MainWindow.initStopwatch.ElapsedMilliseconds);
+            DataStore.AddToMessageDump(string.Format("time taken in the Init instantiator {0} ms", MainWindow.initStopwatch.ElapsedMilliseconds));
             speechEngine.RecognizeAsync(RecognizeMode.Multiple);
-
-
-
-            Console.ReadLine();         //keeps the console open during debugging
-
-            foreach (var item in DataStore.RecentCommands)
-            {
-                Console.WriteLine(item);
-            }
-
-            DataStore.SaveUserSettings();
-
-            foreach (var item in DataStore.Users)
-            {
-                Console.WriteLine(item);
-            }
-            Console.ReadLine();
         }
 
+        public static void PauseRecog()
+        {
+            Recognizer.RecognizeAsyncStop();
+        }
+        public static void ResumeRecog()
+        {
+            Recognizer.RecognizeAsync();
+        }
     }
 }

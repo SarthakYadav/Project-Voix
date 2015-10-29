@@ -101,7 +101,7 @@ namespace Project_Voix
                         break;
                     case "UIGrammar":
                         indexOfUi = listOfGrammars.IndexOf(g);
-                        g.Enabled = false;
+                        g.Enabled = true;
                         DefaultUiPriority = g.Priority;
                         break;
                     case "closeProgramGrammar":
@@ -110,25 +110,21 @@ namespace Project_Voix
                         DefaultCloseProgramGrammarPriority = g.Priority;
                         break;
                     default:
-                        Console.WriteLine("Grammar doesnt exits");
+                        DataStore.AddToErrorLog("Grammar doesnt exits");
                         break;
                 }
             }
         }
         private static void RegisteredEngine_RecognizerUpdateReached(object sender, RecognizerUpdateReachedEventArgs e)
         {
-
-            Console.WriteLine();
-            Console.WriteLine("Update reached:");
-            Thread.Sleep(1000);
+            DataStore.AddToMessageDump("SRE Update reached:");
 
             string qualifier;
             List<Grammar> grammars = new List<Grammar>(registeredEngine.Grammars);
             foreach (Grammar g in grammars)
             {
                 qualifier = (g.Enabled) ? "enabled" : "disabled";
-                Console.WriteLine("  {0} grammar is loaded and {1}.",
-                g.Name, qualifier);
+                DataStore.AddToMessageDump(string.Format("{0} grammar is loaded and {1}.",g.Name, qualifier));
             }
 
         }
@@ -155,7 +151,7 @@ namespace Project_Voix
         #region Manipulation of Open_typeGrammar
         static public void EnableOpenGrammar()
         {
-            Console.WriteLine("In enable Open Grammar");
+            //Console.WriteLine("In enable Open Grammar");
             //registeredEngine.RequestRecognizerUpdate();
             listOfGrammars[indexOfOpenType].Enabled = true;
             listOfGrammars[indexOfOpenType].Priority = highPriority;
@@ -166,7 +162,7 @@ namespace Project_Voix
         {
             //IsRegistered();
             //registeredEngine.RequestRecognizerUpdate();
-            Console.WriteLine("In disable Open Grammar");
+            //Console.WriteLine("In disable Open Grammar");
 
             listOfGrammars[indexOfOpenType].Enabled = false;
             listOfGrammars[indexOfOpenType].Priority = DefaultOpenTypePriority;
@@ -230,7 +226,7 @@ namespace Project_Voix
         #region Manipulation on CloseGrammar
         static public void EnableCloseGrammar()
         {
-            Console.WriteLine("In enableCloseGrammar");
+            //Console.WriteLine("In enableCloseGrammar");
             //IsRegistered();
             registeredEngine.RequestRecognizerUpdate();
 
@@ -241,7 +237,7 @@ namespace Project_Voix
         public static void DisableCloseGrammar()
         {
             IsRegistered();
-            Console.WriteLine("In disableCloseGrammar");
+            //Console.WriteLine("In disableCloseGrammar");
             registeredEngine.RequestRecognizerUpdate();
 
             listOfGrammars[indexOfcloseProgramGrammar].Enabled = false;
@@ -257,8 +253,8 @@ namespace Project_Voix
                 Actions to be executed when the UI is loaded
             */
 
-            IsRegistered();
-            Console.WriteLine("In UILoaded");
+            //IsRegistered();
+            //Console.WriteLine("In UILoaded");
             //registeredEngine.RequestRecognizerUpdate();
 
             listOfGrammars[indexOfUi].Enabled = true;
@@ -274,7 +270,7 @@ namespace Project_Voix
             /*
                 Actions to be executed when the UI is deloaded
             */
-            Console.WriteLine("In ui deloaded");
+            //Console.WriteLine("In ui deloaded");
             IsRegistered();
             //registeredEngine.RequestRecognizerUpdate();
             listOfGrammars[indexOfUi].Enabled = false;
@@ -295,7 +291,7 @@ namespace Project_Voix
                 This is to execute when any of the Deloaded functions are to be executed of Grammar Manipulation 
                 It's priority remains fixed for most of the cases
             */
-            Console.WriteLine("In enableNonOperativeGrammar");
+            //Console.WriteLine("In enableNonOperativeGrammar");
             IsRegistered();
             registeredEngine.RequestRecognizerUpdate();
 
@@ -313,7 +309,7 @@ namespace Project_Voix
                 This is to execute in all other instances apart from the default instance Nonoperative Commands are to be deloaded
                 It's priority remains fixed for most of the cases
             */
-            Console.WriteLine("In disableNonOperativeCOmmands");
+            //Console.WriteLine("In disableNonOperativeCOmmands");
             IsRegistered();
             registeredEngine.RequestRecognizerUpdate();
             listOfGrammars[indexOfNonOperative].Enabled = false;

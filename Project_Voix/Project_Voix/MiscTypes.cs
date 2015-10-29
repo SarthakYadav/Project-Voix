@@ -53,5 +53,6 @@ namespace Project_Voix
     delegate void CloseResponseBox();
     public delegate void SetSynthesisVolume(int vol);
     public delegate void SetSynthesisRate(int rate);
-    public delegate void SynthesisGenderChange(VoiceGender voiceGender);
+    public delegate void ChangeSlider(int i,string sliderType);                     //delegate for event that involves changing the slider in MainWindow
+    public delegate void SynthesisGenderChange(VoiceGender voiceGender);            //delegate for event that detects change in VoiceGender selection
 }

@@ -42,13 +42,13 @@ namespace Project_Voix
             return i;
         }
 
-        static async void SendForSynthesis(Response resp)
+        static async void SendForSynthesis(string resp)
         {
             /*
                 Imitation of a method that would send Synthesis commands over to the Synthesizer thread
             */
 
-            await Task.Factory.StartNew(new Action<object>(Speaker.Synthesizer), resp.SynthesisOutput);
+            await Task.Factory.StartNew(new Action<object>(Speaker.Synthesizer), resp);
         }
 
         #endregion
@@ -61,7 +61,7 @@ namespace Project_Voix
                 Event handler for Responses corresponding to Basic Grammar type commands
             
             */
-
+            string responseText = "";
             string demoString = "Hello Sir / Ma'am and welcome to Voix . I am Tars, your personal Assistant . "+" lets go ahead and take a quick peek into the Program"+
                 " In the UI home screen, you can see the official logo of the program . Nice Right ? "+
                 "On the top right you can see a box which says LOG , this would be our Recent command Logger . "+
@@ -82,29 +82,29 @@ namespace Project_Voix
             if (resp.CommandType == CommandType.Basic)
             {
                 if (resp.RecognizedPhrase.Contains("wake up"))
-                    resp.SynthesisOutput = "Tars Awake";
+                    responseText = "Tars Awake";
                 else if (resp.RecognizedPhrase.Contains("sleep"))
-                    resp.SynthesisOutput = "Tars Asleep";
+                    responseText = "Tars Asleep";
                 else if (resp.RecognizedPhrase.Contains("system shutdown"))
-                    resp.SynthesisOutput = "System shutdown requested";
+                    responseText = "System shutdown requested";
                 else if (resp.RecognizedPhrase.Contains("system restart"))
-                    resp.SynthesisOutput = "System restart requested";
+                    responseText = "System restart requested";
                 else if (resp.RecognizedPhrase.Contains("give a demo"))
                 {
 
                     //synth.Rate = -10;
-                    resp.SynthesisOutput = demoString;
+                    responseText = demoString;
                 }
                 else
                     throw new InvalidOperationException("Unknown Operation.");
 
-                SendForSynthesis(resp);
+                SendForSynthesis(responseText);
             }
             else if (resp.CommandType == CommandType.Open | resp.CommandType == CommandType.Search)     //"Open", "Execute", "Run", "Intialize", "Start"
             {
                 int responseIndex = RandomizeResponse(resp.OpenSearchResponses);
-                resp.SynthesisOutput = resp.OpenSearchResponses[responseIndex];
-                SendForSynthesis(resp);
+                responseText = resp.OpenSearchResponses[responseIndex];
+                SendForSynthesis(responseText);
             }
             else
                 throw new InvalidOperationException("Wrong CommandType of the respective Response object");
@@ -117,6 +117,7 @@ namespace Project_Voix
                 Event handler for Responses corresponding to NonOperational type commands
                 
             */
+            string response= "";
             if (resp.CommandType != CommandType.NonOperational)
                 throw new InvalidOperationException("Wrong CommandType for the input response class");
             else
@@ -124,24 +125,23 @@ namespace Project_Voix
                 resp.RecognizedPhrase = resp.RecognizedPhrase.ToLower();
                 if (resp.RecognizedPhrase.Contains("what is the time") | resp.RecognizedPhrase.Contains("tell me the time"))
                 {
-                    resp.SynthesisOutput = "It is " + DateTime.Now.ToString("hh:mm tt", System.Globalization.DateTimeFormatInfo.InvariantInfo) + " " + resp.AcknowledgementGender;
+                    response = "It is " + DateTime.Now.ToString("hh:mm tt", System.Globalization.DateTimeFormatInfo.InvariantInfo) + " " + resp.AcknowledgementGender;
                 }
                 if (resp.RecognizedPhrase.Contains("what is the day"))
                 {
-                    resp.SynthesisOutput = "It is " + DateTime.Now.DayOfWeek.ToString() + " " + resp.AcknowledgementGender;
+                    response = "It is " + DateTime.Now.DayOfWeek.ToString() + " " + resp.AcknowledgementGender;
                 }
                 if (resp.RecognizedPhrase.Contains("what is the date"))
                 {
-                    resp.SynthesisOutput = "It is " + DateTime.Now.ToLongDateString() + " " + resp.AcknowledgementGender;
+                    response = "It is " + DateTime.Now.ToLongDateString() + " " + resp.AcknowledgementGender;
                 }
 
                 if (resp.RecognizedPhrase.Contains("hello"))
                 {
                     int greetingIndex = RandomizeResponse(resp.Greetings);
-                    Console.WriteLine("Randomized index is : {0}", greetingIndex);
-                    resp.SynthesisOutput = resp.Greetings[greetingIndex];
+                    response = resp.Greetings[greetingIndex];
                 }
-                SendForSynthesis(resp);
+                SendForSynthesis(response);
             }
         }
 
@@ -150,17 +150,18 @@ namespace Project_Voix
             /*
                 Event handler for Responses corresponding to ResponseBox type commands
             */
+            string response = "";
             resp.RecognizedPhrase = resp.RecognizedPhrase.ToLower();
             if (resp.RecognizedPhrase.Contains("ok"))
-                resp.SynthesisOutput = "Running the given program";
+                response = "Running the given program";
 
             else if (resp.RecognizedPhrase.Contains("cancel"))
-                resp.SynthesisOutput = "Response box is now closing";
+                response = "Response box is now closing";
             else
-                resp.SynthesisOutput = "Rephrase the command again";
+                response = "Rephrase the command again";
 
 
-            SendForSynthesis(resp);
+            SendForSynthesis(response);
         }
 
         public static void CloseProgram_ResponseHandler(Response resp)
@@ -168,6 +169,7 @@ namespace Project_Voix
             /*
                 Event handler for Responses corresponding to CloseProgram type commands
             */
+            string response = "";
             if (resp.CommandType != CommandType.CloseProgram)
                 throw new InvalidOperationException("Wrong CommandType of the respective Response argument");
             else
@@ -177,8 +179,9 @@ namespace Project_Voix
                     resp.RecognizedPhrase=resp.RecognizedPhrase.Replace("tars close", "");
                 if (resp.RecognizedPhrase.Contains("close"))
                     resp.RecognizedPhrase = resp.RecognizedPhrase.Replace("close", "");
-                resp.SynthesisOutput = "Closing program" + resp.RecognizedPhrase;
-                SendForSynthesis(resp);
+
+                response = "Closing program" + resp.RecognizedPhrase;
+                SendForSynthesis(response);
             }
         }
 
@@ -187,15 +190,27 @@ namespace Project_Voix
             /*
                 Event handler for Responses corresponding to UI type commands
             */
+            string response = "";
             if (resp.CommandType == CommandType.UI)
             {
                 resp.RecognizedPhrase = resp.RecognizedPhrase.ToLower();
-                if (resp.RecognizedPhrase.Contains("refresh"))
-                    resp.SynthesisOutput = "Refreshing UI";
-                if (resp.RecognizedPhrase.Contains("quit"))
-                    resp.SynthesisOutput = "Closing main Program";
-
-                SendForSynthesis(resp);
+                if (resp.RecognizedPhrase.Contains("add user"))
+                    response = "Opening Add User Dialog";
+                else if (resp.RecognizedPhrase.Contains("select user"))
+                    response = "Opening Select User Dialog";
+                else if (resp.RecognizedPhrase.Contains("expand expander"))
+                    response = "expander expanding";
+                else if (resp.RecognizedPhrase.Contains("increase synthesizer volume"))
+                    response = "increasing synthesis volume";
+                else if (resp.RecognizedPhrase.Contains("increase synthesizer rate"))
+                    response = "increasing synthesis rate";
+                else if (resp.RecognizedPhrase.Contains("decrease synthesizer volume"))
+                    response = "decreasing synthesis volume";
+                else if (resp.RecognizedPhrase.Contains("decrease synthesizer rate"))
+                    response = "decreasing synthesis rate";
+                else
+                    response = "Are you sure you wish to Quit the program ? ";
+                SendForSynthesis(response);
             }
             else
                 throw new InvalidOperationException("Wrong CommandType of the respective Response argument");
@@ -210,13 +225,15 @@ namespace Project_Voix
             // if (resp.CommandType!=CommandType.Open|| resp.CommandType != CommandType.Search)
             //   throw new InvalidOperationException("Wrong CommandType of the respective Response argument");
             //else
+            string response = "";
+
             {
                 if (resp.RecognizedPhrase.Contains("Tars"))
                     resp.RecognizedPhrase.Remove(0, 5);
                 else
                 {
-                    resp.SynthesisOutput ="Speak Ok to " +resp.CommandType.ToString() + resp.RecognizedPhrase;
-                    SendForSynthesis(resp);
+                    response = "Speak Ok to " +resp.CommandType.ToString() + resp.RecognizedPhrase;
+                    SendForSynthesis(response);
                 }
             }
         }

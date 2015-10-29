@@ -5,11 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Project_Voix"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" MaxHeight="720" MaxWidth="1200" Width="700">
+        Title="MainWindow" Height="620" MaxHeight="750" MaxWidth="1200" Width="850">
     <Grid x:Name="baseGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition x:Name="expandableColumn" Width="Auto"/>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="1.5*"/>
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="1" Margin="2">
@@ -19,8 +19,9 @@
                     <GradientStop Color="#FF222B31" Offset="0.307"/>
                 </LinearGradientBrush>
             </Grid.Background>
-            <Button x:Name="btn" Template="{StaticResource RoundButtonTemplate1}" Content="Click" Width="70" Height="70" Margin="68,223,65,42" />
-            <Rectangle Width="200" RadiusX="10" RadiusY="10" Margin="6,10,7,138"  >
+            <Button x:Name="btnResumeRecog" ToolTip="Resume Recognition by the Recognition Engine" Content="Start" Template="{StaticResource RoundButtonTemplate1}" Width="70" Height="70" Margin="218,413,88,82" Click="btnResumeRecog_Click"/>
+            <Button x:Name="btnPauseRecog" ToolTip="Pause the Speech Recognition Engine" Content="Pause" Template="{StaticResource RoundButtonTemplate1}"  Width="70" Height="70" Margin="88,413,218,82" RenderTransformOrigin="-0.6,0.505" Click="btnPauseRecog_Click" />
+            <Rectangle x:Name="logoRectangle" Width="200"  RadiusX="10" RadiusY="10" Margin="88,10,88,258"  >
                 <Rectangle.Fill>
                     <ImageBrush ImageSource="Images/logoVoix.jpg" Stretch="UniformToFill"/>
                 </Rectangle.Fill>
@@ -35,13 +36,13 @@
                 </LinearGradientBrush>
             </Grid.Background>
 
-            <Expander Margin="2" ExpandDirection="Left">
+            <Expander ToolTip="Click to expand" Margin="2" ExpandDirection="Left">
                 <Expander.Background>
                     <SolidColorBrush Color="{DynamicResource sidePanelColor1}"/>
                 </Expander.Background>
                 <StackPanel Orientation="Vertical">
                     <TextBlock Text="Active User" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="25" Foreground="Snow"/>
-                    <Image x:Name="userImage" Margin="10" Width="200" Height="200"/>
+                    <Image x:Name="userImage" ToolTip="Image of the current User" Margin="10" Width="200" Height="200"/>
 
                     <Grid x:Name="expanderGrid">
                         <Grid.RowDefinitions>
@@ -82,7 +83,7 @@
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
 
-                        <Button x:Name="selectUser" Margin="5" Grid.Column="0" BorderBrush="White" BorderThickness="2" 
+                        <Button x:Name="selectUser" ToolTip="Click to Select a user from list of Existing Users" Margin="5" Grid.Column="0" BorderBrush="White" BorderThickness="2" 
                                 HorizontalAlignment="Center" VerticalAlignment="Center" Template="{StaticResource ButtonControlTemplate1}" 
                                 Foreground="Snow" Content="Select User" FontSize="25" Click="selectUserClick" >
                             <Button.Effect>
@@ -92,7 +93,7 @@
                                 <SolidColorBrush Color="{DynamicResource sidePanelColor1}"/>
                             </Button.Background>
                         </Button>
-                        <Button x:Name="addUser" Margin="5" Grid.Column="1" BorderBrush="White" BorderThickness="2" 
+                        <Button x:Name="addUser" ToolTip="Click to Add a new User" Margin="5" Grid.Column="1" BorderBrush="White" BorderThickness="2" 
                                 HorizontalAlignment="Center" Content="Add User" VerticalAlignment="Center" Template="{StaticResource ButtonControlTemplate1}" 
                                 Foreground="Snow" VerticalContentAlignment="Center"  FontSize="25" Click="addUser_Click">
                             <Button.Effect>
@@ -116,7 +117,7 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
-            <TextBox x:Name="commandLog"  Grid.Row="0" Margin="2" FontSize="25" Foreground="Snow" Text="Log:-" ScrollViewer.HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <TextBox x:Name="commandLog" ToolTip="The recent commands Logger"  Grid.Row="0" Margin="2" FontSize="25" Foreground="Snow" Text="Log:-" ScrollViewer.HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                 <TextBox.Background>
                     <SolidColorBrush Color="{DynamicResource sidePanelColor1}"/>
                 </TextBox.Background>
@@ -128,9 +129,9 @@
                     <SolidColorBrush Color="{DynamicResource sidePanelColor1}"/>
                 </StackPanel.Background>
 
-                <TextBlock Text="Synthesizer Volume :" HorizontalAlignment="Left" Margin="5" FontSize="25"  Style="{StaticResource textBlockStyle1}" />
+                <TextBlock Text="Synthesizer Volume :" ToolTip="Adjust the volume of the Synthesized Voice" HorizontalAlignment="Left" Margin="5" FontSize="25"  Style="{StaticResource textBlockStyle1}" />
                 <Slider x:Name="volSlider" Margin="5" ValueChanged="volSliderValueChanged" TickFrequency="25" Maximum="100" Value="100" SmallChange="1" ToolTip="{Binding ElementName=volSlider,Path=Value}" TickPlacement="BottomRight" />
-                <TextBlock Text="Synthesizer Rate :" HorizontalAlignment="Left" Style="{StaticResource textBlockStyle1}" FontSize="25" Margin="5"/>
+                <TextBlock Text="Synthesizer Rate :" ToolTip="Adjust the Rate at which Synthesis Voice is spoken" HorizontalAlignment="Left" Style="{StaticResource textBlockStyle1}" FontSize="25" Margin="5"/>
                 <Slider x:Name="rateSlider" Margin="5" Maximum="10" Minimum="-10" SmallChange="1" Value="0" ValueChanged="rateSlider_ValueChanged" ToolTip="{Binding ElementName=rateSlider,Path=Value}" AutoToolTipPlacement="TopLeft" TickPlacement="BottomRight">
                     
                 </Slider>
