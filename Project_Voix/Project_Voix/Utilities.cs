@@ -29,7 +29,7 @@ using System.Threading.Tasks;
 namespace Project_Voix
 {
     static class Utilities
-    {
+    { 
         #region Private Methods
         private static string ShortCutTargetFinder(string path)
         {

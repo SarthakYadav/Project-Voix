@@ -63,8 +63,12 @@ namespace Project_Voix
             {
                 if (resp.RecognizedPhrase.Contains("wake up") | resp.RecognizedPhrase.Contains("resume recognition"))
                     responseText = " Awake . Recognition Resumed . ";
-                else
+                else if (resp.RecognizedPhrase.Contains("sleep") | resp.RecognizedPhrase.Contains("pause"))
                     responseText = " Asleep . Recognition Halted . ";
+                else if (resp.RecognizedPhrase.Contains("already paused"))
+                    responseText="Recognition is already paused . Dont sweat it ";
+                else
+                    responseText="Recognition is already in progress . ";
 
                 SendForSynthesis(responseText);
             }
@@ -112,11 +116,15 @@ namespace Project_Voix
 
                 SendForSynthesis(responseText);
             }
-            else if (resp.CommandType == CommandType.Open | resp.CommandType == CommandType.Search)     //"Open", "Execute", "Run", "Intialize", "Start"
+            else if (resp.CommandType == CommandType.Open)     //"Open", "Execute", "Run", "Intialize", "Start"
             {
                 int responseIndex = RandomizeResponse(resp.OpenSearchResponses);
                 responseText = resp.OpenSearchResponses[responseIndex];
                 SendForSynthesis(responseText);
+            }
+            else if(resp.CommandType == CommandType.Search)
+            {
+                responseText = "Opening my friend Google Chrome for searching the web";
             }
             else
                 throw new InvalidOperationException("Wrong CommandType of the respective Response object");

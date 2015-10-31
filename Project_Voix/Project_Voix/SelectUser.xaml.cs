@@ -81,7 +81,8 @@ namespace Project_Voix
             DataStore.LoadUser(user.Username);                                          //which is then Loaded by the DataStore as the Current User
             DataStore.DisplayCurrentUser();
             GrammarFeeder.SetAssistantName(user.AssistantName);
-            
+            //if(user.Movies!="")
+                //GrammarFeeder.SetMoviesPath(user.Movies);
             this.Close();
         }
 

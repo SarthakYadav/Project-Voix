@@ -39,14 +39,16 @@ namespace Project_Voix
     static class GrammarFeeder
     {
         #region Fields
+        static bool RecogInProgress = true;
         static GrammarBuilder optionalComponent = null; 
         static Choices programChoices = null;
         static string[] programCommands = null;
         static SpeechRecognitionEngine speechEngine = null;
         static string openRecogPhrase;
+        //static string moviesPath;
         //static ResponseBox resp = null;
              #endregion
-
+        
         static GrammarFeeder()
         {
             //optionalComponent = new GrammarBuilder(new GrammarBuilder(DataStore.CurrentUser.AssistantName), 0, 1);
@@ -146,7 +148,10 @@ namespace Project_Voix
         {
             optionalComponent = new GrammarBuilder(new GrammarBuilder(name), 0, 1);
         }
-
+        //public static void SetMoviesPath(string path)
+        //{
+        //    moviesPath = path;
+        //}
         #endregion
 
         #region Private methods
@@ -170,6 +175,17 @@ namespace Project_Voix
             //writer.Close();
             return new Grammar(primaryGrammarBuilder);
         }
+
+        //private static Grammar PlayMoviesGrammar()
+        //{
+        //    /*
+        //        to be loaded only if the user specifies a Folder where he stores his Movies
+        //    */
+
+        //    string[] moviesCommands;
+        //    Choices movieChoices = new Choices();
+        //    return null;
+        //}
         private static Grammar ResponseBoxSelection()
         {
             /* To create grammar of the Response box's selection options
@@ -346,11 +362,11 @@ namespace Project_Voix
             //basicChoices.Add(systemCommand);                        //basic choices become Wake up,Sleep,System Shutdown/Restart
 
             //creating for open_type and search_type respectively
-            Choices search_typeChoices = new Choices(new GrammarBuilder[] { "Find", "Search", "Look for" });
+            Choices search_typeChoices = new Choices(new GrammarBuilder[] {"Search the web", "Search the internet" });
             Choices open_typeChoices = new Choices(new GrammarBuilder[] { "Open", "Execute", "Run", "Intialize", "Start" });
 
             //all choices become a combination of Basic CHoices,Open_Type and Search_type choices
-            Choices allchoices = new Choices(search_typeChoices, open_typeChoices,"Give a demo");
+            Choices allchoices = new Choices(search_typeChoices, open_typeChoices);
 
             GrammarBuilder gb = new GrammarBuilder();
             gb.Append(optionalComponent);
@@ -383,14 +399,26 @@ namespace Project_Voix
                 {
                     if (e.Result.Text.Contains("Sleep") | e.Result.Text.Contains("Pause"))
                     {
-                        GrammarManipulator.HaltRecognition();
-                        PrimaryResponse(new Response(CommandType.Primary, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
+                        if (RecogInProgress == true)
+                        {
+                            GrammarManipulator.HaltRecognition();
+                            PrimaryResponse(new Response(CommandType.Primary, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
+                            RecogInProgress = false;
+                        }
+                        else
+                            PrimaryResponse(new Response(CommandType.Primary, DateTime.Now.TimeOfDay.Hours, "already paused"));
                     }
 
                     else if (e.Result.Text.Contains("Resume Recognition") | e.Result.Text.Contains("Wake up"))
                     {
-                        GrammarManipulator.ResumeRecognition();
-                        PrimaryResponse(new Response(CommandType.Primary, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
+                        if (RecogInProgress == false)
+                        {
+                            GrammarManipulator.ResumeRecognition();
+                            PrimaryResponse(new Response(CommandType.Primary, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
+                            RecogInProgress = true;
+                        }
+                        else
+                            PrimaryResponse(new Response(CommandType.Primary, DateTime.Now.TimeOfDay.Hours, "recognition already in progress"));
                     }
                     else
                         throw new Exception("Unknown recognition by PrimaryGrammar ");
@@ -434,9 +462,11 @@ namespace Project_Voix
                         DataStore.AddToErrorLog(string.Format("Main exception {0}\nMain exception stack trace {1}\nInner exception {2}\ninner Exception stack trace {3}", excep.Message, excep.StackTrace, excep.InnerException.Message, excep.InnerException.StackTrace));
                     }
                 }
-                else if (e.Result.Text.Contains("Find") | e.Result.Text.Contains("Search") | e.Result.Text.Contains("Look for"))
+                else if (e.Result.Text.Contains("Search the web") | e.Result.Text.Contains("Search the internet"))
+                {
                     BasicResponse(new Response(CommandType.Search, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
-
+                    ProgramManager.SendOpenCommand("Google Chrome");
+                }
                 else
                 {
                     BasicResponse(new Response(CommandType.Basic, DateTime.Now.TimeOfDay.Hours, e.Result.Text));

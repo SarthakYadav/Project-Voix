@@ -151,6 +151,10 @@ namespace Project_Voix
             else
                 return "Maam";
         }
+        public static string GetMoviesFolder()
+        {
+            return currentUser.Movies;
+        }
         public static void SaveUserSettings()
         {
             foreach (var item in listOfUsers)

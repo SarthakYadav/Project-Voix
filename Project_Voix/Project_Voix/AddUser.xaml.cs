@@ -80,8 +80,9 @@ namespace Project_Voix
 
         private void addUserOkClick(object sender, RoutedEventArgs e)
         {
-            DataStore.AddNewUser(userNameTextBox.Text, userGenderListbox.Text, assistantNameTextbox.Text, voiceGenderSelection.Text, moviesFolderSelection.Text,imageUri);
+            DataStore.AddNewUser(userNameTextBox.Text, userGenderListbox.Text, assistantNameTextbox.Text, voiceGenderSelection.Text, @moviesFolderSelection.Text,imageUri);
             GrammarFeeder.SetAssistantName(assistantNameTextbox.Text);
+            //GrammarFeeder.SetMoviesPath(@moviesFolderSelection.Text);
             this.Close();
         }
 
@@ -118,15 +119,15 @@ namespace Project_Voix
             System.Windows.Forms.DialogResult result = dialog.ShowDialog();
             if(result== System.Windows.Forms.DialogResult.OK)
             {
-                moviesFolder = dialog.SelectedPath;
+                moviesFolder = @dialog.SelectedPath;
             }
         }
 
         private void moviesFolderSelection_TextChanged(object sender, TextChangedEventArgs e)
         {
             var obj = sender as TextBox;
-            moviesFolder = @obj.Text;
-            DataStore.AddToMessageDump(string.Format("movies folder is : {0}",moviesFolder));
+            moviesFolder = string.Format(@obj.Text);
+            Console.WriteLine((string.Format("movies folder is : {0}",moviesFolder)));
         }
 
     }
