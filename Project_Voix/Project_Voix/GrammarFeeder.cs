@@ -64,6 +64,8 @@ namespace Project_Voix
         static public event GenerateResponse UIResponse;
         static public event GenerateResponse PrimaryResponse;
 
+        public static event ExpandExpander ExpandIt;
+        static public event ExitMainWindow CloseMainWindow;
         static public event UpdateLog writeToTextBox;
         static public event StartResponseBox CallResponseBox;
         static public event ShowOpenTypeRecog RespBoxRecogDisplay;
@@ -222,9 +224,13 @@ namespace Project_Voix
 
             //Console.WriteLine("OpenCommandGrammar is on thread {0}",Thread.CurrentThread.ManagedThreadId);
             programCommands = Utilities.CommandList();
-
+            
 
             programChoices = new Choices(programCommands);
+            programChoices.Add("File Explorer");
+            programChoices.Add("Windows Powershell");
+            programChoices.Add("Notepad");
+            programChoices.Add("Nvidia Geforce Experience");
             GrammarBuilder programGrammar = new GrammarBuilder();
             programGrammar.Append(optionalComponent);
             programGrammar.Append(programChoices);
@@ -555,17 +561,17 @@ namespace Project_Voix
                     else if (e.Result.Text == "Select User")
                         SelectUser.OpenUserSelectWindow();                      //opens a new SelectUser Dialog box on a new thread
                     else if (e.Result.Text == "Expand Expander")
-                        ;
+                        ExpandIt();
                     else if (e.Result.Text == "Increase Synthesizer Volume")
-                        UpdateSlider(1,"volume");                               //INCREASES the Synthesizer Volume slider by 1 point
+                        UpdateSlider(1, "volume");                               //INCREASES the Synthesizer Volume slider by 1 point
                     else if (e.Result.Text == "Increase Synthesizer Rate")
-                        UpdateSlider(1,"rate");                                 //INCREASES the Synthesizer Rate Slider by 1 point
+                        UpdateSlider(1, "rate");                                 //INCREASES the Synthesizer Rate Slider by 1 point
                     else if (e.Result.Text == "Decrease Synthesizer Volume")
-                        UpdateSlider(-1,"volume");                              //DECREASES the Synthesizer Volume slider by 1 point
+                        UpdateSlider(-1, "volume");                              //DECREASES the Synthesizer Volume slider by 1 point
                     else if (e.Result.Text == "Decrease Synthesizer Rate")
-                        UpdateSlider(-1,"rate");                                //DECREASES the Synthesizer Volume slider by 1 point
+                        UpdateSlider(-1, "rate");                                //DECREASES the Synthesizer Volume slider by 1 point
                     else if (e.Result.Text == "Exit")
-                        ;
+                        Task.Run(() => { CloseMainWindow(); });
                     else
                         throw new Exception("Unknown recognition");
                 }

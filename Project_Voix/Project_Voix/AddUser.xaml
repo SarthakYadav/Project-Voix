@@ -14,10 +14,7 @@
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0" >
-            <StackPanel.Background>
-                <SolidColorBrush Color="{DynamicResource centrePanelColor1}"/>
-            </StackPanel.Background>
+        <StackPanel Grid.Column="0" Background="{DynamicResource MainBrush1}" >
             <TextBlock Text="Add user Dialogue Box" Foreground="Snow" FontSize="25"/>
             <Grid Margin="5">
                 <Grid.RowDefinitions>
@@ -39,7 +36,7 @@
                 <TextBlock Grid.Column="0" Grid.Row="3" Text="Voice Gender : " Style="{StaticResource textBlockStyle1}"  HorizontalAlignment="Right"/>
                 <TextBlock Grid.Column="0" Grid.Row="4" Text="Movies folder : " Style="{StaticResource textBlockStyle1}" HorizontalAlignment="Right"/>
                 <TextBlock Grid.ColumnSpan="2" Grid.Row="5" FontSize="15" Style="{StaticResource textBlockStyle1}" HorizontalAlignment="Left" Text=" fields marked * are mandatory"/>
-                
+
                 <TextBox x:Name="userNameTextBox" ToolTip="Enter the username" Grid.Column="1" Grid.Row="0" Text="Sarthak Yadav" Style="{StaticResource textBoxStyle1}" Background="{DynamicResource bestTextBoxBrush}"/>
                 <ComboBox x:Name="userGenderListbox" ToolTip="Select the User gender" Margin="2" Grid.Column="1" Grid.Row="1" FontSize="25">
                     <ComboBox.Background>
@@ -54,14 +51,14 @@
                     <ComboBoxItem Style="{StaticResource comboBoxItemStyle1}">Male</ComboBoxItem>
                     <ComboBoxItem Style="{StaticResource comboBoxItemStyle1}">Female</ComboBoxItem>
                 </ComboBox>
-                
+
                 <TextBox x:Name="moviesFolderSelection" ToolTip="Type/Paste the location where you store Movies" Grid.Column="1" Grid.Row="4" Text="Type/Paste location" Margin="2" FontSize="18" Style="{StaticResource textBoxStyle1}" MouseRightButtonDown="moviesFolderSelection_RightClick" TextChanged="moviesFolderSelection_TextChanged">
-                    
+
                 </TextBox>
-             
-                
+
+
             </Grid>
-            <Grid Margin="5" x:Name="btnGrid">
+            <Grid Margin="5" x:Name="btnGrid" Background="{DynamicResource MainBrush1}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
@@ -100,7 +97,7 @@
                 </Button.Background>
             </Button>
 
-           
+
         </Grid>
     </Grid>
 </Window>

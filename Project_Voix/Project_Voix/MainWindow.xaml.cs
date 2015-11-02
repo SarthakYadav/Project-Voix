@@ -60,7 +60,8 @@ namespace Project_Voix
             #endregion
 
             InitializeComponent();
-                       
+
+            //expanderCntrl.IsExpanded = true;
             #region Event Handlers of the Mainwindow itself
             this.Closed += (sender, e) =>                                   //fires up when the UI Closes
             {
@@ -68,6 +69,14 @@ namespace Project_Voix
                 cancelToken.Cancel();                                                   //when this ui is closed, hold up the Init.StartInit thread
             };
 
+            this.Closing += (sender, e) =>                                              //occurs as soon as this.Close() occurs
+              {
+                  MessageBoxResult result = MessageBox.Show("Do you really want to quit?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                  if (result == MessageBoxResult.No)
+                  {
+                      e.Cancel = true;
+                  }
+              };
             this.Activated += (sender, e) =>
             {
                 /*
@@ -108,7 +117,9 @@ namespace Project_Voix
             #region Event Handlers for Events of External CLasses
             DataStore.SetUserNow += DataStore_SetUserNow;                           //event handler for DataStore's SetUserNow event, which notifies when User is set
             GrammarFeeder.writeToTextBox += GrammarFeeder_writeToTextBox;          //event handler for GrammarFeeder's writeToTextBox event
-            GrammarFeeder.UpdateSlider += GrammarFeeder_UpdateSlider;
+            GrammarFeeder.UpdateSlider += GrammarFeeder_UpdateSlider;               //event handler for GrammarFeeder's UpdateSlider event
+            GrammarFeeder.CloseMainWindow += GrammarFeeder_CloseMainWindow;         //Close Window Event
+            GrammarFeeder.ExpandIt += GrammarFeeder_ExpandIt;                           //ExpanderExpanding event
             #endregion
 
             #region Dumping some Data
@@ -120,6 +131,20 @@ namespace Project_Voix
         }
 
         #region Private Methods and Event Handlers
+
+        private void GrammarFeeder_ExpandIt()
+        {
+            expanderCntrl.Dispatcher.InvokeAsync(() => { expanderCntrl.IsExpanded = true; });
+        }
+
+        private void GrammarFeeder_CloseMainWindow()
+        {
+            /*
+                occurs when Exit Command is recognized
+            */
+            this.Dispatcher.Invoke(() => { this.Close(); });
+        }
+
         private void GrammarFeeder_UpdateSlider(int i, string sliderType)
         {
             /*

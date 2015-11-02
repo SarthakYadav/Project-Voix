@@ -173,11 +173,17 @@ namespace Project_Voix
 
                 {
                     executablesList.Capacity = commandList.Length;
+
                     for (int i = 0; i < commandList.Length; i++)
                     {
                         executablesList.Add(new Executable(locationList[i], commandList[i]));
                         executablesList[i].PInfo.FileName = locationList[i];
                     }
+
+                    executablesList.Add(new Executable("explorer.exe", "File Explorer"));
+                    executablesList.Add(new Executable("powershell.exe", "Windows PowerShell"));
+                    executablesList.Add(new Executable("notepad.exe","Notepad"));
+                    executablesList.Add(new Executable(@"C:\Program Files (x86)\NVIDIA Corporation\NVIDIA GeForce Experience\LaunchGFExperience.exe", "Nvidia Geforce Experience"));
                     executablesList.Sort();
                     DataStore.AddToMessageDump("InitializeManager() successful");
                     Init.waitHandle.Set();

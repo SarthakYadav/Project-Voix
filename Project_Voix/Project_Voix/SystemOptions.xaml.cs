@@ -1,4 +1,18 @@
-﻿using System;
+﻿/*
+    description: SystemOptions class
+           -class is the dialog which provides various Power Options
+           
+    date created: -2/11/15                  Author:Sarthak
+
+    log:-
+    * No Updates Done*
+
+     Listed Public Methods:
+           * NONE*
+
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;

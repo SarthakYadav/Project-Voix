@@ -14,11 +14,8 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0" >
-            <TextBlock x:Name="responseBoxName" Text="Open" FontSize="20" Margin="5" Padding="5" TextAlignment="Center">
-                <TextBlock.Background>
-                    <SolidColorBrush Color="{StaticResource centrePanelColor1}"/>
-                </TextBlock.Background>
+        <StackPanel Grid.Column="0" Background="{DynamicResource MainBrush2}" >
+            <TextBlock x:Name="responseBoxName" Text="Open" FontSize="20" Margin="5" Padding="5" TextAlignment="Center" Background="{DynamicResource MainBrush2}">
                 <TextBlock.Foreground>
                     <SolidColorBrush Color="Snow"/>
                 </TextBlock.Foreground>

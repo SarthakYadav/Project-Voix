@@ -9,6 +9,16 @@
                 <ResourceDictionary Source="ResourceDictionary1.xaml"/>
                 <ResourceDictionary Source="ButtonResourceAndTemplate.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <LinearGradientBrush x:Key="MainBrush1" EndPoint="1,1" StartPoint="0,0">
+                <GradientStop Color="#FF222B31" Offset="0.29"/>
+                <GradientStop Color="#FF29343C" Offset="0.635"/>
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="MainBrush2" EndPoint="1,1" StartPoint="0,0">
+                <GradientStop Color="#FF222B31" Offset="0.664"/>
+                <GradientStop Color="#FF29343C" Offset="0.158"/>
+                <GradientStop Color="#FF2C3942" Offset="0.931"/>
+                <GradientStop Color="#FF222B31" Offset="0.374"/>
+            </LinearGradientBrush>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
