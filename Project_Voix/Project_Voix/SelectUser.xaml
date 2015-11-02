@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Project_Voix"
         mc:Ignorable="d"
-        Title="SelectUser" Height="300" Width="450" WindowStartupLocation="CenterOwner">
+        Title="SelectUser" Height="300" Width="450" WindowStartupLocation="CenterOwner" Icon="Images/logoMain.png">
     <Grid>
         <Grid.Background>
             <SolidColorBrush Color="{DynamicResource centrePanelColor1}"/>

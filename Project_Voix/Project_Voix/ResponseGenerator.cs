@@ -42,7 +42,7 @@ namespace Project_Voix
             return i;
         }
 
-        static async void SendForSynthesis(string resp)
+        static public async void SendForSynthesis(string resp)
         {
             /*
                 Imitation of a method that would send Synthesis commands over to the Synthesizer thread
@@ -101,14 +101,12 @@ namespace Project_Voix
             if (resp.CommandType == CommandType.Basic)
             {
                 
-                if (resp.RecognizedPhrase.Contains("system shutdown"))
-                    responseText = "System shutdown requested";
-                else if (resp.RecognizedPhrase.Contains("system restart"))
-                    responseText = "System restart requested";
+                if (resp.RecognizedPhrase.Contains("system controls"))
+                    responseText = "Starting System Controls";
+                else if (resp.RecognizedPhrase.Contains("system power options"))
+                    responseText = "Starting System Power options";
                 else if (resp.RecognizedPhrase.Contains("give a demo"))
                 {
-
-                    //synth.Rate = -10;
                     responseText = demoString;
                 }
                 else

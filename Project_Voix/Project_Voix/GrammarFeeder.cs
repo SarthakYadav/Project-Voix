@@ -347,26 +347,22 @@ namespace Project_Voix
 
                     command list:
                     (optional) Tars
-                    1. System Shutdown
-                    2. System Restart
+                    1. System Controls
+                    2. System Power Options
                     3. Search_Type command
                     4. Open_Type command
             */
 
             //Console.WriteLine("basic Grammar is on thread {0}",Thread.CurrentThread.ManagedThreadId);
-            GrammarBuilder systemCommand = new GrammarBuilder("System");
-            Choices sysPowerChoices = new Choices(new GrammarBuilder[] { "Shutdown", "Restart" });
-            systemCommand.Append(sysPowerChoices);                  // System choices become System Shutdown/Restart
-
-            //Choices basicChoices = new Choices(new GrammarBuilder[] { "Wake Up", "Sleep" });
-            //basicChoices.Add(systemCommand);                        //basic choices become Wake up,Sleep,System Shutdown/Restart
+            
+            Choices sysPowerChoices = new Choices(new GrammarBuilder[] { "System Controls", "System Power Options" });
 
             //creating for open_type and search_type respectively
             Choices search_typeChoices = new Choices(new GrammarBuilder[] {"Search the web", "Search the internet" });
-            Choices open_typeChoices = new Choices(new GrammarBuilder[] { "Open", "Execute", "Run", "Intialize", "Start" });
+            Choices open_typeChoices = new Choices(new GrammarBuilder[] { "Open", "Execute", "Run", "Initialize", "Start" });
 
             //all choices become a combination of Basic CHoices,Open_Type and Search_type choices
-            Choices allchoices = new Choices(search_typeChoices, open_typeChoices);
+            Choices allchoices = new Choices(sysPowerChoices,search_typeChoices, open_typeChoices);
 
             GrammarBuilder gb = new GrammarBuilder();
             gb.Append(optionalComponent);
@@ -436,7 +432,7 @@ namespace Project_Voix
             {
                 DataStore.AddRecentCommand(e.Result.Text);
                 DataStore.AddToMessageDump(e.Result.Text);
-                if (e.Result.Text.Contains("Open") | e.Result.Text.Contains("Execute") | e.Result.Text.Contains("Run") | e.Result.Text.Contains("Intialize") | e.Result.Text.Contains("Start"))
+                if (e.Result.Text.Contains("Open") | e.Result.Text.Contains("Execute") | e.Result.Text.Contains("Run") | e.Result.Text.Contains("Initialize") | e.Result.Text.Contains("Start"))
                 {
                     Task.Run(() =>
                     {
@@ -469,7 +465,23 @@ namespace Project_Voix
                 }
                 else
                 {
-                    BasicResponse(new Response(CommandType.Basic, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
+                    try
+                    {
+                        SystemOptions.OpenSystemCommandsDialog();
+                    }
+                    catch (Exception ex)
+                    {
+                        DataStore.AddToErrorLog(string.Format("An exception occured. \nException Message : {0}\n Exception StackTrace : {1}", ex.Message, ex.StackTrace));
+                    }
+                    try
+                    {
+                        BasicResponse(new Response(CommandType.Basic, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
+                    }
+                    catch (Exception excep)
+                    {
+                        DataStore.AddToErrorLog(string.Format("An exception occured. \nException Message : {0}\n Exception StackTrace : {1}", excep.Message, excep.StackTrace));
+                    }
+                    
 
                 }
             }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Project_Voix"
         mc:Ignorable="d"
-        Title="ResponseBox" Height="200" Width="500">
+        Title="ResponseBox" Height="200" Width="500" Icon="Images/logoMain.png">
     <Grid>
         <Grid.Background>
             <SolidColorBrush Color="{DynamicResource centrePanelColor1}"/>

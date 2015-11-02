@@ -76,6 +76,9 @@
       <DependentUpon>SelectUser.xaml</DependentUpon>
     </Compile>
     <Compile Include="Speaker.cs" />
+    <Compile Include="SystemOptions.xaml.cs">
+      <DependentUpon>SystemOptions.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserSettings.cs" />
     <Compile Include="Utilities.cs" />
     <Page Include="AddUser.xaml">
@@ -107,6 +110,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SelectUser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SystemOptions.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -167,6 +174,44 @@
   <ItemGroup>
     <Resource Include="Images\Untitled-1.png" />
     <Resource Include="Images\voixOnlyDesignHolo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\logo.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\012_restart-512.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\shutdown_symbol_icon_dark_blue_vector_281176.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\vista-shutdown-1680x1050.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\sleep.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\lock1.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\lock2.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\logout.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\hibernate.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\logoMain.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

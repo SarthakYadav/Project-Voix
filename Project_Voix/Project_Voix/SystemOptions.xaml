@@ -1,0 +1,76 @@
+﻿<Window x:Class="Project_Voix.SystemOptions"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Project_Voix"
+        mc:Ignorable="d"
+        Title="SystemOptions" Height="300" Width="400" Icon="Images/logoMain.png">
+    <Grid Margin="5">
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
+                <GradientStop Color="{DynamicResource LogoColor1}" Offset="0.632"/>
+                <GradientStop Color="#FF004E83" Offset="0.25"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Button x:Name="shutdownBtn" Grid.Column="0" Grid.Row="0" ToolTip="System Shutdown" Template="{StaticResource imageButtonTemplate}"  Margin="5" Padding="5" Click="shutdownBtn_Click" >
+            <Button.Effect>
+                <DropShadowEffect Color="Silver"/>
+            </Button.Effect>
+            <Button.Background>
+                <ImageBrush ImageSource="Images/shutdown_symbol_icon_dark_blue_vector_281176.jpg" Stretch="UniformToFill"/>
+            </Button.Background>
+        </Button>
+        <Button x:Name="restartBtn" Grid.Column="1" Grid.Row="0" ToolTip="System Restart" Template="{StaticResource imageButtonTemplate}" Margin="5" Padding="5" Click="restartBtn_Click" >
+            <Button.Effect>
+                <DropShadowEffect Color="Silver"/>
+            </Button.Effect>
+            <Button.Background>
+                <ImageBrush ImageSource="Images/012_restart-512.png" Stretch="UniformToFill"/>
+            </Button.Background>
+        </Button>
+        <Button x:Name="sleepBtn" Grid.Column="2" Grid.Row="0" Margin="5" Padding="5" ToolTip="Sleep" Template="{StaticResource imageButtonTemplate}" Click="sleepBtn_Click">
+            <Button.Effect>
+                <DropShadowEffect Color="Silver"/>
+            </Button.Effect>
+            <Button.Background>
+                <ImageBrush ImageSource="Images/sleep.png" Stretch="UniformToFill"/>
+            </Button.Background>
+        </Button>
+        <Button x:Name="logOffBtn" Grid.Row="1" Grid.Column="0" Margin="5" Padding="5" ToolTip="Log off" Template="{StaticResource imageButtonTemplate}" Click="logOffBtn_Click">
+            <Button.Background>
+                <ImageBrush ImageSource="Images/logout.png" Stretch="UniformToFill"/>
+            </Button.Background>
+            <Button.Effect>
+                <DropShadowEffect Color="Silver"/>
+            </Button.Effect>
+
+        </Button>
+        <Button x:Name="lockBtn" Grid.Row="1" Grid.Column="1" Margin="5" Padding="5" ToolTip="Lock"  Template="{StaticResource imageButtonTemplate}" Click="lockBtn_Click">
+            <Button.Background>
+                <ImageBrush ImageSource="Images/lock1.jpg" Stretch="UniformToFill"/>
+            </Button.Background>
+            <Button.Effect>
+                <DropShadowEffect Color="Silver"/>
+            </Button.Effect>
+        </Button>
+        <Button x:Name="hibernateBtn" Grid.Row="1" Grid.Column="2" Margin="5" Padding="5" ToolTip="Hibernate"  Template="{StaticResource imageButtonTemplate}" Click="hibernateBtn_Click">
+            <Button.Background>
+                <ImageBrush ImageSource="Images/hibernate.jpg" Stretch="UniformToFill"/>
+            </Button.Background>
+            <Button.Effect>
+                <DropShadowEffect Color="Silver"/>
+            </Button.Effect>
+        </Button>
+
+    </Grid>
+</Window>

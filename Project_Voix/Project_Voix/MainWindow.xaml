@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Project_Voix"
         mc:Ignorable="d"
-        Title="MainWindow" Height="620" MaxHeight="750" MaxWidth="1200" Width="850">
+        Title="Voix" Height="620" MaxHeight="750" MaxWidth="1200" Width="850" Icon="Images/logoMain.png" >
     <Grid x:Name="baseGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition x:Name="expandableColumn" Width="Auto"/>
