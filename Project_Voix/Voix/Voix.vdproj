@@ -33,6 +33,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_D44F780E2D31416B9F1EA52D29A09342"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_E73B90698B5343909E2BAC7BAFA51EF3"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -118,6 +124,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.5"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.5 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.5"
+                    }
+                }
             }
         }
     }
@@ -177,6 +191,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D44F780E2D31416B9F1EA52D29A09342"
+            {
+            "SourcePath" = "8:C:\\Users\\HEWLETT PACKARD\\Downloads\\logoMain.ico"
+            "TargetName" = "8:logoMain.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_795F0CAA1FB0450B874C15B64CC15905"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F73F5F0785764FB58A4C13B402A22A25"
@@ -278,7 +312,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Voix"
         "ProductCode" = "8:{12E51791-1905-490D-848D-F9DE22146D6F}"
-        "PackageCode" = "8:{97217300-E35F-4255-A6B3-F89C3A8EB090}"
+        "PackageCode" = "8:{EE2A6582-EDB2-48AA-8200-9EB978017441}"
         "UpgradeCode" = "8:{76D439D4-BE1B-4F6E-A358-B7306E713D1B}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -409,7 +443,7 @@
             "Target" = "8:_0F8941A032F64368B6AAA9A114836EA3"
             "Folder" = "8:_DABD6D9DE53D4B608CFDDEF752E948FE"
             "WorkingFolder" = "8:_795F0CAA1FB0450B874C15B64CC15905"
-            "Icon" = "8:_F73F5F0785764FB58A4C13B402A22A25"
+            "Icon" = "8:_D44F780E2D31416B9F1EA52D29A09342"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_BAC8A848E9634C5BBCF8412EE608D740"
@@ -423,7 +457,7 @@
             "Target" = "8:_0F8941A032F64368B6AAA9A114836EA3"
             "Folder" = "8:_8478F1A665E346B9B98517DFFF5DAE2C"
             "WorkingFolder" = "8:_795F0CAA1FB0450B874C15B64CC15905"
-            "Icon" = "8:_F73F5F0785764FB58A4C13B402A22A25"
+            "Icon" = "8:_D44F780E2D31416B9F1EA52D29A09342"
             "Feature" = "8:"
             }
         }

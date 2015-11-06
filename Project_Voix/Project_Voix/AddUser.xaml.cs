@@ -25,6 +25,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -43,13 +44,57 @@ namespace Project_Voix
         Image userImage;
         string imageUri;
         string moviesFolder;
-        
+        static public bool AddUserRunning { get; set; }
+
         public AddUser()
         {
             InitializeComponent();
             userImage = new Image();
+            AddUserRunning = true;
+            this.Activated += (sender, e) =>
+            {
+                /*
+                    Fires up when the UI is "InFocus" i.e. is the active window 
+                */
+                try
+                {
+                    GrammarManipulator.ResponseBoxLoaded();                                      //Loads the UIGrammar 
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            };
+            this.Deactivated += (sender, e) =>
+            {
+                /*
+                    Fires up when the UI has "LostFocus" i.e. is no longer the active window
+                */
+                try
+                {
+                    GrammarManipulator.ResponseBoxDeloaded();                                    //unloads the UI grammar
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            };
+
+            GrammarFeeder.UserDialogOk += GrammarFeeder_UserDialogOk;
+            GrammarFeeder.CloseResponseBoxEvent += GrammarFeeder_CloseResponseBoxEvent;
         }
+
         
+        private void GrammarFeeder_UserDialogOk()
+        {
+            this.addUserOk.Dispatcher.InvokeAsync(() => { addUserOk.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent)); });
+        }
+
+        private void GrammarFeeder_CloseResponseBoxEvent()
+        {
+            this.Dispatcher.InvokeAsync(() => { this.Close(); });
+        }
+
         private void addImgBtnClick(object sender, RoutedEventArgs e)
         {
             /*
@@ -103,6 +148,7 @@ namespace Project_Voix
                   {
                       adduser.Dispatcher.InvokeShutdown();
                       DataStore.handle1.Set();
+                      AddUserRunning = false;
                   };
                   adduser.Show();
                   System.Windows.Threading.Dispatcher.Run();

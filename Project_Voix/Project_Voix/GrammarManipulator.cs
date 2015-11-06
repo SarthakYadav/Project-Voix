@@ -123,7 +123,7 @@ namespace Project_Voix
                         break;
                     case "closeProgramGrammar":
                         indexOfcloseProgramGrammar = listOfGrammars.IndexOf(g);
-                        g.Enabled = false;
+                        g.Enabled =false;
                         DefaultCloseProgramGrammarPriority = g.Priority;
                         break;
                     default:
@@ -226,13 +226,13 @@ namespace Project_Voix
                 the actions that are to be executed when the Response Box is loaded
             */
 
-            //MessageBox.Show("in GrammarManipulator.ResponseBoxLoaded()");
+            
             IsRegistered();
-            //Task.Run(() => { MessageBox.Show("in ResponseBoxLoaded"); });
+            
             registeredEngine.RequestRecognizerUpdate();
             listOfGrammars[indexOfResponseBox].Enabled = true;
             listOfGrammars[indexOfResponseBox].Priority = highPriority;
-            if (/*ResponseBoxType==Open_Type*/true)
+            if (true)
             {
                 listOfGrammars[indexOfBasic].Enabled = false;
                 EnableOpenGrammar();

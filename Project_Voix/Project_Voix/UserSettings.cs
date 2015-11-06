@@ -169,15 +169,15 @@ namespace Project_Voix
             Directory.CreateDirectory(location);
             await Task.Run(() =>
             {
-                WriteSettingsToBinaryFile<UserSettings>(location + this.Username.ToLower() + ".file", this, false);
+                WriteSettingsToBinaryFile<UserSettings>(location + @"\" + this.Username.ToLower() + ".file", this, false);
             });
         }
 
         public static UserSettings GetSettings(string filePath, string userName = "")
         {
-            if (userName != "")
+            if (userName !="")
             {
-                filePath = @"C:\Users\HEWLETT PACKARD\Documents\Project Voix" + @"\" + userName.ToLower() + ".file";
+                filePath +=  @"\" + userName.ToLower() + ".file";
                 Console.WriteLine("filepath is {0}",filePath);
             }
             return ReadFromBinaryFile<UserSettings>(filePath);

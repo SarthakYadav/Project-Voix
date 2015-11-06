@@ -25,6 +25,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -40,7 +41,7 @@ namespace Project_Voix
     public partial class SelectUser : Window
     {
         List<UserSettings> listOfUsers;                                             //to get the list of users from the Static class DataStore's Users property
-
+        static public bool SelectUserRunning { get; set; }
         public SelectUser()
         {
             InitializeComponent();
@@ -50,8 +51,54 @@ namespace Project_Voix
             {
                 usersListBox.Items.Add(item);
             }
+            SelectUserRunning = true;
+            this.Activated += (sender, e) =>
+            {
+                /*
+                    Fires up when the UI is "InFocus" i.e. is the active window 
+                */
+                try
+                {
+                    GrammarManipulator.ResponseBoxLoaded();                                      //Loads the UIGrammar 
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            };
+            this.Deactivated += (sender, e) =>
+            {
+                /*
+                    Fires up when the UI has "LostFocus" i.e. is no longer the active window
+                */
+                try
+                {
+                    GrammarManipulator.ResponseBoxDeloaded();                                    //unloads the UI grammar
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            };
+            this.Closed += (sender, e) =>
+              {
+                  SelectUserRunning = false;
+              };
+
+            GrammarFeeder.UserDialogOk += GrammarFeeder_UserDialogOk;
+            GrammarFeeder.CloseResponseBoxEvent += GrammarFeeder_CloseResponseBoxEvent;
         }
-        
+
+        private void GrammarFeeder_CloseResponseBoxEvent()
+        {
+            this.Dispatcher.InvokeAsync(() => { this.Close(); });
+        }
+
+        private void GrammarFeeder_UserDialogOk()
+        {
+            this.btnOk.Dispatcher.InvokeAsync(() => { btnOk.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent)); });
+        }
+
         public static void OpenUserSelectWindow()
         {
             /*

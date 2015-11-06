@@ -57,5 +57,6 @@ namespace Project_Voix
     public delegate void ChangeSlider(int i,string sliderType);                     //delegate for event that involves changing the slider in MainWindow
     public delegate void SynthesisGenderChange(VoiceGender voiceGender);            //delegate for event that detects change in VoiceGender selection
     public delegate void ExitMainWindow();                                          //delegate for event that exits the main window when Quit command is encountered
+    public delegate void Add_SelectUserOkClick();
     public delegate void ExpandExpander();                                          //delegate for event that expands the expander control on the MainWindow
 }

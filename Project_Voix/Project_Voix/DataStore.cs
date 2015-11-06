@@ -4,10 +4,21 @@
     date created: -14/10/15
 
     log:-
-    * No Updates Done*
+    update 1 : 3/11/2015     Author: Sarthak                Description: Bug Patched
 
      Listed Public Methods:
-           * NONE*
+           1. StartDataStoreManager()
+           2. AddNewUser()
+           3. AddRecentCommand()
+           4. ReturnAssistantName
+           5. GetUserAcknowledgement()
+           6. DisplayCurrentUser()
+           7. LoadUser(string userName)
+           8. LoadUserSettings() 
+           9. AddToMessageDump(string text)   
+           10. AddToErrorLog(string text) 
+           11. SaveUserSettings() 
+           12. LoadUserSettings()
  */
 using System;
 using System.Collections.Generic;
@@ -32,10 +43,12 @@ namespace Project_Voix
         #region Fields
         static bool NoStoredUser = false;
         static bool IsUserSet = false;
+        static string voixDir = @"C:\Users\" + Environment.UserName + @"\Documents\Project Voix";
         static List<UserSettings> listOfUsers = new List<UserSettings>();                   //store the list of users
                                                                                             //static StringBuilder dump;
-        static StreamWriter writer = new StreamWriter(@"C:\Users\HEWLETT PACKARD\Documents\Project Voix\Dump\Dump.txt", true);
-        static StreamWriter writer1 = new StreamWriter(@"C:\Users\HEWLETT PACKARD\Documents\Project Voix\Dump\ErrorLog.txt", true);
+        static StreamWriter dumpWriter = new StreamWriter(voixDir + @"\Dump\Dump.txt", true);
+
+        static StreamWriter errorLogWriter= new StreamWriter(voixDir + @"\Dump\ErrorLog.txt", true);
 
         static UserSettings currentUser = null;                                             //stores the current user
         static Queue<string> recentCommands = new Queue<string>();                          //stores a Queue of recent Commands (max 10)
@@ -45,8 +58,9 @@ namespace Project_Voix
 
         static DataStore()
         {
-            //dump = new StringBuilder(string.Format("Message Dump \t Time stamp : {0}",DateTime.Now.ToString()));
-            //errLog = new StringBuilder(string.Format("Error Log \t Time stamp : {0}", DateTime.Now.ToString()));
+            Directory.CreateDirectory(voixDir);
+            Directory.CreateDirectory(voixDir + @"\Dump");
+            //errorLogWriter = 
         }
         
         public static Queue<string> RecentCommands                                          //read only type public Property encapsulating recentCommands
@@ -85,8 +99,11 @@ namespace Project_Voix
             }
             SetUserNow(CurrentUser);
             IsUserSet = true;
-            //System.IO.File.WriteAllText(@"C:\Users\HEWLETT PACKARD\Documents\Project Voix\Dump\ErrorLog.txt", Errorlog.ToString());
-            //System.IO.File.WriteAllText(@"C:\Users\HEWLETT PACKARD\Documents\Project Voix\Dump\Dump.txt", Dump.ToString());
+            
+            Directory.CreateDirectory(voixDir);
+            Directory.CreateDirectory(voixDir + @"\Dump");
+           
+            
             Init.waitHandle2.Set();
         }
         
@@ -159,7 +176,7 @@ namespace Project_Voix
         {
             foreach (var item in listOfUsers)
             {
-                item.WriteSettings(location: @"C:\Users\HEWLETT PACKARD\Documents\Project Voix\");
+                item.WriteSettings(location: voixDir);                          //change here
             }
         }
 
@@ -168,13 +185,18 @@ namespace Project_Voix
             string _name = "";
             try
             {
-                var items = Directory.GetFiles(@"C:\Users\HEWLETT PACKARD\Documents\Project Voix", "*.file");
+                var items = Directory.GetFiles(voixDir, "*.file");                  //change here @"C:\Users\HEWLETT PACKARD\Documents\Project Voix"
+
+                foreach (var item in items)
+                {
+                    Console.WriteLine(item);
+                }
                 if (items.Length > 0)
                 {
                     foreach (var item in items)
                     {
                         _name=item.Substring(item.LastIndexOf('\\') + 1).Replace(".file", "");
-                        listOfUsers.Add(UserSettings.GetSettings(item, _name));
+                        listOfUsers.Add(UserSettings.GetSettings(item,""));
                     }
                 }
                 else
@@ -193,7 +215,7 @@ namespace Project_Voix
 
         public static void LoadUser(string userName)
         {
-            currentUser = UserSettings.GetSettings(@"C:\Users\HEWLETT PACKARD\Documents\Project Voix",userName);
+            currentUser = UserSettings.GetSettings(voixDir,userName);                           //change here @"C:\Users\HEWLETT PACKARD\Documents\Project Voix"
             try
             {
                 SetUserNow(currentUser);
@@ -212,8 +234,8 @@ namespace Project_Voix
             {
                 Task.Run(() =>
                 {
-                    writer.Write(string.Format("\n\n" + text + "\n Time Stamp : {0}", DateTime.Now.ToString()));
-                    writer.Flush();
+                    dumpWriter.Write(string.Format("\n\n" + text + "\n Time Stamp : {0}", DateTime.Now.ToString()));
+                    dumpWriter.Flush();
                     //writer.Close();
                 });
             }
@@ -230,8 +252,8 @@ namespace Project_Voix
             {
                 Task.Run(() =>
                 {
-                    writer1.Write(string.Format("\n" + text + "\n Time Stamp : {0}", DateTime.Now.ToString()));
-                    writer1.Flush();
+                    errorLogWriter.Write(string.Format("\n" + text + "\n Time Stamp : {0}", DateTime.Now.ToString()));
+                    errorLogWriter.Flush();
                     //writer1.Close();
                 });
             }

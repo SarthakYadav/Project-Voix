@@ -45,6 +45,7 @@ namespace Project_Voix
         static string[] programCommands = null;
         static SpeechRecognitionEngine speechEngine = null;
         static string openRecogPhrase;
+        
         //static string moviesPath;
         //static ResponseBox resp = null;
              #endregion
@@ -64,6 +65,7 @@ namespace Project_Voix
         static public event GenerateResponse UIResponse;
         static public event GenerateResponse PrimaryResponse;
 
+        public static event Add_SelectUserOkClick UserDialogOk;
         public static event ExpandExpander ExpandIt;
         static public event ExitMainWindow CloseMainWindow;
         static public event UpdateLog writeToTextBox;
@@ -384,43 +386,58 @@ namespace Project_Voix
             return new Grammar(gb);
         }
 
+
         #endregion
 
         #region Grammar Event Handlers
         private static void PrimaryGrammar_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
         {
             
-            if (e.Result!=null)
+            if (e.Result!=null & e.Result.Confidence>=0.925)
             {
-                Task.Run(() =>
-                {
-                    writeToTextBox(e.Result.Text);
-                });
+                
                 DataStore.AddRecentCommand(e.Result.Text);
                 try
                 {
-                    if (e.Result.Text.Contains("Sleep") | e.Result.Text.Contains("Pause"))
+                    if ( e.Result.Text.Contains("Pause"))
                     {
-                        if (RecogInProgress == true)
+                        Task.Run(() =>
+                        {
+                            writeToTextBox(e.Result.Text);
+                        });
+                        if (RecogInProgress == true )
                         {
                             GrammarManipulator.HaltRecognition();
                             PrimaryResponse(new Response(CommandType.Primary, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
                             RecogInProgress = false;
+                           
                         }
                         else
+                        {
                             PrimaryResponse(new Response(CommandType.Primary, DateTime.Now.TimeOfDay.Hours, "already paused"));
+                            
+                            
+                        }
                     }
-
                     else if (e.Result.Text.Contains("Resume Recognition") | e.Result.Text.Contains("Wake up"))
                     {
-                        if (RecogInProgress == false)
+                        Task.Run(() =>
+                        {
+                            writeToTextBox(e.Result.Text);
+                        });
+                        if (RecogInProgress == false )
                         {
                             GrammarManipulator.ResumeRecognition();
                             PrimaryResponse(new Response(CommandType.Primary, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
                             RecogInProgress = true;
+                         
                         }
                         else
+                        {
                             PrimaryResponse(new Response(CommandType.Primary, DateTime.Now.TimeOfDay.Hours, "recognition already in progress"));
+                            
+                        
+                        }
                     }
                     else
                         throw new Exception("Unknown recognition by PrimaryGrammar ");
@@ -434,7 +451,7 @@ namespace Project_Voix
 
         private static void BasicGrammar_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
         {
-            if (e.Result != null)
+            if (e.Result != null & e.Result.Confidence>=0.85)
             {
                 DataStore.AddRecentCommand(e.Result.Text);
                 DataStore.AddToMessageDump(e.Result.Text);
@@ -473,6 +490,10 @@ namespace Project_Voix
                 {
                     try
                     {
+                        Task.Run(() =>
+                        {
+                            writeToTextBox(e.Result.Text);
+                        });
                         SystemOptions.OpenSystemCommandsDialog();
                     }
                     catch (Exception ex)
@@ -495,7 +516,7 @@ namespace Project_Voix
 
         private static void Open_typeGrammar_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
         {
-            if (e.Result != null)
+            if (e.Result != null & e.Result.Confidence >= 0.80)
             {
                 openRecogPhrase = e.Result.Text;
 
@@ -518,7 +539,7 @@ namespace Project_Voix
 
         private static void NonOperative_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
         {
-            if (e.Result != null)
+            if (e.Result != null & e.Result.Confidence >= 0.90)
             {
                 DataStore.AddRecentCommand(e.Result.Text);
                 writeToTextBox(e.Result.Text);
@@ -535,7 +556,7 @@ namespace Project_Voix
 
         private static void CloseProgramGrammar_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
         {
-            if (e.Result != null)
+            if (e.Result != null & e.Result.Confidence >= 0.75)
             {
                 writeToTextBox(e.Result.Text);
                 DataStore.AddRecentCommand(e.Result.Text);
@@ -546,7 +567,7 @@ namespace Project_Voix
 
         private static void UiGrammar_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
         {
-            if (e.Result != null)
+            if (e.Result != null & e.Result.Confidence >= 0.86)
             {
                 Task.Run(() =>
                 {
@@ -586,7 +607,7 @@ namespace Project_Voix
 
         private static void ResponseBoxGrammar_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
         {
-            if (e.Result != null)
+            if (e.Result != null & e.Result.Confidence >= 0.825)
             {
                 Task.Run(() =>
                 {
@@ -597,20 +618,36 @@ namespace Project_Voix
 
                 if (e.Result.Text == "Ok")
                 {
-                    ProgramManager.SendOpenCommand(openRecogPhrase);
-                    GrammarManipulator.EnableCloseGrammar();
-                    CloseResponseBoxEvent();
+                    if (AddUser.AddUserRunning == true)
+                    {
+                        UserDialogOk();
+                        ResponseBoxResponse(new Response(CommandType.ResponseBox, DateTime.Now.TimeOfDay.Hours,"user dialog ok . "));
+                    }
+                    else if(SelectUser.SelectUserRunning==true)
+                    {
+                        UserDialogOk();
+                        ResponseBoxResponse(new Response(CommandType.ResponseBox, DateTime.Now.TimeOfDay.Hours,"user dialog ok . "));
+                    }
+                    else
+                    {
+                        ProgramManager.SendOpenCommand(openRecogPhrase);
+                        GrammarManipulator.EnableCloseGrammar();
+                        CloseResponseBoxEvent();
+                        ResponseBoxResponse(new Response(CommandType.ResponseBox, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
+                    }
                 }
                 else if(e.Result.Text=="Cancel")
                 {
                     CloseResponseBoxEvent();
+                    ResponseBoxResponse(new Response(CommandType.ResponseBox, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
+
                 }
                 else
                 {
                     writeToTextBox("");
                     //remove the text in the analyzed textbox
                 }
-                ResponseBoxResponse(new Response(CommandType.ResponseBox, DateTime.Now.TimeOfDay.Hours, e.Result.Text));
+                
             }
         }
         #endregion

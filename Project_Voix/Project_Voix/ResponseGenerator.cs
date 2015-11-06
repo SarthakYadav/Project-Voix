@@ -56,6 +56,7 @@ namespace Project_Voix
         #region GenerateResponse Event Handlers
         public static void PrimaryGrammar_ResponseHandler(Response resp)
         {
+            
             resp.RecognizedPhrase = resp.RecognizedPhrase.ToLower();
             string responseText = "";
 
@@ -170,9 +171,10 @@ namespace Project_Voix
             */
             string response = "";
             resp.RecognizedPhrase = resp.RecognizedPhrase.ToLower();
-            if (resp.RecognizedPhrase.Contains("ok"))
-                response = "Running the given program";
-
+            if (resp.RecognizedPhrase == "user dialog ok . ")
+                response = "User Response Box Ok ";
+            else if (resp.RecognizedPhrase=="ok")
+                 response = "Running the given program";
             else if (resp.RecognizedPhrase.Contains("cancel"))
                 response = "Response box is now closing";
             else
